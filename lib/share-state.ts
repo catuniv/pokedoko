@@ -4,6 +4,7 @@ export type ShareState = {
   city?: string; event?: string;
   liveCity?: string; boss?: string; kind?: string; tier?: string; state?: string; q?: string;
   radius?: number; mode?: "density" | "community"; center?: ShareCenter | null;
+  routeSpeed?: number; routeStay?: number; routeStops?: number; routeDuration?: number;
   month?: string; day?: string; detail?: string; calendarKind?: string;
   tab?: string; search?: string; grade?: string; pokemon?: string;
   from?: string;
@@ -13,6 +14,8 @@ const CAMPAIGNS = ["direct", "dc", "inven", "naver", "kakao", "discord", "youtub
 const KINDS = ["all", "normal", "legendary", "mega", "shadow", "elite", "other"];
 const CALENDAR_KINDS = ["all", "raid-hour", "raid-day", "community-day", "spotlight", "event"];
 const TABS = ["all", "raid", "event", "upcoming", "unknown"];
+const ROUTE_OPTIONS = { routeSpeed: [4.5, 10, 20], routeStay: [1, 2, 3, 5, 8, 10], routeStops: [5, 10, 20], routeDuration: [30, 60, 90, 120] } as const;
+const ROUTE_DEFAULTS = { routeSpeed: 4.5, routeStay: 5, routeStops: 10, routeDuration: 60 } as const;
 const stringKeys = ["city", "event", "liveCity", "boss", "kind", "tier", "state", "q", "mode", "month", "day", "detail", "calendarKind", "tab", "search", "grade", "pokemon", "from"] as const;
 const defaults: Partial<Record<typeof stringKeys[number] | "radius", string>> = {
   boss: "all", kind: "all", tier: "all", state: "active", mode: "density", radius: "3", calendarKind: "all", tab: "all", grade: "all",
@@ -44,6 +47,10 @@ export function parseShareState(search: string, cityIds: readonly string[]): Sha
   const radius = Number(p.get("radius"));
   if ([1, 3, 5, 10].includes(radius)) state.radius = radius;
   state.mode = oneOf("mode", ["density", "community"]) as ShareState["mode"];
+  for (const key of Object.keys(ROUTE_OPTIONS) as (keyof typeof ROUTE_OPTIONS)[]) {
+    const raw = p.get(key), value = Number(raw);
+    if (raw?.trim() && (ROUTE_OPTIONS[key] as readonly number[]).includes(value)) state[key] = value;
+  }
   state.month = /^20\d{2}-(?:0[1-9]|1[0-2])$/.test(p.get("month") ?? "") ? p.get("month")! : undefined;
   state.day = validShareDay(p.get("day"));
   state.detail = text(p.get("detail"), 180);
@@ -77,6 +84,13 @@ export function patchShareState(url: URL, state: ShareState): URL {
     if (state.radius === undefined || state.radius === 3) next.searchParams.delete("radius");
     else next.searchParams.set("radius", String(state.radius));
   }
+  for (const key of Object.keys(ROUTE_OPTIONS) as (keyof typeof ROUTE_OPTIONS)[]) {
+    if (!Object.prototype.hasOwnProperty.call(state, key)) continue;
+    const value = state[key];
+    if (value === undefined || value === ROUTE_DEFAULTS[key]) next.searchParams.delete(key);
+    else if ((ROUTE_OPTIONS[key] as readonly number[]).includes(value)) next.searchParams.set(key, String(value));
+    else next.searchParams.delete(key);
+  }
   if (Object.prototype.hasOwnProperty.call(state, "center")) {
     for (const key of ["centerCity", "lat", "lon", "centerId", "centerName"]) next.searchParams.delete(key);
     if (state.center) {
@@ -98,7 +112,7 @@ export function buildShareUrl(href: string, view: ShareView, patch: ShareState, 
   // Older city-guide links use only city; new all-city links must be explicit.
   if (view === "live" && state.liveCity === undefined) state.liveCity = parsed.city ?? "all";
   const allowed: (keyof ShareState)[] = view === "live"
-    ? ["city", "liveCity", "boss", "kind", "tier", "state", "q", "radius", "mode", "center"]
+    ? ["city", "liveCity", "boss", "kind", "tier", "state", "q", "radius", "mode", "center", "routeSpeed", "routeStay", "routeStops", "routeDuration"]
     : view === "raids" ? ["city", "event"]
     : view === "calendar" ? ["city", "month", "day", "detail", "calendarKind"]
     : ["city", "tab", "search", "grade", "pokemon"];

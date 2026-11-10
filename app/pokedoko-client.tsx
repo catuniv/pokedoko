@@ -320,6 +320,7 @@ export default function Pokedoko({
           ))}
         </nav>
         <div className="sidebar-caption saved-caption">나의 플래너</div>
+        <a className="nav-link" href={`/routes?city=${encodeURIComponent(selectedCity)}`}><MapPin size={18} />지가르데 셀 루트</a>
         <button
           className="nav-link"
           onClick={() => {

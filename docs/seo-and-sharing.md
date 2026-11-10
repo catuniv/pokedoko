@@ -4,7 +4,7 @@
 
 ## 페이지와 실제 본문
 
-- `/`, `/live`, `/raids`, `/calendar`, `/pokemon`: 화면별 한국어 제목·설명, Open Graph, Twitter 미리보기와 canonical.
+- `/`, `/live`, `/raids`, `/calendar`, `/pokemon`, `/routes`: 화면별 한국어 제목·설명, Open Graph, Twitter 미리보기와 canonical. `/routes`는 사용자 제공 루트의 계획 기능으로 게임 승인 루트 데이터 제공과 구분한다.
 - `/events/[id]`: 실제 피드와 공식 보완 목록의 확인된 이벤트만 서버에서 렌더링한다. 등장 포켓몬·원문·현지 시각/전 세계 공통 시각·IANA 시간대별 한국시간을 제공한다. 종료된 일정은 기록으로 표시하며 다음 개최일로 바꾸지 않는다. 없는 ID는 404다.
 - `/cities/[id]`: 기존 24개 도시만 제공한다. 시간대와 시차, 사용자 추천 장소·원문 좌표·추천 및 좌표 근거, 해당 도시의 현재·예정 일정을 서버에서 제공한다. 추천 자료가 3곳인 도시를 임의로 5곳까지 채우지 않는다.
 
@@ -14,7 +14,7 @@
 
 설치된 Vinext의 metadata route scanner와 response handler에서 `app/robots.ts` → `/robots.txt`, `app/sitemap.ts` → `/sitemap.xml` 지원을 확인했다. 테스트는 실제 설치본으로 경로 검색·HTTP200·본문 직렬화를 검사한다.
 
-sitemap에는 기본 5개 화면·24개 도시와 시작/종료가 확인된 이벤트를 최대 **전체 200개 URL**까지 싣는다. ID 중복과 잘못된 날짜·원문 URL을 제외한다. 변경 시각을 알지 못하는 자료에는 오늘 날짜를 `lastModified`로 꾸며 넣지 않는다. 기록인 과거 일정도 해당 날짜의 페이지로 남을 수 있다. 원문에 없는 미래 일정은 생성하지 않는다.
+sitemap에는 기본 6개 화면·24개 도시와 시작/종료가 확인된 이벤트를 최대 **전체 200개 URL**까지 싣는다. ID 중복과 잘못된 날짜·원문 URL을 제외한다. 변경 시각을 알지 못하는 자료에는 오늘 날짜를 `lastModified`로 꾸며 넣지 않는다. 기록인 과거 일정도 해당 날짜의 페이지로 남을 수 있다. 원문에 없는 미래 일정은 생성하지 않는다.
 
 robots는 공개 페이지 크롤링을 허용하고 `/api/`, `/ops`와 인증 콜백 경로를 제외한다. robots 자체는 접근 제어나 확실한 비색인 지시가 아니다. API·운영 경로 응답의 `X-Robots-Tag: noindex`도 함께 유지한다. 검색 노출 여부·순위·반영 시점은 보장하지 않는다. [Google robots 안내](https://developers.google.com/search/docs/crawling-indexing/robots/intro), [sitemap 안내](https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap).
 

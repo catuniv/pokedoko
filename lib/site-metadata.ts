@@ -10,6 +10,7 @@ export const PAGE_SEO = {
   raids: { path: "/raids", title: "도시별 레이드 아워·레이드 데이 시간표", description: "공개 원문으로 확인한 포켓몬 GO 레이드 아워와 레이드 데이를 도시 현지 시각·한국시간으로 비교하세요. 공식 일정과 실제 체육관 레이드는 구분해서 표시합니다." },
   calendar: { path: "/calendar", title: "포켓몬 GO 이벤트 캘린더", description: "커뮤니티 데이·스포트라이트 아워·레이드 데이 등 확인된 포켓몬 GO 일정을 달력에서 살펴보세요. 이벤트별 등장 포켓몬, 시작·종료 시각과 원문을 함께 제공합니다." },
   pokemon: { path: "/pokemon", title: "등장 포켓몬·레이드 보스 일정", description: "포켓몬 GO에 등장하는 포켓몬과 레이드 보스를 확인하세요. 확인된 기간에 따라 현재·예정·기간 미확인을 구분하고 큐레무 등 서로 다른 폼을 따로 표시합니다." },
+  routes: { path: "/routes", title: "지가르데 셀 루트·GPX 경로 계획", description: "게임에서 확인한 루트의 GPX나 좌표를 불러와 방문 순서와 이동 거리를 계획하세요. 사용자 제공 경로를 보관하며, 게임 승인 여부와 셀 획득은 보장하지 않습니다." },
 } as const;
 
 export function canonicalUrl(value: string): string {

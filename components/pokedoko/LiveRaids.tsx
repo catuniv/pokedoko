@@ -31,6 +31,7 @@ import { hasMinimumRaidTime } from "@/lib/live-raid-display";
 import { distanceKm } from "@/lib/raid-hotspots";
 import RaidHotspots, { RaidRegionSummary, type RaidRegion } from "./RaidHotspots";
 import RaidCoverage from "./RaidCoverage";
+import RaidRoutePlanner from "./RaidRoutePlanner";
 import { LIVE_RAID_REQUEST_TIMEOUT_MS, LIVE_RAID_RETRY_DELAYS_MS, retainLastGoodRaidFeed } from "@/lib/live-raid-recovery";
 import {
   RAID_KIND_OPTIONS,
@@ -610,6 +611,7 @@ export default function LiveRaids({
         <RaidHotspots raids={matchingRaids} now={now} selected={selectedRegion} onSelect={setSelectedRegion} />
         <div id="live-gym-results" className="live-gym-results" tabIndex={-1}>
           {selectedRegion && <RaidRegionSummary region={selectedRegion} raids={filtered} now={now} onClear={() => setSelectedRegion(null)} />}
+          {selectedRegion && <RaidRoutePlanner key={`${selectedRegion.cityId}:${selectedRegion.lat}:${selectedRegion.lon}:${selectedRegion.radiusKm}`} region={selectedRegion} raids={filtered} now={now} refreshing={loading} onRefresh={() => void refresh()} />}
           <p className="live-results-label">{selectedRegion ? `선택한 반경 안 체육관 ${filtered.length}개` : `조건에 맞는 체육관 ${filtered.length}개`}</p>
         </div>
         {filtered.length ? (

@@ -5,6 +5,20 @@ const cities = ['seoul', 'tokyo', 'new-york'];
 const boss = '888:2577:base:자시안 · 검왕';
 const center = { id: '서울:체육관/123', cityId: 'seoul', lat: 37.5665123456789, lon: 126.9780123456789, gymName: '서울 중심 체육관', radiusKm: 5 };
 
+test('recommended GPX route settings round-trip and reject unsupported numeric input', () => {
+  const settings = { routeSpeed: 10, routeStay: 8, routeStops: 20, routeDuration: 90 };
+  const url = buildShareUrl('https://pokedoko.example/live?from=dc', 'live', { center, ...settings }, cities);
+  const parsed = parseShareState(new URL(url).search, cities);
+  for (const [key, value] of Object.entries(settings)) assert.equal(parsed[key], value);
+  assert.equal(parseShareState('?routeStay=1', cities).routeStay, 1);
+  assert.equal(parseShareState('?routeStay=2', cities).routeStay, 2);
+  assert.equal(new URL(url).searchParams.has('from'), false);
+  const invalid = parseShareState('?routeSpeed=Infinity&routeStay=-1&routeStops=99999&routeDuration=', cities);
+  for (const key of Object.keys(settings)) assert.equal(invalid[key], undefined);
+  const defaults = patchShareState(new URL(url), { routeSpeed: 4.5, routeStay: 5, routeStops: 10, routeDuration: 60 });
+  for (const key of Object.keys(settings)) assert.equal(defaults.searchParams.has(key), false);
+});
+
 test('live sharing round-trips all selected filters and raw centre precision', () => {
   const state = { city: 'seoul', liveCity: 'seoul', boss, kind: 'legendary', tier: '5', state: 'upcoming', q: '한글 체육관 & 공원', radius: 5, mode: 'community', center };
   const url = buildShareUrl('https://pokedoko.example/live', 'live', state, cities);
