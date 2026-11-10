@@ -35,6 +35,7 @@ export type LiveRaidSource = {
   checkedAt: string;
   count: number;
   message: string;
+  coverage?: { lat: number; lon: number; radiusKm: number; limit: number; limited: boolean };
 };
 export type LiveRaidFeed = {
   status: LiveRaidStatus;

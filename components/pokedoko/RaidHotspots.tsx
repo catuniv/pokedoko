@@ -171,7 +171,7 @@ export default function RaidHotspots({ raids, now, selected, onSelect }: Props) 
           {!ready && raids.length ? <><RefreshCw size={18} className="spinning" /> 반경별 레이드 수를 계산하고 있어요.</> : result.error && ready ? "지역을 계산하지 못했습니다. 반경을 바꿔 다시 확인하세요." : "선택한 조건에 맞는 레이드가 없어요."}
         </div>
       )}
-      <p className="raid-hotspots-coverage">뉴욕·시드니·싱가포르 수집 자료 내 비교 · 참여 인원 수가 아닙니다.</p>
+      <p className="raid-hotspots-coverage">연결된 도시의 수집 자료 내 비교 · 조회 상한에 따른 일부 결과일 수 있어요. 실제 참여 인원 수는 제공되지 않습니다.</p>
     </section>
   );
 }

@@ -1,0 +1,560 @@
+{
+  "checkedAt": "2026-11-10T03:12:47.406Z",
+  "scope": "24 representative city centres, 15 km radius, maximum 800 records each; five dedicated regional maps",
+  "nearbyProvider": {
+    "page": "https://pokecoords.iflowgo.com/",
+    "endpoint": "https://pokecoords.iflowgo.com/iflowgopokecoords/api/v1/nearby",
+    "radiusKm": 15,
+    "limit": 800,
+    "timeBasis": "source-response",
+    "participantData": false
+  },
+  "runtimeSample": {
+    "totalNormalizedRaids": 8250,
+    "citiesWithRecords": {
+      "singapore": 2353,
+      "vancouver": 782,
+      "sydney": 2181,
+      "chicago": 4,
+      "tokyo": 800,
+      "istanbul": 55,
+      "bangkok": 56,
+      "taipei": 799,
+      "hong-kong": 287,
+      "seoul": 413,
+      "auckland": 160,
+      "kiritimati": 7,
+      "honolulu": 159,
+      "los-angeles": 92,
+      "perth": 102
+    },
+    "sources": [
+      {
+        "id": "new-york",
+        "cityId": "new-york",
+        "name": "NYCPokeMap",
+        "url": "https://www.nycpokemap.com/gym.html",
+        "status": "empty",
+        "fetchedAt": "2026-11-10T03:12:50.000Z",
+        "checkedAt": "2026-11-10T03:12:48.132Z",
+        "count": 0,
+        "message": "원문 응답 시각 기준입니다. 체육관별 마지막 관측 시각은 제공되지 않습니다."
+      },
+      {
+        "id": "sydney",
+        "cityId": "sydney",
+        "name": "SydneyPogoMap",
+        "url": "https://www.sydneypogomap.com/gym.html",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:49.000Z",
+        "checkedAt": "2026-11-10T03:12:48.675Z",
+        "count": 1839,
+        "message": "원문 응답 시각 기준입니다. 체육관별 마지막 관측 시각은 제공되지 않습니다."
+      },
+      {
+        "id": "singapore",
+        "cityId": "singapore",
+        "name": "SGPokeMap",
+        "url": "https://sgpokemap.com/gym.html",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:50.000Z",
+        "checkedAt": "2026-11-10T03:12:49.006Z",
+        "count": 2298,
+        "message": "원문 응답 시각 기준입니다. 체육관별 마지막 관측 시각은 제공되지 않습니다."
+      },
+      {
+        "id": "london",
+        "cityId": "london",
+        "name": "LondonPogoMap",
+        "url": "https://londonpogomap.com/gym.html",
+        "status": "empty",
+        "fetchedAt": "2026-11-10T03:12:50.000Z",
+        "checkedAt": "2026-11-10T03:12:48.843Z",
+        "count": 0,
+        "message": "원문 응답 시각 기준입니다. 체육관별 마지막 관측 시각은 제공되지 않습니다."
+      },
+      {
+        "id": "vancouver",
+        "cityId": "vancouver",
+        "name": "VanPokeMap",
+        "url": "https://vanpokemap.com/gym.html",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:49.000Z",
+        "checkedAt": "2026-11-10T03:12:48.694Z",
+        "count": 775,
+        "message": "원문 응답 시각 기준입니다. 체육관별 마지막 관측 시각은 제공되지 않습니다."
+      },
+      {
+        "id": "iflowgo-seoul",
+        "cityId": "seoul",
+        "name": "PoGo Radar · 서울",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:50.192Z",
+        "checkedAt": "2026-11-10T03:12:48.406Z",
+        "count": 413,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 37.5665,
+          "lon": 126.978,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-tokyo",
+        "cityId": "tokyo",
+        "name": "PoGo Radar · 도쿄",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:50.452Z",
+        "checkedAt": "2026-11-10T03:12:48.902Z",
+        "count": 800,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 조회 상한에 도달한 일부 결과입니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 35.6762,
+          "lon": 139.6503,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": true
+        }
+      },
+      {
+        "id": "iflowgo-taipei",
+        "cityId": "taipei",
+        "name": "PoGo Radar · 타이베이",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:50.448Z",
+        "checkedAt": "2026-11-10T03:12:48.909Z",
+        "count": 799,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 조회 상한에 도달한 일부 결과입니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 25.033,
+          "lon": 121.5654,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": true
+        }
+      },
+      {
+        "id": "iflowgo-hong-kong",
+        "cityId": "hong-kong",
+        "name": "PoGo Radar · 홍콩",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:50.226Z",
+        "checkedAt": "2026-11-10T03:12:48.427Z",
+        "count": 287,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 22.3193,
+          "lon": 114.1694,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-singapore",
+        "cityId": "singapore",
+        "name": "PoGo Radar · 싱가포르",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:50.378Z",
+        "checkedAt": "2026-11-10T03:12:48.799Z",
+        "count": 618,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 1.3521,
+          "lon": 103.8198,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-bangkok",
+        "cityId": "bangkok",
+        "name": "PoGo Radar · 방콕",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:50.414Z",
+        "checkedAt": "2026-11-10T03:12:48.497Z",
+        "count": 56,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 13.7563,
+          "lon": 100.5018,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-dubai",
+        "cityId": "dubai",
+        "name": "PoGo Radar · 두바이",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "empty",
+        "fetchedAt": "2026-11-10T03:12:50.564Z",
+        "checkedAt": "2026-11-10T03:12:48.657Z",
+        "count": 0,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 25.2048,
+          "lon": 55.2708,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-sydney",
+        "cityId": "sydney",
+        "name": "PoGo Radar · 시드니",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:50.632Z",
+        "checkedAt": "2026-11-10T03:12:48.816Z",
+        "count": 800,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 조회 상한에 도달한 일부 결과입니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": -33.8688,
+          "lon": 151.2093,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": true
+        }
+      },
+      {
+        "id": "iflowgo-perth",
+        "cityId": "perth",
+        "name": "PoGo Radar · 퍼스",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:50.679Z",
+        "checkedAt": "2026-11-10T03:12:48.925Z",
+        "count": 102,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": -31.9505,
+          "lon": 115.8605,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-auckland",
+        "cityId": "auckland",
+        "name": "PoGo Radar · 오클랜드",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:50.796Z",
+        "checkedAt": "2026-11-10T03:12:48.845Z",
+        "count": 160,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": -36.8485,
+          "lon": 174.7633,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-kiritimati",
+        "cityId": "kiritimati",
+        "name": "PoGo Radar · 키리티마티",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:50.982Z",
+        "checkedAt": "2026-11-10T03:12:49.031Z",
+        "count": 7,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 1.8721,
+          "lon": -157.4278,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-istanbul",
+        "cityId": "istanbul",
+        "name": "PoGo Radar · 이스탄불",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:50.992Z",
+        "checkedAt": "2026-11-10T03:12:49.029Z",
+        "count": 55,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 41.0082,
+          "lon": 28.9784,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-london",
+        "cityId": "london",
+        "name": "PoGo Radar · 런던",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "empty",
+        "fetchedAt": "2026-11-10T03:12:51.017Z",
+        "checkedAt": "2026-11-10T03:12:49.039Z",
+        "count": 0,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 51.5074,
+          "lon": -0.1278,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-paris",
+        "cityId": "paris",
+        "name": "PoGo Radar · 파리",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "empty",
+        "fetchedAt": "2026-11-10T03:12:51.072Z",
+        "checkedAt": "2026-11-10T03:12:49.178Z",
+        "count": 0,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 48.8566,
+          "lon": 2.3522,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-madrid",
+        "cityId": "madrid",
+        "name": "PoGo Radar · 마드리드",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "empty",
+        "fetchedAt": "2026-11-10T03:12:51.084Z",
+        "checkedAt": "2026-11-10T03:12:49.178Z",
+        "count": 0,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 40.4168,
+          "lon": -3.7038,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-new-york",
+        "cityId": "new-york",
+        "name": "PoGo Radar · 뉴욕",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "empty",
+        "fetchedAt": "2026-11-10T03:12:51.104Z",
+        "checkedAt": "2026-11-10T03:12:49.179Z",
+        "count": 0,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 40.7128,
+          "lon": -74.006,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-chicago",
+        "cityId": "chicago",
+        "name": "PoGo Radar · 시카고",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:51.187Z",
+        "checkedAt": "2026-11-10T03:12:49.210Z",
+        "count": 4,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 41.8781,
+          "lon": -87.6298,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-los-angeles",
+        "cityId": "los-angeles",
+        "name": "PoGo Radar · 로스앤젤레스",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:51.204Z",
+        "checkedAt": "2026-11-10T03:12:49.262Z",
+        "count": 92,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 34.0522,
+          "lon": -118.2437,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-honolulu",
+        "cityId": "honolulu",
+        "name": "PoGo Radar · 호놀룰루",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:51.332Z",
+        "checkedAt": "2026-11-10T03:12:49.549Z",
+        "count": 159,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 21.3099,
+          "lon": -157.8581,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-vancouver",
+        "cityId": "vancouver",
+        "name": "PoGo Radar · 밴쿠버",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "ready",
+        "fetchedAt": "2026-11-10T03:12:51.357Z",
+        "checkedAt": "2026-11-10T03:12:49.415Z",
+        "count": 19,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 49.2827,
+          "lon": -123.1207,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-mexico-city",
+        "cityId": "mexico-city",
+        "name": "PoGo Radar · 멕시코시티",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "empty",
+        "fetchedAt": "2026-11-10T03:12:51.356Z",
+        "checkedAt": "2026-11-10T03:12:49.414Z",
+        "count": 0,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": 19.4326,
+          "lon": -99.1332,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-sao-paulo",
+        "cityId": "sao-paulo",
+        "name": "PoGo Radar · 상파울루",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "empty",
+        "fetchedAt": "2026-11-10T03:12:51.356Z",
+        "checkedAt": "2026-11-10T03:12:49.415Z",
+        "count": 0,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": -23.5505,
+          "lon": -46.6333,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-cape-town",
+        "cityId": "cape-town",
+        "name": "PoGo Radar · 케이프타운",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "empty",
+        "fetchedAt": "2026-11-10T03:12:51.368Z",
+        "checkedAt": "2026-11-10T03:12:49.392Z",
+        "count": 0,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": -33.9249,
+          "lon": 18.4241,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      },
+      {
+        "id": "iflowgo-nairobi",
+        "cityId": "nairobi",
+        "name": "PoGo Radar · 나이로비",
+        "url": "https://pokecoords.iflowgo.com/",
+        "status": "empty",
+        "fetchedAt": "2026-11-10T03:12:51.437Z",
+        "checkedAt": "2026-11-10T03:12:49.486Z",
+        "count": 0,
+        "message": "도시 중심 반경 15km에서 최대 800개를 조회합니다. 원문 응답 시각 기준이며 체육관별 관측 시각·참가 인원은 제공되지 않습니다.",
+        "coverage": {
+          "lat": -1.2921,
+          "lon": 36.8219,
+          "radiusKm": 15,
+          "limit": 800,
+          "limited": false
+        }
+      }
+    ]
+  },
+  "otherProviders": [
+    {
+      "name": "PokeHunter",
+      "url": "https://pokehunter.co/",
+      "result": "Current page redirects users to Campfire; not integrated."
+    },
+    {
+      "name": "PoGoMapper",
+      "url": "https://pogomapper.com/coverage-map",
+      "result": "Coverage statistics are yesterday's counts, not live gym raids."
+    },
+    {
+      "name": "PokeXperience",
+      "url": "https://pokexperience.com/raids/",
+      "result": "Endpoint rejects external requests with origin error; not integrated."
+    },
+    {
+      "name": "RocketMap Korea",
+      "url": "https://rocketmap.kr/",
+      "result": "Rotation/schedule information; live gym coordinates not provided."
+    },
+    {
+      "name": "Minpoke",
+      "url": "https://9db.jp/pokemongo/map",
+      "result": "Public map inspected, sampled Tokyo response had no actual live records; not integrated."
+    },
+    {
+      "name": "Official map",
+      "url": "https://pokemongo.com/map",
+      "result": "Sign-in required; no public participant-count API found."
+    }
+  ],
+  "limitations": [
+    "Empty nearby response does not confirm absence of raids or complete coverage.",
+    "Per-city 800 cap may truncate the sample; densities are within collected records.",
+    "Response time is not the last gym observation time.",
+    "Raid count is not lobby occupancy. No participants are estimated.",
+    "Max Battles remain excluded."
+  ]
+}

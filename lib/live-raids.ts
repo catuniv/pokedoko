@@ -1,12 +1,12 @@
 /** Server module. Import the public types, rather than this module, from client pages. */
 import { CITIES } from './cities';
-import { collectPublicRaidMaps } from './raid-map-sources';
+import { collectWorldRaidMaps } from './raid-collectors';
 import pokemonNames from './pokemon-names.json' with { type: 'json' };
 import type { LiveRaid, LiveRaidFeed, LiveRaidStatus } from './live-raid-types';
 import type { CollectedRaidMaps } from './raid-map-sources';
 
 export const MAX_OBSERVATION_AGE_MS = 10 * 60_000;
-const MAX_BYTES = 1_048_576, MAX_RAIDS = 15000, CLOCK_SKEW_MS = 60_000;
+const MAX_BYTES = 1_048_576, MAX_RAIDS = 50000, CLOCK_SKEW_MS = 60_000;
 const CITY_IDS = new Set(CITIES.map(city => city.id));
 type Obj = Record<string, unknown>;
 type Env = { POKEDOKO_RAID_FEED_URL?: string; POKEDOKO_RAID_FEED_TOKEN?: string; POKEDOKO_RAID_MAPS_ENABLED?: string };
@@ -19,7 +19,7 @@ function raidName(pokemonId: number | null, formId: number | null, tier: number 
   const name = catalog[String(pokemonId)]?.ko || catalog[String(pokemonId)]?.en || `도감 No. ${pokemonId}`;
   if (pokemonId === 888 && formId === 2577) return `${name} · 검왕`;
   if (pokemonId === 889 && formId === 2578) return `${name} · 방패왕`;
-  return `${tier && [11, 13, 15].includes(tier) ? '그림자 ' : tier === 6 ? '메가' : ''}${name}`;
+  return `${tier && tier >= 11 && tier <= 15 ? '그림자 ' : tier && [6, 7].includes(tier) ? '메가' : ''}${name}`;
 }
 
 function absoluteTime(value: unknown): number | null {
@@ -94,13 +94,13 @@ export async function loadLiveRaids(options: Options = {}): Promise<LiveRaidFeed
   if (!url) {
     if (env.POKEDOKO_RAID_MAPS_ENABLED === 'false') return result('unconfigured', now, '실시간 지도 수집이 중지되어 있습니다.');
     try {
-      const collected = await (options.mapCollector ?? collectPublicRaidMaps)();
+      const collected = await (options.mapCollector ?? collectWorldRaidMaps)();
       const output = normalizeLiveRaidFeed(collected.feed, now);
       output.sources = collected.sources;
       const connected = collected.sources.filter((s) => s.status === 'ready' || s.status === 'empty');
       if (!connected.length) return { ...output, status: collected.sources.some((s) => s.status === 'stale') ? 'stale' : 'error', raids: [], fetchedAt: null, message: '지역 지도에서 유효한 자료를 가져오지 못했습니다.' };
-      output.sourceName = connected.map((s) => s.name).join(' · ');
-      output.message = `${connected.length}개 지역 지도 연결 · 개별 체육관의 마지막 관측 시각은 제공되지 않습니다.`;
+      output.sourceName = '지역 레이드 지도 · 주요 도시 반경 조회';
+      output.message = `${connected.length}개 조회 연결 · 원문 응답 시각 기준이며 체육관별 관측 시각·참여 인원은 제공되지 않습니다.`;
       return output;
     } catch { return result('error', now, '지역 지도 조회에 실패했습니다.'); }
   }

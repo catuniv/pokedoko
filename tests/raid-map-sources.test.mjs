@@ -8,6 +8,8 @@ const cities = [
   { host: 'www.nycpokemap.com', cityId: 'new-york', lat: 40.75, lng: -73.98 },
   { host: 'www.sydneypogomap.com', cityId: 'sydney', lat: -33.86, lng: 151.21 },
   { host: 'sgpokemap.com', cityId: 'singapore', lat: 1.29, lng: 103.85 },
+  { host: 'londonpogomap.com', cityId: 'london', lat: 51.51, lng: -0.12 },
+  { host: 'vanpokemap.com', cityId: 'vancouver', lat: 49.28, lng: -123.12 },
 ];
 const raid = (city = cities[0], overrides = {}) => ({ gym_name: '실제 원문 체육관', lat: city.lat, lng: city.lng, raid_start: seconds(FIXED - 300000), raid_end: seconds(FIXED + 1800000), raid_spawn: seconds(FIXED - 3600000), pokemon_id: 889, form: 2578, level: 5, ...overrides });
 const payload = (rows, time = FIXED) => ({ meta: { time: seconds(time) }, raids: rows, battles: [{ ...raid(), gym_name: 'Max battle must not appear' }] });
@@ -23,15 +25,15 @@ test('collects only fixed public HTTPS sources and maps real raid windows withou
     return Response.json(payload([raid(city)]));
   });
   const value = await collect();
-  assert.equal(requested.length, 3);
-  assert.equal(value.feed.raids.length, 3);
+  assert.equal(requested.length, 5);
+  assert.equal(value.feed.raids.length, 5);
   assert.equal(value.sources.every(source => source.status === 'ready'), true);
   for (const request of requested) {
     assert.equal(new URL(request.url).protocol, 'https:');
     assert.equal(new URL(request.url).pathname, '/raids.php');
     assert.equal(request.init.redirect, 'manual');
     assert.equal(request.init.headers.Accept, 'application/json');
-    assert.match(request.init.headers['User-Agent'], /^pokedoko-private-planner/);
+    assert.match(request.init.headers['User-Agent'], /^pokedoko-planner/);
   }
   const entry = value.feed.raids[0];
   assert.equal(entry.id, `new-york:40.750000,-73.980000:${seconds(FIXED - 300000)}`);
@@ -53,7 +55,7 @@ test('future eggs are retained, hatched unknown bosses and ended raids are exclu
     raid(city, { raid_end: seconds(FIXED) }),
   ])));
   const output = await collect();
-  assert.equal(output.feed.raids.length, 3);
+  assert.equal(output.feed.raids.length, 5);
   for (const entry of output.feed.raids) {
     assert.equal(entry.gymName, '이름 미제공 체육관');
     assert.equal(entry.pokemonId, null);
@@ -69,7 +71,7 @@ test('source age, malformed metadata and out-of-area coordinates never become cu
   });
   const output = await collect();
   assert.equal(output.feed.raids.length, 0);
-  assert.deepEqual(output.sources.map(source => source.status), ['stale', 'error', 'error']);
+  assert.deepEqual(output.sources.map(source => source.status), ['stale', 'error', 'error', 'error', 'error']);
   assert.equal(output.sources[0].fetchedAt, '2026-11-10T00:50:00.000Z');
 });
 
@@ -95,18 +97,18 @@ test('parallel calls share one request per source and 60-second cache preserves 
   const gate = new Promise(resolve => { unblock = resolve; });
   const collect = collector(async city => { calls++; await gate; return Response.json(payload([raid(city)])); }, { now: () => new Date(clock) });
   const first = collect(), second = collect();
-  assert.equal(calls, 3);
+  assert.equal(calls, 5);
   unblock();
   const [a, b] = await Promise.all([first, second]);
   assert.deepEqual(a, b);
   clock += 59000;
   const cached = await collect();
-  assert.equal(calls, 3);
+  assert.equal(calls, 5);
   assert.equal(cached.feed.fetchedAt, a.feed.fetchedAt);
   assert.equal(cached.sources[0].checkedAt, a.sources[0].checkedAt);
   clock += 1000;
   await collect();
-  assert.equal(calls, 6);
+  assert.equal(calls, 10);
 });
 
 test('partial failures retain healthy regions and errors back off without stale-success masquerading', async () => {
@@ -118,8 +120,8 @@ test('partial failures retain healthy regions and errors back off without stale-
     return Response.json(payload([raid(city)]));
   }, { now: () => new Date(clock) });
   const first = await collect();
-  assert.equal(first.feed.raids.length, 2);
-  assert.deepEqual(first.sources.map(source => source.status), ['ready', 'error', 'ready']);
+  assert.equal(first.feed.raids.length, 4);
+  assert.deepEqual(first.sources.map(source => source.status), ['ready', 'error', 'ready', 'ready', 'ready']);
   clock += 29000;
   await collect();
   assert.equal(calls.get('sydney'), 1);
@@ -155,6 +157,6 @@ test('large Max Battle sections do not discard genuine gym raids within the boun
   const collect = collector(city => Response.json({ ...payload([raid(city)]), battles: city.cityId === 'sydney' ? [{ unrelated: 'x'.repeat(4 * 1024 * 1024 + 512) }] : [] }));
   const output = await collect();
   assert.equal(output.sources.every(source => source.status === 'ready'), true);
-  assert.equal(output.feed.raids.length, 3);
+  assert.equal(output.feed.raids.length, 5);
   assert.equal(output.feed.raids.some(entry => 'unrelated' in entry), false);
 });

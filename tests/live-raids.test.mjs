@@ -9,7 +9,7 @@ const { CITIES } = await asModule(await readFile(new URL('../lib/cities.ts', imp
 const pokemonNames = JSON.parse(await readFile(new URL('../lib/pokemon-names.json', import.meta.url), 'utf8'));
 const source = (await readFile(new URL('../lib/live-raids.ts', import.meta.url), 'utf8'))
   .replace("import { CITIES } from './cities';", `const CITIES = ${JSON.stringify(CITIES)};`)
-  .replace("import { collectPublicRaidMaps } from './raid-map-sources';", 'const collectPublicRaidMaps = async () => { throw new Error("Tests must inject a collector"); };')
+  .replace("import { collectWorldRaidMaps } from './raid-collectors';", 'const collectWorldRaidMaps = async () => { throw new Error("Tests must inject a collector"); };')
   .replace("import pokemonNames from './pokemon-names.json' with { type: 'json' };", `const pokemonNames = ${JSON.stringify(pokemonNames)};`);
 const { loadLiveRaids, normalizeLiveRaidFeed } = await asModule(source);
 const now = new Date('2026-11-10T09:00:00Z');
@@ -100,7 +100,7 @@ test('caps provider body and record count; malformed JSON is an error, not healt
   const tooLarge = await loadLiveRaids({ ...options, fetcher: async () => new Response('x', { headers: { 'content-length': '1048577' } }) });
   const malformed = await loadLiveRaids({ ...options, fetcher: async () => new Response('{invalid json') });
   assert.equal(tooLarge.status, 'error'); assert.equal(malformed.status, 'error');
-  assert.equal(normalizeLiveRaidFeed(feed(Array.from({ length: 15001 }, (_, i) => raid({ id: `raid-${i}` }))), now).status, 'error');
+  assert.equal(normalizeLiveRaidFeed(feed(Array.from({ length: 50001 }, (_, i) => raid({ id: `raid-${i}` }))), now).status, 'error');
 });
 
 test('default mode connects regional collector and preserves source response provenance', async () => {

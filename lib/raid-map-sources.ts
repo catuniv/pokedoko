@@ -1,4 +1,4 @@
-/** Server-only adapters for the JSON used by the three public regional maps. */
+/** Server-only adapters for the JSON used by public regional maps. */
 export type MapSource = {
   id: string;
   cityId: string;
@@ -9,6 +9,7 @@ export type MapSource = {
   checkedAt: string;
   count: number;
   message: string;
+  coverage?: { lat: number; lon: number; radiusKm: number; limit: number; limited: boolean };
 };
 
 export type CollectedRaidMaps = {
@@ -51,7 +52,7 @@ const MAX_BYTES = 8 * 1024 * 1024;
 const MAX_RAIDS = 5000;
 const MAX_AGE = 10 * 60_000;
 const CLOCK_SKEW = 60_000;
-const USER_AGENT = "pokedoko-private-planner/1.0 (+https://pokedoko.adorablecompass.chatgpt.site)";
+const USER_AGENT = "pokedoko-planner/1.0 (+https://pokedoko.adorablecompass.chatgpt.site)";
 // Coarse regional guards around each map's named service area, not political
 // borders or claims of exhaustive city coverage. They reject grossly misplaced
 // records without treating the publisher's data as a worldwide feed.
@@ -59,6 +60,8 @@ const DEFINITIONS: readonly Definition[] = [
   { id: "new-york", cityId: "new-york", name: "NYCPokeMap", url: "https://www.nycpokemap.com/gym.html", endpoint: "https://www.nycpokemap.com/raids.php", bounds: [40.3, 41.2, -74.6, -73.3] },
   { id: "sydney", cityId: "sydney", name: "SydneyPogoMap", url: "https://www.sydneypogomap.com/gym.html", endpoint: "https://www.sydneypogomap.com/raids.php", bounds: [-34.4, -32.7, 149.8, 152] },
   { id: "singapore", cityId: "singapore", name: "SGPokeMap", url: "https://sgpokemap.com/gym.html", endpoint: "https://sgpokemap.com/raids.php", bounds: [1.12, 1.55, 103.55, 104.15] },
+  { id: "london", cityId: "london", name: "LondonPogoMap", url: "https://londonpogomap.com/gym.html", endpoint: "https://londonpogomap.com/raids.php", bounds: [51.2, 51.8, -0.65, 0.4] },
+  { id: "vancouver", cityId: "vancouver", name: "VanPokeMap", url: "https://vanpokemap.com/gym.html", endpoint: "https://vanpokemap.com/raids.php", bounds: [48.9, 49.5, -123.5, -122.4] },
 ];
 
 const object = (value: unknown): Obj => value && typeof value === "object" && !Array.isArray(value) ? value as Obj : {};
@@ -179,7 +182,7 @@ export function createRaidMapCollector(options: Options = {}): () => Promise<Col
     const timestamps = successful.flatMap(({ source }) => source.fetchedAt ? [Date.parse(source.fetchedAt)] : []);
     return {
       feed: {
-        sourceName: successful.map(({ source }) => source.name).join(" · ") || "공개 지역 레이드 지도",
+        sourceName: "공개 지역 레이드 지도",
         fetchedAt: new Date(timestamps.length ? Math.min(...timestamps) : now().getTime()).toISOString(),
         raids: results.flatMap(({ raids }) => raids),
       },

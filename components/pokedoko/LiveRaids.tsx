@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowUpRight,
   ChevronRight,
@@ -28,6 +28,18 @@ import CoordinateCopyButton from "./CoordinateCopyButton";
 import { hasMinimumRaidTime } from "@/lib/live-raid-display";
 import { distanceKm } from "@/lib/raid-hotspots";
 import RaidHotspots, { RaidRegionSummary, type RaidRegion } from "./RaidHotspots";
+import RaidCoverage from "./RaidCoverage";
+import {
+  RAID_KIND_OPTIONS,
+  buildRaidBossOptions,
+  changeRaidFilters,
+  matchesRaidFilters,
+  raidKind,
+  raidTierKey,
+  raidTierLabel,
+  resetRaidFilters,
+  type RaidFilters,
+} from "@/lib/live-raid-filters";
 
 type Props = {
   now: Date;
@@ -86,6 +98,12 @@ export default function LiveRaids({
   const [cityFilter, setCityFilter] = useState("all");
   const [stateFilter, setStateFilter] = useState("active");
   const [query, setQuery] = useState("");
+  const [raidFilters, setRaidFilters] = useState<RaidFilters>(resetRaidFilters);
+  const [showAllBosses, setShowAllBosses] = useState(false);
+  const allBossOptions = useMemo(
+    () => buildRaidBossOptions(feed?.raids ?? []),
+    [feed],
+  );
   const [visibleLimit, setVisibleLimit] = useState(30);
   const [selectedRegion, setSelectedRegion] = useState<RaidRegion | null>(null);
   const request = useRef(0);
@@ -134,7 +152,7 @@ export default function LiveRaids({
   useEffect(() => {
     setVisibleLimit(30);
     setSelectedRegion(null);
-  }, [cityFilter, stateFilter, query]);
+  }, [cityFilter, stateFilter, query, raidFilters]);
   useEffect(() => setVisibleLimit(30), [selectedRegion]);
 
   const time = now.getTime();
@@ -167,7 +185,7 @@ export default function LiveRaids({
   const availableCities = cities
     .filter((c) => c.active || c.upcoming)
     .sort((a, b) => b.active - a.active || b.upcoming - a.upcoming);
-  const matchingRaids = records
+  const scopedRaids = records
     .filter((r) => {
       const c = CITIES.find((c) => c.id === r.cityId);
       const state = Date.parse(r.startsAt) > time ? "upcoming" : "active";
@@ -180,6 +198,19 @@ export default function LiveRaids({
       );
     })
     .sort((a, b) => Date.parse(a.startsAt) - Date.parse(b.startsAt));
+  const matchingRaids = scopedRaids.filter((r) => matchesRaidFilters(r, raidFilters));
+  const bossCandidates = scopedRaids.filter((r) => matchesRaidFilters(r, { ...raidFilters, bossKey: "all" }));
+  const bossOptions = buildRaidBossOptions(bossCandidates);
+  if (raidFilters.bossKey !== "all" && !bossOptions.some((o) => o.key === raidFilters.bossKey)) {
+    const selectedBoss = allBossOptions.find((o) => o.key === raidFilters.bossKey);
+    if (selectedBoss) bossOptions.push({ ...selectedBoss, count: 0 });
+  }
+  const visibleBossOptions = showAllBosses ? bossOptions : bossOptions.filter((o, i) => i < 8 || o.key === raidFilters.bossKey);
+  const gradeCandidates = scopedRaids.filter((r) => raidFilters.kind === "all" || raidKind(r) === raidFilters.kind);
+  const tierKeys = [...new Set(gradeCandidates.map(raidTierKey))];
+  if (raidFilters.tier !== "all" && !tierKeys.includes(raidFilters.tier)) tierKeys.push(raidFilters.tier);
+  tierKeys.sort((a, b) => (a === "unknown" ? Infinity : Number(a)) - (b === "unknown" ? Infinity : Number(b)));
+  const hasRaidFilters = raidFilters.bossKey !== "all" || raidFilters.kind !== "all" || raidFilters.tier !== "all";
   const filtered = selectedRegion
     ? matchingRaids.filter((r) => r.cityId === selectedRegion.cityId && distanceKm(selectedRegion, r) <= selectedRegion.radiusKm + 1e-9)
     : matchingRaids;
@@ -204,8 +235,8 @@ export default function LiveRaids({
           <p>{STATUS_HELP[status]}</p>
           {feed?.sources?.length ? (
             <p className="live-coverage">
-              수집 지역: 뉴욕 · 시드니 · 싱가포르. 체육관별 마지막 관측 시각은
-              원문에서 제공하지 않습니다.
+              세계 주요 도시 24곳 중심 반경 조회와 5개 지역 지도 자료입니다.
+              체육관별 마지막 관측 시각과 실제 참여 인원은 제공되지 않습니다.
             </p>
           ) : null}
           {feed?.sourceName && (
@@ -277,81 +308,7 @@ export default function LiveRaids({
           <p>{upcoming[0]?.gymName ?? "확인된 다음 부화 시간 없음"}</p>
         </article>
       </div>
-      <section
-        className="panel live-external-maps"
-        aria-label="지역별 외부 레이드 지도"
-      >
-        <div className="live-toolbar">
-          <div>
-            <span className="mini-label">REGIONAL MAPS</span>
-            <h2>지역별 레이드 지도</h2>
-          </div>
-          <span className="live-source">자동 수집 상태 · 원문 링크</span>
-        </div>
-        <div className="live-external-grid">
-          {[
-            {
-              name: "뉴욕",
-              title: "NYCPokeMap",
-              url: "https://www.nycpokemap.com/gym.html",
-              code: "US",
-            },
-            {
-              name: "시드니",
-              title: "SydneyPogoMap",
-              url: "https://www.sydneypogomap.com/gym.html",
-              code: "AU",
-            },
-            {
-              name: "싱가포르",
-              title: "SGPokeMap",
-              url: "https://sgpokemap.com/gym.html",
-              code: "SG",
-            },
-          ].map((source) => {
-            const details = feed?.sources?.find((s) => s.url === source.url);
-            const expired =
-              details?.fetchedAt &&
-              time - Date.parse(details.fetchedAt) >= 600000;
-            const sourceStatus = expired ? "stale" : details?.status;
-            return (
-              <a
-                key={source.url}
-                href={source.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <span className="live-external-flag">{flag(source.code)}</span>
-                <span>
-                  <strong>{source.name}</strong>
-                  <small>{source.title}</small>
-                  {details && (
-                    <small
-                      className={`live-source-status status-${sourceStatus}`}
-                    >
-                      {sourceStatus === "ready" || sourceStatus === "empty"
-                        ? `연결됨 · ${records.filter((r) => r.cityId === details.cityId).length}개`
-                        : sourceStatus === "stale"
-                          ? "원문 갱신 지연"
-                          : "조회 실패"}
-                    </small>
-                  )}
-                  {details?.fetchedAt && (
-                    <small>
-                      원문 응답 {formatKst(new Date(details.fetchedAt))}
-                    </small>
-                  )}
-                </span>
-                <ArrowUpRight size={18} />
-              </a>
-            );
-          })}
-        </div>
-        <p className="panel-caption">
-          각 지역 지도에 게시된 공개 레이드 자료를 1분 간격으로 수집합니다. 서버
-          캐시를 공유하며 지역별 연결 실패를 구분해 표시합니다.
-        </p>
-      </section>
+      <RaidCoverage sources={feed?.sources ?? []} raids={records} now={now} selectedCity={cityFilter} onSelect={selectCity} feedStatus={status} />
       <div className="map-layout">
         <section className="panel world-panel">
           <div className="panel-heading">
@@ -530,12 +487,82 @@ export default function LiveRaids({
             <Search size={16} />
             <input
               aria-label="실시간 레이드 검색"
-              placeholder="체육관·포켓몬 검색"
+              placeholder="체육관·지역 검색"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
           </label>
         </div>
+        <section className="live-raid-choices" aria-label="보스와 레이드 종류 선택">
+          <div className="live-choice-heading">
+            <h3>보스·종류 선택</h3>
+            {hasRaidFilters && (
+              <button type="button" onClick={() => setRaidFilters(resetRaidFilters())}>
+                선택 초기화
+              </button>
+            )}
+          </div>
+          <div className="live-choice-group">
+            <span className="live-choice-label" id="raid-kind-label">레이드 종류</span>
+            <div className="live-choice-chips" role="group" aria-labelledby="raid-kind-label">
+              {RAID_KIND_OPTIONS.map((option) => {
+                const count = option.key === "all"
+                  ? scopedRaids.length
+                  : scopedRaids.filter((r) => raidKind(r) === option.key).length;
+                return (
+                  <button
+                    type="button"
+                    key={option.key}
+                    aria-pressed={raidFilters.kind === option.key}
+                    disabled={!count && raidFilters.kind !== option.key && option.key !== "all"}
+                    onClick={() => {
+                      if (raidFilters.kind !== option.key)
+                        setRaidFilters((current) => changeRaidFilters(current, { kind: option.key }));
+                    }}
+                  >
+                    {option.label}<span>{count}</span>
+                  </button>
+                );
+              })}
+              <button type="button" disabled className="live-choice-unavailable" title="현재 수집 자료에 맥스배틀이 포함되지 않습니다.">
+                맥스배틀 · 미지원
+              </button>
+            </div>
+          </div>
+          <div className="live-choice-group">
+            <span className="live-choice-label" id="raid-grade-label">등급</span>
+            <div className="live-choice-chips" role="group" aria-labelledby="raid-grade-label">
+              <button type="button" aria-pressed={raidFilters.tier === "all"} onClick={() => setRaidFilters((current) => changeRaidFilters(current, { tier: "all" }))}>
+                전체<span>{gradeCandidates.length}</span>
+              </button>
+              {tierKeys.map((key) => (
+                <button type="button" key={key} aria-pressed={raidFilters.tier === key} onClick={() => setRaidFilters((current) => changeRaidFilters(current, { tier: key }))}>
+                  {raidTierLabel(key)}<span>{gradeCandidates.filter((r) => raidTierKey(r) === key).length}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="live-choice-group">
+            <span className="live-choice-label" id="raid-boss-label">보스</span>
+            <div className="live-choice-chips live-boss-chips" role="group" aria-labelledby="raid-boss-label">
+              <button type="button" aria-pressed={raidFilters.bossKey === "all"} onClick={() => setRaidFilters((current) => changeRaidFilters(current, { bossKey: "all" }))}>
+                전체<span>{bossCandidates.length}</span>
+              </button>
+              {visibleBossOptions.map((option) => (
+                <button type="button" key={option.key} aria-pressed={raidFilters.bossKey === option.key} onClick={() => setRaidFilters((current) => changeRaidFilters(current, { bossKey: current.bossKey === option.key ? "all" : option.key }))}>
+                  {option.label}<span>{option.count}</span>
+                </button>
+              ))}
+              {bossOptions.length > 8 && (
+                <button type="button" className="live-choice-more" aria-expanded={showAllBosses} onClick={() => setShowAllBosses((value) => !value)}>
+                  {showAllBosses ? "보스 접기" : `보스 더 보기 (${bossOptions.length})`}
+                </button>
+              )}
+            </div>
+          </div>
+          <p className="live-choice-note">선택한 도시·진행 상태·검색 조건의 유효한 레이드에서 집계합니다. 맥스배틀은 포함되지 않습니다.</p>
+          <p className="live-choice-note live-participant-note">참여 인원은 제공되지 않아요. 밀집 순위는 레이드 수 기준이에요.</p>
+        </section>
         <RaidHotspots raids={matchingRaids} now={now} selected={selectedRegion} onSelect={setSelectedRegion} />
         <div id="live-gym-results" className="live-gym-results" tabIndex={-1}>
           {selectedRegion && <RaidRegionSummary region={selectedRegion} raids={filtered} now={now} onClear={() => setSelectedRegion(null)} />}
@@ -644,13 +671,14 @@ export default function LiveRaids({
                 ? "공식 레이드아워 일정은 별도 시간표에서 확인하세요."
                 : "진행 여부가 확인된 체육관만 표시합니다."}
             </p>
-            {(query || cityFilter !== "all" || stateFilter !== "active") && (
+            {(query || cityFilter !== "all" || stateFilter !== "active" || hasRaidFilters) && (
               <button
                 className="text-button"
                 onClick={() => {
                   setQuery("");
                   setCityFilter("all");
                   setStateFilter("active");
+                  setRaidFilters(resetRaidFilters());
                 }}
               >
                 필터 초기화

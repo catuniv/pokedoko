@@ -22,7 +22,7 @@ npm run start    # 빌드한 Worker 로컬 실행
 
 ## 구현된 기능
 
-- `/live` 실시간 레이드: 뉴욕·시드니·싱가포르 공개 지역 지도의 실제 레이드 자동 수집, 보스 한국어 이름·진행/대기·KST 카운트다운·도시/검색 필터, 종료까지 5분 이상인 레이드만 표시, 30개씩 더 보기, 출처별 연결 상태
+- `/live` 실시간 레이드: 세계 대표 24개 도시 중심 반경 15km 조회(도시당 최대 800개)와 뉴욕·시드니·싱가포르·런던·밴쿠버 지역 지도 자료를 병합. 보스·종류·등급 선택 칩, 진행/대기·KST 카운트다운·도시/검색 필터, 종료까지 5분 이상 표시, 30개씩 더 보기
 - 반경 1·3·5·10km 안의 레이드가 많은 지역 최대 5곳 비교. 지역 중심 좌표 복사, 반경 내 체육관 분포·목록 확인. 도시·진행 상태·검색 조건과 5분 기준을 함께 적용하며 30개 표시 제한 전의 전체 유효 자료를 계산
 - `/raids` 레이드아워: 24개 대표 도시의 현지 시각, 공지된 레이드아워·레이드데이 시간표, 한국시간의 시작·종료 시각과 다음 공식 회차
 - IANA 시간대 변환: 서머타임, 날짜 변경선, UTC와 현지 시각 원본을 각각 처리
@@ -38,9 +38,9 @@ npm run start    # 빌드한 Worker 로컬 실행
 
 ## 데이터의 의미
 
-**공식 이벤트 시간과 개별 체육관 실황은 다릅니다.** `/raids`의 지도와 도시 상태는 공지된 레이드아워·레이드데이의 시간 범위에 해당하는지를 계산합니다. `/live`는 공개 지역 지도에 게시된 개별 체육관의 실제 시작·종료 시각을 사용합니다. 자동 수집은 뉴욕·시드니·싱가포르 범위이며, 나머지 도시에는 아직 실시간 자료가 없습니다.
+**공식 이벤트 시간과 개별 체육관 실황은 다릅니다.** `/raids`의 지도와 도시 상태는 공지된 레이드아워·레이드데이의 시간 범위에 해당하는지를 계산합니다. `/live`는 공개 지도에 게시된 개별 체육관의 실제 시작·종료 시각을 사용합니다. PoGo Radar의 세계 대표 24개 도시 중심 반경 15km 조회와 5개 지역 지도를 함께 확인합니다. 전 세계 모든 체육관을 수집하는 기능은 아니며 800개 상한에 도달한 도시의 자료는 일부 표본입니다. 빈 응답은 야간·미수집·미보고 여부를 구분할 수 없어 ‘자료 미확인’으로 표시합니다.
 
-세 지역의 공개 JSON을 60초 캐시로 수집하고 동시 요청을 합칩니다. 종료된 레이드, 부화 후 보스가 확인되지 않은 알, 10분 이상 지난 원문 응답은 제외합니다. 원문에 개별 체육관의 마지막 관측 시각이 없으므로 `meta.time`을 **원문 응답 시각**으로 표시합니다. 이것을 실제 관측 시각으로 설명하지 않습니다. source-response 유효기한은 원문 응답 + 10분 또는 종료 시각 중 빠른 값입니다. 자세한 구조는 [docs/live-raids.md](docs/live-raids.md)에 있습니다. 추천 장소는 정적 명소 목록이며 실측 체육관 수·현재 밀집도 순위가 아닙니다. 체육관 타이머는 사용자가 확인해서 입력한 값만 사용합니다. 종료 시각을 모르면 고정 45분 등을 추측하지 않습니다.
+공개 JSON은 60초 캐시와 동시 요청 합치기를 사용합니다. 종료된 레이드, 부화 후 보스가 확인되지 않은 알, 10분 이상 지난 원문 응답은 제외합니다. 원문에 개별 체육관의 마지막 관측 시각이 없으므로 `meta.time` 또는 `generated_at`을 **원문 응답 시각**으로 표시합니다. source-response 유효기한은 원문 응답 + 10분 또는 종료 시각 중 빠른 값입니다. 중복 공급원의 같은 체육관·시작 시각은 한 번만 집계하고 알려진 보스·폼을 보존합니다. 실제 로비 참가 인원과 모집 상태는 제공되지 않아 인원을 추정하거나 레이드 수에 합산하지 않습니다. 맥스배틀도 포함하지 않습니다. 자세한 구조는 [docs/live-raids.md](docs/live-raids.md), 세계 공급원 조사와 범위는 [docs/world-raid-sources.md](docs/world-raid-sources.md)에 있습니다. 정적 추천 장소와 직접 입력한 타이머는 실시간 관측 자료와 구분합니다.
 
 공식 공지에 없는 일률적인 평일 운영시간·30분 라운드·매주 수요일 일정을 생성하지 않습니다. 공지의 예외가 우선합니다. 2026-11-09·10 특별 레이드아워는 Into the Wild 공식 공지를 별도로 반영했습니다.
 
@@ -69,6 +69,7 @@ tests/                       의미 있는 시간대·데이터 검증
 - 일정·보스: [LeekDuck](https://leekduck.com), [ScrapedDuck](https://github.com/bigfoott/ScrapedDuck)
 - 공식 일정 확인: [Pokémon GO 뉴스](https://pokemongo.com/news), [Into the Wild 2026](https://pokemongo.com/news/into-the-wild-2026)
 - 실시간 레이드: [NYCPokeMap](https://www.nycpokemap.com/gym.html), [SydneyPogoMap](https://www.sydneypogomap.com/gym.html), [SGPokeMap](https://sgpokemap.com/gym.html)
+- 추가 수집: [LondonPogoMap](https://londonpogomap.com/gym.html), [VanPokeMap](https://vanpokemap.com/gym.html), [PoGo Radar](https://pokecoords.iflowgo.com/)
 - 포켓몬 명칭: [PokéAPI 공개 명칭 데이터](https://github.com/PokeAPI/pokeapi/blob/master/data/v2/csv/pokemon_species_names.csv)
 - 지도: [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/), 공개 도메인
 
