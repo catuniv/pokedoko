@@ -116,3 +116,96 @@ test('partial legacy migration keeps its original and tombstones prevent stale o
   const complete = readTradeOwnerEntries(storage);
   assert.equal(complete.entries.length, 1); assert.equal(complete.entries[0].ownerKey, secondKey);
 });
+
+test('background metadata survives response-lost recovery and reload without storing contacts or extra Pokemon fields', () => {
+  const shared = new Map(), firstTab = new MemoryStorage(shared), pending = draft(0);
+  createTradeOwnerJournal(firstTab, pending);
+  const reopenedTab = new MemoryStorage(shared), journal = readTradeOwnerEntries(reopenedTab).entries[0];
+  const recovered = post(undefined, {
+    offer: { speciesId: 800, shiny: true, form: '', background: { kind: 'special', name: 'Ultra Wormhole' }, unexpected: { private: 'must not persist' } },
+    want: { speciesId: 25, shiny: false, form: '', background: { kind: 'location', name: 'Osaka' } },
+    contactKind: 'friend_code', contactValue: '123456789012',
+  });
+  const saved = completeTradeOwnerJournal(reopenedTab, journal.entryId, journal.ownerKey, recovered);
+  const reloaded = readTradeOwnerEntries(new MemoryStorage(shared)).entries[0];
+  assert.equal(reloaded.ownerKey, pending.ownerKey);
+  assert.deepEqual(reloaded.post.offer.background, { kind: 'special', name: 'Ultra Wormhole' });
+  assert.deepEqual(reloaded.post.want.background, { kind: 'location', name: 'Osaka' });
+  assert.equal(reloaded.post.offer.unexpected, undefined);
+  assert.equal(reloaded.post.contactValue, undefined);
+  assert.equal(reloaded.post.contactKind, undefined);
+  assert.equal(reopenedTab.getItem(TRADE_OWNER_ENTRY_PREFIX + pending.entryId).includes('must not persist'), false);
+  // The return value must not retain a nested caller-owned object after persistence.
+  recovered.offer.background.name = 'Changed after saving';
+  assert.equal(saved.post.offer.background.name, 'Ultra Wormhole');
+
+  completeTradeOwnerJournal(reopenedTab, journal.entryId, journal.ownerKey, {
+    ...reloaded.post,
+    offer: { ...reloaded.post.offer, background: { kind: 'none', name: '' } },
+    want: { ...reloaded.post.want, background: { kind: 'any', name: '' } },
+  });
+  const changed = readTradeOwnerEntries(firstTab).entries[0];
+  assert.deepEqual(changed.post.offer.background, { kind: 'none', name: '' });
+  assert.deepEqual(changed.post.want.background, { kind: 'any', name: '' });
+});
+
+test('legacy Pokemon without background remain unspecified through migration and later recovery', () => {
+  const oldPost = post(), oldKey = capability(), storage = new MemoryStorage();
+  storage.setItem(TRADE_OWNER_LEGACY_KEY, JSON.stringify({ version: 1, posts: [{ id: oldPost.id, ownerKey: oldKey, post: oldPost }] }));
+  migrateTradeOwnerStorage(storage);
+  let entry = readTradeOwnerEntries(new MemoryStorage(storage.values)).entries[0];
+  assert.equal(entry.ownerKey, oldKey);
+  assert.equal(Object.hasOwn(entry.post.offer, 'background'), false);
+  assert.equal(Object.hasOwn(entry.post.want, 'background'), false);
+  completeTradeOwnerJournal(storage, entry.entryId, entry.ownerKey, { ...oldPost, status: 'approved' });
+  entry = readTradeOwnerEntries(storage).entries[0];
+  assert.equal(entry.post.status, 'approved');
+  assert.equal(Object.hasOwn(entry.post.offer, 'background'), false);
+  assert.equal(Object.hasOwn(entry.post.want, 'background'), false);
+});
+
+test('malformed background summaries cannot replace saved data or remove a management capability', () => {
+  const invalidBackgrounds = [
+    null, [], 'Osaka', { kind: 'unknown', name: 'Osaka' }, { kind: 'location', name: '' },
+    { kind: 'location', name: 'Osaka ' }, { kind: 'special', name: 'x'.repeat(81) },
+    { kind: 'special', name: 'Ultra\u0000Wormhole' }, { kind: 'none', name: 'Osaka' },
+    { kind: 'any', name: 'named' }, { kind: 'location', name: 'Osaka', nested: { anything: true } },
+  ];
+  const storage = new MemoryStorage(), pending = draft(0), originalPost = post();
+  createTradeOwnerJournal(storage, pending);
+  completeTradeOwnerJournal(storage, pending.entryId, pending.ownerKey, originalPost);
+  const before = storage.snapshot();
+  for (const background of invalidBackgrounds) {
+    storageError(() => completeTradeOwnerJournal(storage, pending.entryId, pending.ownerKey,
+      { ...originalPost, offer: { ...originalPost.offer, background } }), 'invalid_record');
+    storageError(() => completeTradeOwnerJournal(storage, pending.entryId, pending.ownerKey,
+      { ...originalPost, want: { ...originalPost.want, background } }), 'invalid_record');
+    assert.deepEqual(storage.snapshot(), before);
+  }
+  storageError(() => completeTradeOwnerJournal(storage, pending.entryId, pending.ownerKey,
+    { ...originalPost, offer: { ...originalPost.offer, background: { kind: 'any', name: '' } } }), 'invalid_record');
+  assert.deepEqual(storage.snapshot(), before);
+
+  // A previously corrupted summary is optional metadata; retain the receipt for server recovery.
+  const raw = JSON.parse(storage.getItem(TRADE_OWNER_ENTRY_PREFIX + pending.entryId));
+  raw.post.offer.background = { kind: 'special', name: 'x'.repeat(81) };
+  storage.setItem(TRADE_OWNER_ENTRY_PREFIX + pending.entryId, JSON.stringify(raw));
+  const readable = readTradeOwnerEntries(new MemoryStorage(storage.values));
+  assert.equal(readable.entries.length, 1);
+  assert.equal(readable.entries[0].ownerKey, pending.ownerKey);
+  assert.equal(readable.entries[0].post, undefined);
+  assert.equal(readable.count, 1);
+  completeTradeOwnerJournal(storage, pending.entryId, pending.ownerKey, originalPost);
+  assert.equal(readTradeOwnerEntries(storage).entries[0].post.id, originalPost.id);
+
+  const legacyStorage = new MemoryStorage(), legacyKey = capability();
+  legacyStorage.setItem(TRADE_OWNER_LEGACY_KEY, JSON.stringify({ version: 1, posts: [
+    { id: originalPost.id, ownerKey: legacyKey, post: raw.post },
+  ] }));
+  migrateTradeOwnerStorage(legacyStorage);
+  const migrated = readTradeOwnerEntries(legacyStorage).entries[0];
+  assert.equal(migrated.ownerKey, legacyKey);
+  assert.equal(migrated.post, undefined);
+  completeTradeOwnerJournal(legacyStorage, migrated.entryId, migrated.ownerKey, originalPost);
+  assert.equal(readTradeOwnerEntries(legacyStorage).entries[0].post.id, originalPost.id);
+});

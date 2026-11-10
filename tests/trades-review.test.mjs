@@ -9,13 +9,13 @@ const source = await readFile(new URL('../scripts/trades-review.mjs', import.met
 const ID = '550e8400-e29b-41d4-a716-446655440001';
 
 /** Execute the actual review command without launching Wrangler or reading any account credentials. */
-async function approveWithContact(contact) {
+async function approveWithContact(contact, patch = {}) {
   const hook = `__pokedokoTradeReview_${crypto.randomUUID().replaceAll('-', '')}`;
   const calls = [], logs = [], seconds = Math.floor(Date.now() / 1000);
   const row = { id: ID, trainer_name: '검토 테스트 트레이너', city_id: 'seoul', mode: 'local',
     offer_species_id: 25, offer_shiny: 0, offer_form: '', want_species_id: 1, want_shiny: 0, want_form: '',
     contact_kind: 'friend_code', contact_value: contact, contact_public_consent: 1, notes: '모집 내용 검토용 테스트입니다.',
-    status: 'pending', created_at: seconds, expires_at: seconds + 86400 };
+    status: 'pending', created_at: seconds, expires_at: seconds + 86400, offer_background_kind:null,offer_background_name:'',want_background_kind:null,want_background_name:'',...patch };
   globalThis[hook] = {
     ts, console: { log(...values) { logs.push(values.join(' ')); }, table() {} },
     process: { argv: ['node', 'trades-review.mjs', 'approve', ID, '--checked', '--note', '연락처 공개 동의와 모집 내용을 검토했습니다.'], execPath: process.execPath, env: {}, stderr: { write() {} }, exit(code) { throw new Error(`Unexpected CLI exit: ${code}`); } },
@@ -47,4 +47,15 @@ test('review rejects noncanonical stored contact data before publication, while 
   assert.ok(valid.logs.some(message => message.includes('공개 완료')));
   assert.equal(valid.calls.some(sql => sql.includes('owner_key_hash')), false);
   assert.equal(valid.logs.some(message => message.includes('123456789012')), false);
+});
+
+
+test('operator approval validates stored background fields without silently rewriting them', async () => {
+  const valid=await approveWithContact('123456789012',{offer_background_kind:'location',offer_background_name:'Osaka 2025',want_background_kind:'any',want_background_name:''});
+  assert.equal(valid.errorMessage,undefined);assert.equal(valid.calls.filter(sql=>sql.startsWith('UPDATE ')).length,1);
+  assert.ok(valid.calls[0].includes('offer_background_kind'));
+  for(const patch of [{offer_background_kind:'any',offer_background_name:''},{offer_background_kind:'special',offer_background_name:'  Ultra Wormhole  '},{want_background_kind:null,want_background_name:'Orphan name'},{want_background_kind:'unknown',want_background_name:''}]) {
+    const rejected=await approveWithContact('123456789012',patch);
+    assert.ok(rejected.errorMessage);assert.equal(rejected.calls.filter(sql=>sql.startsWith('UPDATE ')).length,0);
+  }
 });

@@ -56,16 +56,25 @@ if (action === "list") {
   console.log(`포켓몬 교환 모집 · ${options.status} · 최대50개`);
   if (rows.length) console.table(rows); else console.log("해당하는 모집 글이 없습니다."); process.exit(0);
 }
-const row = query(`SELECT id,trainer_name,city_id,mode,offer_species_id,offer_shiny,offer_form,want_species_id,want_shiny,want_form,contact_kind,contact_value,contact_public_consent,notes,status,created_at,expires_at,review_note,reviewed_at,published_at FROM trade_posts WHERE id=${literal(id)}`)[0];
+const row = query(`SELECT id,trainer_name,city_id,mode,offer_species_id,offer_shiny,offer_form,offer_background_kind,offer_background_name,want_species_id,want_shiny,want_form,want_background_kind,want_background_name,contact_kind,contact_value,contact_public_consent,notes,status,created_at,expires_at,review_note,reviewed_at,published_at FROM trade_posts WHERE id=${literal(id)}`)[0];
 if (!row) throw new Error("모집 글을 찾지 못했습니다.");
 if (action === "show") { console.log(JSON.stringify(row, null, 2)); process.exit(0); }
 if (typeof options.note !== "string" || options.note.trim().length < 10 || options.note.length > 1000 || /[\u0000-\u001f\u007f]/u.test(options.note)) throw new Error("검토 근거·처리 사유를 --note로 10~1,000자 입력하세요.");
 if (action === "approve") {
   if (!flags.has("--checked") || row.status !== "pending" || row.expires_at <= Math.floor(Date.now() / 1000)) throw new Error("만료 전 대기 글의 내용을 검토하고 --checked를 지정하세요.");
   if (![0, 1].includes(row.offer_shiny) || ![0, 1].includes(row.want_shiny)) throw new Error("저장된 색이 다른 모습 여부를 확인할 수 없습니다.");
+  function background(side) {
+    const kind = row[`${side}_background_kind`], name = row[`${side}_background_name`];
+    if ((kind === null || kind === undefined) && (name === "" || name === undefined)) return {};
+    return { background: { kind, name } };
+  }
   const validated = validateTradeSubmission({ visitorId: "550e8400-e29b-41d4-a716-446655440000", ownerKey: "0".repeat(64), trainerName: row.trainer_name, cityId: row.city_id, mode: row.mode,
-    offer: { speciesId: row.offer_species_id, shiny: row.offer_shiny === 1, form: row.offer_form }, want: { speciesId: row.want_species_id, shiny: row.want_shiny === 1, form: row.want_form },
+    offer: { speciesId: row.offer_species_id, shiny: row.offer_shiny === 1, form: row.offer_form, ...background("offer") }, want: { speciesId: row.want_species_id, shiny: row.want_shiny === 1, form: row.want_form, ...background("want") },
     contactKind: row.contact_kind, contactValue: row.contact_value, contactPublicConsent: row.contact_public_consent === 1, notes: row.notes, expiresInDays: 7 });
+  for (const side of ["offer", "want"]) {
+    const normalized = validated[side].background;
+    if (normalized && (normalized.kind !== row[`${side}_background_kind`] || normalized.name !== row[`${side}_background_name`])) throw new Error("저장된 배경 이름이 정규 형식과 다릅니다. 원래 제보 내용을 확인해 주세요.");
+  }
   if (validated.contactValue !== row.contact_value) throw new Error("저장된 연락 방법이 정규 형식과 다릅니다. 원래 제보 내용을 확인해 주세요.");
   const changed = query(`UPDATE trade_posts SET status='approved',review_note=${literal(options.note.trim())},reviewed_at=unixepoch(),published_at=unixepoch() WHERE id=${literal(id)} AND status='pending' AND expires_at>unixepoch() RETURNING id,status`);
   if (changed.length !== 1) throw new Error("상태가 변경되었거나 만료되어 공개하지 않았습니다.");

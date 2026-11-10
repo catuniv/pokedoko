@@ -12,7 +12,18 @@ const STATUSES = new Set(["pending", "approved", "closed", "removed", "rejected"
 const TERMINAL = new Set(["closed", "removed", "rejected", "expired"]);
 const object = (value: unknown): value is Record<string, unknown> => !!value && typeof value === "object" && !Array.isArray(value);
 const date = (value: unknown): value is string => typeof value === "string" && Number.isFinite(Date.parse(value));
-const pokemon = (value: unknown) => object(value) && typeof value.speciesId === "number" && Number.isSafeInteger(value.speciesId) && value.speciesId > 0 && typeof value.shiny === "boolean" && typeof value.form === "string";
+function pokemon(value: unknown, allowAny: boolean): value is TradePostSummary["offer"] {
+  if (!object(value) || typeof value.speciesId !== "number" || !Number.isSafeInteger(value.speciesId) || value.speciesId <= 0 || typeof value.shiny !== "boolean" || typeof value.form !== "string") return false;
+  if (value.background === undefined) return true;
+  const background = value.background;
+  if (!object(background) || Object.keys(background).some(key => key !== "kind" && key !== "name") || typeof background.name !== "string" || background.name !== background.name.trim() || /[\u0000-\u001f\u007f]/u.test(background.name)) return false;
+  if (background.kind === "none" || background.kind === "any") return background.name === "" && (allowAny || background.kind !== "any");
+  return (background.kind === "location" || background.kind === "special") && Array.from(background.name).length >= 1 && Array.from(background.name).length <= 80;
+}
+function copyPokemon(value: TradePostSummary["offer"]): TradePostSummary["offer"] {
+  return { speciesId: value.speciesId, shiny: value.shiny, form: value.form,
+    ...(value.background === undefined ? {} : { background: { kind: value.background.kind, name: value.background.name } }) };
+}
 export class TradeOwnerStorageError extends Error {
   constructor(readonly code: "unavailable" | "limit" | "conflict" | "invalid_record" | "removed", message?: string) {
     super(message ?? ({ unavailable: "브라우저에 글 관리 정보를 저장할 수 없어 접수하지 않았어요. 저장 공간과 브라우저 설정을 확인해 주세요.", limit: "이 기기에서는 작성 기록을 30개까지 보관해요. 종료된 글의 기록을 정리한 뒤 등록해 주세요.", conflict: "다른 탭에서 관리 정보가 변경됐어요. 기록을 새로 확인해 주세요.", invalid_record: "저장된 관리 정보 일부를 읽지 못했어요. 기존 기록은 지우지 않았어요.", removed: "다른 탭에서 이미 정리한 작성 기록이에요." })[code]);
@@ -23,8 +34,8 @@ function safe<T>(work: () => T): T {
   try { return work(); } catch (cause) { if (cause instanceof TradeOwnerStorageError) throw cause; throw new TradeOwnerStorageError("unavailable"); }
 }
 function summary(value: unknown): TradePostSummary | undefined {
-  if (!object(value) || typeof value.id !== "string" || !UUID.test(value.id) || typeof value.cityId !== "string" || (value.mode !== "local" && value.mode !== "remote") || !pokemon(value.offer) || !pokemon(value.want) || typeof value.trainerName !== "string" || typeof value.notes !== "string" || typeof value.status !== "string" || !STATUSES.has(value.status) || !date(value.createdAt) || !date(value.expiresAt)) return undefined;
-  return { id: value.id.toLowerCase(), cityId: value.cityId, mode: value.mode, offer: { ...(value.offer as TradePostSummary["offer"]) }, want: { ...(value.want as TradePostSummary["want"]) }, trainerName: value.trainerName, notes: value.notes, status: value.status as TradePostSummary["status"], createdAt: value.createdAt, expiresAt: value.expiresAt };
+  if (!object(value) || typeof value.id !== "string" || !UUID.test(value.id) || typeof value.cityId !== "string" || (value.mode !== "local" && value.mode !== "remote") || !pokemon(value.offer, false) || !pokemon(value.want, true) || typeof value.trainerName !== "string" || typeof value.notes !== "string" || typeof value.status !== "string" || !STATUSES.has(value.status) || !date(value.createdAt) || !date(value.expiresAt)) return undefined;
+  return { id: value.id.toLowerCase(), cityId: value.cityId, mode: value.mode, offer: copyPokemon(value.offer), want: copyPokemon(value.want), trainerName: value.trainerName, notes: value.notes, status: value.status as TradePostSummary["status"], createdAt: value.createdAt, expiresAt: value.expiresAt };
 }
 function entry(value: unknown, expectedId?: string): TradeOwnerEntry | undefined {
   if (!object(value) || value.version !== 2 || typeof value.entryId !== "string" || !UUID.test(value.entryId) || expectedId && value.entryId.toLowerCase() !== expectedId.toLowerCase() || typeof value.ownerKey !== "string" || !OWNER_KEY.test(value.ownerKey) || !date(value.createdAt)) return undefined;

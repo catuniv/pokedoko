@@ -27,7 +27,7 @@ test('trade submissions normalize public contact and private keys without inferr
   assert.equal(accepted.ownerKey, OWNER);
   assert.equal(accepted.visitorId, body().visitorId);
   assert.equal(accepted.mode, 'local');
-  assert.equal(tradePokemonName(25), '피카츄');
+  assert.equal(tradePokemonName(25), 'Pikachu');
 });
 
 test('friend-code contacts are twelve digits rather than arbitrary links or strings', () => {
@@ -92,4 +92,25 @@ test('public text remains bounded and cannot add undeclared identifying diagnost
   for (const patch of [{ trainerName: '' }, { trainerName: 'x'.repeat(41) }, { trainerName: 'name\nother' }, { notes: 'x'.repeat(501) }, { notes: 'text\u0000more' }, { email: 'not-collected@example.com' }]) {
     invalid(() => validateTradeSubmission(body(patch)));
   }
+});
+
+
+test('Pokemon backgrounds preserve unspecified legacy data and distinguish none, any and named backgrounds', () => {
+  assert.equal(Object.hasOwn(validateTradeSubmission(body()).offer, 'background'), false);
+  const offered = { ...body().offer, background: { kind: 'location', name: '  Osaka 2025  ' } };
+  const wanted = { ...body().want, background: { kind: 'special', name: 'Ultra Wormhole' } };
+  const accepted = validateTradeSubmission(body({ offer: offered, want: wanted }));
+  assert.deepEqual(accepted.offer.background, { kind: 'location', name: 'Osaka 2025' });
+  assert.deepEqual(accepted.want.background, wanted.background);
+  assert.deepEqual(validateTradeSubmission(body({ offer: { ...body().offer, background: { kind: 'none' } } })).offer.background, { kind: 'none', name: '' });
+  assert.deepEqual(validateTradeSubmission(body({ want: { ...body().want, background: { kind: 'any' } } })).want.background, { kind: 'any', name: '' });
+  assert.equal(tradePokemonName(1), 'Bulbasaur');
+});
+
+test('background validation rejects ambiguous offers, undeclared fields and malformed named backgrounds', () => {
+  invalid(() => validateTradeSubmission(body({ offer: { ...body().offer, background: { kind: 'any', name: '' } } })));
+  for (const background of [null, [], 'Osaka', {kind:'none',name:'Osaka'}, {kind:'any',name:'Osaka'}, {kind:'unknown',name:''}, {kind:1,name:''}, {kind:'location'}, {kind:'special',name:''}, {kind:'location',name:'  '}, {kind:'special',name:'x'.repeat(81)}, {kind:'location',name:'a\nb'}, {kind:'location',name:'Osaka',untrusted:true}]) {
+    invalid(() => validateTradeSubmission(body({ want: { ...body().want, background } })));
+  }
+  assert.equal(validateTradeSubmission(body({ offer: { ...body().offer, background: { kind: 'location', name: '가'.repeat(80) } } })).offer.background.name.length, 80);
 });

@@ -22,6 +22,13 @@
       "when": 1794306258927,
       "tag": "0002_sticky_tigra",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1794309737075,
+      "tag": "0003_brief_lily_hollister",
+      "breakpoints": true
     }
   ]
 }

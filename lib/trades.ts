@@ -1,7 +1,8 @@
 import { CITIES } from "./cities";
 import POKEMON_NAMES from "./pokemon-names.json";
 
-export type TradePokemon = { speciesId: number; shiny: boolean; form: string };
+export type TradeBackground = { kind: "none" | "any" | "location" | "special"; name: string };
+export type TradePokemon = { speciesId: number; shiny: boolean; form: string; background?: TradeBackground };
 export type TradePostStatus = "pending" | "approved" | "closed" | "removed" | "rejected" | "expired";
 export type TradeContactKind = "friend_code" | "discord" | "kakao";
 export type TradePostSummary = {
@@ -30,13 +31,22 @@ function clean(value: unknown, label: string, max: number, optional = false, mul
   if (typeof value !== "string" || controls.test(value) || Array.from(value.trim()).length > max || !optional && !value.trim()) return invalid("invalid_text", `${label}을 확인해 주세요.`);
   return value.trim();
 }
-function pokemon(value: unknown): TradePokemon {
-  if (!object(value) || Object.keys(value).some(k => !["speciesId", "shiny", "form"].includes(k)) || typeof value.speciesId !== "number" || !Number.isSafeInteger(value.speciesId) || !Object.hasOwn(POKEMON_NAMES, String(value.speciesId)) || typeof value.shiny !== "boolean") return invalid("invalid_pokemon", "도감 목록에서 포켓몬을 선택해 주세요.");
-  return { speciesId: value.speciesId, shiny: value.shiny, form: clean(value.form, "모습 설명", 50, true) };
+export function normalizeTradeBackground(value: unknown, allowAny = false): TradeBackground {
+  if (!object(value) || Object.keys(value).some(key => !["kind", "name"].includes(key)) || typeof value.kind !== "string" || !["none", "any", "location", "special"].includes(value.kind) || value.kind === "any" && !allowAny) return invalid("invalid_background", "포켓몬 배경을 다시 선택해 주세요.");
+  const kind = value.kind as TradeBackground["kind"];
+  if (kind === "none" || kind === "any") {
+    if (value.name !== undefined && value.name !== "") return invalid("invalid_background", "배경 없음·배경 무관에는 배경 이름을 입력할 수 없어요.");
+    return { kind, name: "" };
+  }
+  return { kind, name: clean(value.name, "배경 이름", 80) };
+}
+function pokemon(value: unknown, allowAny = false): TradePokemon {
+  if (!object(value) || Object.keys(value).some(k => !["speciesId", "shiny", "form", "background"].includes(k)) || typeof value.speciesId !== "number" || !Number.isSafeInteger(value.speciesId) || !Object.hasOwn(POKEMON_NAMES, String(value.speciesId)) || typeof value.shiny !== "boolean") return invalid("invalid_pokemon", "도감 목록에서 포켓몬을 선택해 주세요.");
+  return { speciesId: value.speciesId, shiny: value.shiny, form: clean(value.form, "모습 설명", 50, true), ...(value.background !== undefined ? { background: normalizeTradeBackground(value.background, allowAny) } : {}) };
 }
 export function tradePokemonName(speciesId: number): string {
   const names = POKEMON_NAMES as Record<string, { ko: string; en: string }>;
-  return names[String(speciesId)]?.ko ?? `#${speciesId}`;
+  return names[String(speciesId)]?.en ?? `#${speciesId}`;
 }
 export function normalizeTradeContact(kind: TradeContactKind, value: unknown): string {
   const text = clean(value, "연락 방법", 300);
@@ -65,7 +75,7 @@ export function validateTradeSubmission(input: unknown): TradeSubmission {
   if (input.expiresInDays !== 1 && input.expiresInDays !== 3 && input.expiresInDays !== 7) return invalid("invalid_expiry", "모집 기간은 1일·3일·7일 중 선택해 주세요.");
   return {
     visitorId: input.visitorId.toLowerCase(), ownerKey: input.ownerKey.toLowerCase(), trainerName: clean(input.trainerName, "공개 닉네임", 40),
-    cityId: input.cityId, mode: input.mode, offer: pokemon(input.offer), want: pokemon(input.want),
+    cityId: input.cityId, mode: input.mode, offer: pokemon(input.offer), want: pokemon(input.want, true),
     contactKind: input.contactKind, contactValue: normalizeTradeContact(input.contactKind, input.contactValue), contactPublicConsent: true,
     notes: clean(input.notes, "모집 설명", 500, true, true), expiresInDays: input.expiresInDays,
     ...(input.website !== undefined ? { website: clean(input.website, "website", 200, true) } : {}),

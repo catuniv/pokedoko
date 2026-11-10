@@ -36,9 +36,9 @@ const listRequest = (query = '') => new Request(`${ORIGIN}/api/trades${query ? `
 const manageRequest = (key, action, patch = {}) => request({ ownerKey: key, action, ...patch }, '/api/trades/manage');
 
 /** The real SQL and migrations execute in SQLite behind D1-compatible result envelopes. */
-function database() {
+function database(migrationCount = migrations.length) {
   const sql = new DatabaseSync(':memory:');
-  for (const migration of migrations) sql.exec(migration);
+  for (const migration of migrations.slice(0, migrationCount)) sql.exec(migration);
   const calls = [];
   return { sql, calls,
     prepare(query) {
@@ -292,4 +292,97 @@ test('pending admission counts only unexpired posts and stops at five hundred ac
   db.sql.prepare('UPDATE trade_posts SET created_at = ?, expires_at = ? WHERE id = ?').run(seconds - 86400, seconds, first.id);
   await submit(db, { visitorId: crypto.randomUUID() });
   assert.equal(rows(db).length, 501);
+});
+
+
+test('background metadata survives submission, private recovery, public listing and detail without contact leaks', async () => {
+  const db = database();
+  const input = {
+    offer: { speciesId: 25, shiny: true, form: 'Captain hat', background: { kind: 'location', name: 'Osaka 2025' } },
+    want: { speciesId: 800, shiny: false, form: '', background: { kind: 'special', name: 'Ultra Wormhole' } },
+  };
+  const submitted = await submit(db, input), stored = rows(db)[0];
+  assert.equal(stored.offer_background_kind, 'location'); assert.equal(stored.offer_background_name, 'Osaka 2025');
+  assert.equal(stored.want_background_kind, 'special'); assert.equal(stored.want_background_name, 'Ultra Wormhole');
+  const owner = (await (await handleTradeManage(submitted.id, manageRequest(submitted.input.ownerKey, 'status'), db, at(FIXED))).json()).post;
+  assert.deepEqual(owner.offer, input.offer); assert.deepEqual(owner.want, input.want);
+  const recovered = (await (await handleTradeRecovery(request({ownerKey:submitted.input.ownerKey}, '/api/trades/recover'), db, at(FIXED))).json()).post;
+  assert.deepEqual(recovered.offer, input.offer); assert.deepEqual(recovered.want, input.want);
+  approve(db, submitted.id);
+  const publicPost = (await (await handleTradesGet(listRequest(), db, at(FIXED))).json()).posts[0];
+  assert.deepEqual(publicPost.offer, input.offer); assert.deepEqual(publicPost.want, input.want);
+  assert.equal(Object.hasOwn(publicPost, 'contactValue'), false);
+  assert.equal(Object.hasOwn(publicPost, 'ownerKey'), false);
+  const detailed = (await (await handleTradeGet(submitted.id, db, at(FIXED))).json()).post;
+  assert.deepEqual(detailed.offer, input.offer); assert.deepEqual(detailed.want, input.want);
+  assert.equal(detailed.contactValue, '123456789012');
+});
+
+test('explicit no-background and any-background choices roundtrip while unspecified is not rewritten to none', async () => {
+  const db = database(), submitted = await submit(db, {
+    offer: { ...body().offer, background: { kind: 'none', name: '' } },
+    want: { ...body().want, background: { kind: 'any', name: '' } },
+  });
+  const read = (await (await handleTradeManage(submitted.id, manageRequest(submitted.input.ownerKey, 'status'), db, at(FIXED))).json()).post;
+  assert.deepEqual(read.offer.background, {kind:'none',name:''});
+  assert.deepEqual(read.want.background, {kind:'any',name:''});
+  const unspecified = await submit(db);
+  const oldShape = (await (await handleTradeManage(unspecified.id, manageRequest(unspecified.input.ownerKey, 'status'), db, at(FIXED))).json()).post;
+  assert.equal(Object.hasOwn(oldShape.offer, 'background'), false);
+  assert.equal(Object.hasOwn(oldShape.want, 'background'), false);
+  assert.equal(rows(db)[1].offer_background_kind, null);
+});
+
+test('new additive background migration preserves an existing approved record and its management capability', async () => {
+  const backgroundMigrationIndex = migrationFiles.findIndex(name => name.startsWith('0003_'));
+  assert.ok(backgroundMigrationIndex >= 0);
+  assert.equal(migrations[backgroundMigrationIndex].includes('DROP TABLE'), false);
+  const db = database(backgroundMigrationIndex), id = crypto.randomUUID(), seconds = Math.floor(FIXED / 1000);
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`pokedoko-trade-owner-v1:${OWNER}`));
+  const ownerHash = Buffer.from(digest).toString('hex');
+  db.sql.prepare(`INSERT INTO trade_posts (id,owner_key_hash,visitor_hash,trainer_name,city_id,mode,
+    offer_species_id,offer_shiny,offer_form,want_species_id,want_shiny,want_form,contact_kind,contact_value,contact_public_consent,
+    notes,status,created_at,expires_at,hour_bucket,day_bucket,review_note,reviewed_at,published_at)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(id,ownerHash,'1'.repeat(64),'기존 작성자','seoul','local',25,0,'',1,1,'','friend_code','123456789012',1,'기존 모집 글','approved',seconds,seconds+86400,seconds,seconds,'기존 검토 근거를 유지합니다.',seconds,seconds);
+  const before = rows(db)[0]; for (const migration of migrations.slice(backgroundMigrationIndex)) db.sql.exec(migration);
+  const after = rows(db)[0];
+  for (const [key,value] of Object.entries(before)) assert.equal(after[key],value,key);
+  assert.equal(after.offer_background_kind,null); assert.equal(after.want_background_kind,null);
+  assert.equal(after.offer_background_name,''); assert.equal(after.want_background_name,'');
+  const listed = (await (await handleTradesGet(listRequest(), db, at(FIXED))).json()).posts[0];
+  assert.equal(listed.id,id); assert.equal(Object.hasOwn(listed.offer,'background'),false);
+  const managed = await handleTradeManage(id, manageRequest(OWNER,'status'), db, at(FIXED));
+  assert.equal(managed.status,200); assert.equal((await managed.json()).post.trainerName,'기존 작성자');
+});
+
+test('visible variant filters use the full SQL set for pagination and totals and combine with city and species', async () => {
+  const db=database();
+  const samples=[
+    {offer:{...body().offer,shiny:true}},
+    {cityId:'tokyo',offer:{...body().offer,form:'Party hat',background:{kind:'location',name:'Osaka'}}},
+    {want:{...body().want,shiny:false,background:{kind:'any',name:''}}},
+  ];
+  const posts=[];
+  for (let i=0;i<samples.length;i++) { const result=await submit(db,{visitorId:crypto.randomUUID(),...samples[i]});approve(db,result.id);posts.push(result); }
+  const none=await submit(db,{visitorId:crypto.randomUUID(),want:{...body().want,shiny:false,background:{kind:'none',name:''}}});approve(db,none.id);
+  const query=async filter=>(await(await handleTradesGet(listRequest(filter),db,at(FIXED))).json());
+  assert.equal((await query('variant=shiny')).total,2);
+  assert.equal((await query('variant=background')).total,2);
+  assert.equal((await query('variant=costume')).total,1);
+  assert.equal((await query('variant=background&city=seoul&speciesId=1')).total,1);
+  assert.equal((await query('variant=costume&page=2')).total,1);
+  assert.equal((await query('variant=costume&page=2')).posts.length,0);
+  const invalid=await handleTradesGet(listRequest('variant=unexpected'),db,at(FIXED));assert.equal(invalid.status,400);
+});
+
+test('invalid background choices are rejected before SQL and malformed stored metadata fails closed', async () => {
+  const db=database();
+  for (const background of [{kind:'any',name:''},{kind:'location',name:''},{kind:'other',name:'Osaka'},{kind:{toString:'bad'},name:''}]) {
+    assert.equal((await handleTradeSubmission(request(body({offer:{...body().offer,background}})),db,at(FIXED))).status,400);
+  }
+  assert.equal(db.calls.length,0);
+  const posted=await submit(db);approve(db,posted.id);
+  db.sql.prepare('UPDATE trade_posts SET offer_background_kind=?,offer_background_name=? WHERE id=?').run('invalid','x',posted.id);
+  assert.equal((await handleTradesGet(listRequest(),db,at(FIXED))).status,503);
+  assert.equal((await handleTradeGet(posted.id,db,at(FIXED))).status,503);
 });
