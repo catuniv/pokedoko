@@ -4752,6 +4752,40 @@ h4 {
   color: var(--accent);
   font-size: 12px;
 }
+.coordinate-copy {
+  min-width: 0;
+}
+.coordinate-copy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font-size: 12px;
+  line-height: inherit;
+}
+.coordinate-copy-fallback {
+  display: grid;
+  gap: 7px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+.coordinate-copy-fallback input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--accent-soft);
+  color: var(--ink);
+  font:
+    12px ui-monospace,
+    monospace;
+}
 .live-empty {
   display: flex;
   flex-direction: column;
@@ -4997,4 +5031,72 @@ h4 {
 .live-load-more > span {
   color: var(--muted);
   font-size: 12px;
+}
+.spot-row .spot-meta {
+  flex: 1;
+  min-width: 0;
+}
+.spot-meta > small {
+  overflow-wrap: anywhere;
+}
+.spot-row .spot-note {
+  font-size: 11px;
+  line-height: 1.75;
+  color: var(--muted);
+  margin: 7px 0 0;
+}
+.spot-row .spot-sources {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 7px;
+}
+.spot-row .spot-sources a {
+  display: inline-flex;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--accent);
+}
+.spot-row > .spot-icon {
+  flex-shrink: 0;
+}
+.spot-row > .coordinate-copy {
+  margin-left: auto;
+  max-width: 42%;
+}
+.spot-row > .coordinate-copy > button {
+  margin-left: 0;
+  font-size: 10px;
+  min-height: 34px;
+}
+.spot-row > a {
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .spot-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .spot-row .spot-meta {
+    flex-basis: calc(100% - 48px);
+  }
+  .spot-row > .coordinate-copy {
+    margin-left: 43px;
+    max-width: calc(100% - 70px);
+  }
+  .spot-row > a {
+    margin-top: 5px;
+  }
+  .spot-row .spot-note {
+    font-size: 11px;
+  }
+}
+.spot-count {
+  margin-left: 6px;
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
 }

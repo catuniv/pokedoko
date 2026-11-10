@@ -52,7 +52,14 @@ export type City = {
   region: Region;
   lat: number;
   lon: number;
-  spots: { name: string; lat: number; lon: number }[];
+  spots: {
+    name: string;
+    lat: number;
+    lon: number;
+    sourceUrl?: string;
+    coordinateSource?: string;
+    note?: string;
+  }[];
 };
 export type CityWindow = {
   start: Date;

@@ -128,7 +128,13 @@ test('every curated city has a valid IANA timezone, unique id, and valid landmar
   for (const item of CITIES) {
     assert.doesNotThrow(() => localParts(new Date('2026-11-10T09:00:00Z'), item.zone));
     assert.ok(Math.abs(item.lat) <= 90 && Math.abs(item.lon) <= 180);
-    assert.ok(item.spots.length >= 1 && item.spots.length <= 2);
-    for (const spot of item.spots) assert.ok(Math.abs(spot.lat) <= 90 && Math.abs(spot.lon) <= 180);
+    assert.ok(item.spots.length >= 1 && item.spots.length <= 5);
+    assert.equal(new Set(item.spots.map(spot => spot.name)).size, item.spots.length);
+    for (const spot of item.spots) {
+      assert.ok(Number.isFinite(spot.lat) && Math.abs(spot.lat) <= 90);
+      assert.ok(Number.isFinite(spot.lon) && Math.abs(spot.lon) <= 180);
+      assert.equal(new URL(spot.sourceUrl).protocol, 'https:');
+      assert.equal(new URL(spot.coordinateSource).protocol, 'https:');
+    }
   }
 });

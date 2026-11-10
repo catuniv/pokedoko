@@ -37,6 +37,7 @@ import map from "@/lib/world-map.json";
 import EventCalendar from "@/components/pokedoko/EventCalendar";
 import PokemonAvailability from "@/components/pokedoko/PokemonAvailability";
 import LiveRaids from "@/components/pokedoko/LiveRaids";
+import CoordinateCopyButton from "@/components/pokedoko/CoordinateCopyButton";
 
 type View = "live" | "raids" | "calendar" | "pokemon";
 const NAV = [
@@ -226,16 +227,6 @@ export default function Pokedoko({
     setFavorites((xs) =>
       xs.includes(id) ? xs.filter((x) => x !== id) : [...xs, id],
     );
-  }
-  async function copySpot(s: City["spots"][number]) {
-    try {
-      await navigator.clipboard.writeText(
-        `${s.lat.toFixed(6)}, ${s.lon.toFixed(6)}`,
-      );
-      setToast(`${s.name} 좌표를 복사했습니다.`);
-    } catch {
-      setToast("좌표를 복사하지 못했습니다. 표시된 좌표를 선택하세요.");
-    }
   }
   const raidEvents = feed.events
     .filter((e) => e.kind === "raid-hour" || e.kind === "raid-day")
@@ -935,7 +926,12 @@ export default function Pokedoko({
                   <div className="panel-heading">
                     <div>
                       <span className="mini-label">PLACES TO EXPLORE</span>
-                      <h2>{city.name} 추천 스팟</h2>
+                      <h2>
+                        {city.name} 추천 스팟{" "}
+                        <small className="spot-count">
+                          {city.spots.length}곳
+                        </small>
+                      </h2>
                     </div>
                     <MapPin size={21} />
                   </div>
@@ -944,15 +940,38 @@ export default function Pokedoko({
                       <div className="spot-icon">
                         <MapPin size={18} />
                       </div>
-                      <div>
+                      <div className="spot-meta">
                         <strong>{s.name}</strong>
                         <small>
-                          {s.lat.toFixed(5)}, {s.lon.toFixed(5)}
+                          {s.lat},{s.lon}
                         </small>
+                        {s.note && <p className="spot-note">{s.note}</p>}
+                        {s.sourceUrl && (
+                          <div className="spot-sources">
+                            <a
+                              href={s.sourceUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              추천 근거 <ArrowUpRight size={12} />
+                            </a>
+                            {s.coordinateSource && (
+                              <a
+                                href={s.coordinateSource}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                좌표 근거 <ArrowUpRight size={12} />
+                              </a>
+                            )}
+                          </div>
+                        )}
                       </div>
-                      <button onClick={() => void copySpot(s)}>
-                        좌표 복사
-                      </button>
+                      <CoordinateCopyButton
+                        lat={s.lat}
+                        lon={s.lon}
+                        name={s.name}
+                      />
                       <a
                         href={`https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}`}
                         target="_blank"
@@ -964,8 +983,8 @@ export default function Pokedoko({
                     </div>
                   ))}
                   <p className="panel-caption">
-                    대표 장소 목록입니다. 실측 체육관 수·레이드 밀집도 순위는
-                    아닙니다.
+                    장소의 대표 좌표입니다. 개별 체육관 위치나 현재 레이드
+                    밀집도를 뜻하지 않습니다.
                   </p>
                 </section>
               </div>

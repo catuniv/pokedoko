@@ -24,6 +24,8 @@ import {
 import type { City, GymObservation } from "@/lib/pokedoko-types";
 import type { LiveRaidFeed, LiveRaidStatus } from "@/lib/live-raid-types";
 import map from "@/lib/world-map.json";
+import CoordinateCopyButton from "./CoordinateCopyButton";
+import { hasMinimumRaidTime } from "@/lib/live-raid-display";
 
 type Props = {
   now: Date;
@@ -47,9 +49,8 @@ const STATUS_HELP: Record<LiveRaidStatus | "loading", string> = {
   unconfigured:
     "전 세계 체육관의 진행 상황은 아직 조회할 수 없습니다. 아래에서 직접 확인한 기록을 관리할 수 있습니다.",
   ready:
-    "원문에 게시된 레이드 시작·종료 시각 기준입니다. 종료되었거나 유효기간이 지난 자료는 자동으로 제외됩니다.",
-  empty:
-    "연결된 공급원에서 현재 유효한 레이드가 확인되지 않았습니다. 전 세계에 레이드가 없다는 뜻은 아닙니다.",
+    "종료까지 5분 이상 남은 레이드만 표시합니다. 5분 미만이 되거나 자료의 유효기간이 지나면 자동으로 제외됩니다.",
+  empty: "연결된 지역 지도에 종료까지 5분 이상 남은 유효한 레이드가 없습니다.",
   stale:
     "최신 관측 자료가 없어 진행 여부를 확인할 수 없습니다. 오래된 자료는 지도와 집계에서 제외합니다.",
   error: "공급원의 진행 상황을 확인할 수 없습니다. 잠시 후 다시 조회하세요.",
@@ -132,9 +133,10 @@ export default function LiveRaids({
   const time = now.getTime();
   const feedExpired =
     feed?.fetchedAt && time - Date.parse(feed.fetchedAt) >= 600000;
-  const records = (feedExpired ? [] : (feed?.raids ?? [])).filter(
+  const validRecords = (feedExpired ? [] : (feed?.raids ?? [])).filter(
     (r) => Date.parse(r.expiresAt) > time && Date.parse(r.endsAt) > time,
   );
+  const records = validRecords.filter((r) => hasMinimumRaidTime(r, now));
   const active = records.filter((r) => Date.parse(r.startsAt) <= time);
   const upcoming = records
     .filter((r) => Date.parse(r.startsAt) > time)
@@ -142,11 +144,13 @@ export default function LiveRaids({
   const status =
     feedExpired && (feed?.status === "ready" || feed?.status === "empty")
       ? "stale"
-      : feed?.status === "ready" && !records.length
+      : feed?.status === "ready" && !validRecords.length
         ? feed.raids.some((r) => Date.parse(r.endsAt) > time)
           ? "stale"
           : "empty"
-        : (feed?.status ?? "loading");
+        : feed?.status === "ready" && !records.length
+          ? "empty"
+          : (feed?.status ?? "loading");
   const sourceReady = status === "ready" || status === "empty";
   const cities = CITIES.map((c) => ({
     city: c,
@@ -475,7 +479,7 @@ export default function LiveRaids({
               <small className="live-result-count">{filtered.length}개</small>
             </h2>
           </div>
-          <span className="live-source">모든 시각은 한국시간(KST)</span>
+          <span className="live-source">종료까지 5분 이상 · 한국시간(KST)</span>
         </div>
         <div className="live-filters">
           <label className="live-city-select">
@@ -590,13 +594,11 @@ export default function LiveRaids({
                     {r.sourceName && ` · ${r.sourceName}`}
                   </small>
                   <div className="live-card-links">
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${r.lat},${r.lon}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      위치 보기 <ArrowUpRight size={14} />
-                    </a>
+                    <CoordinateCopyButton
+                      lat={r.lat}
+                      lon={r.lon}
+                      name={r.gymName}
+                    />
                     {r.sourceUrl && (
                       <a href={r.sourceUrl} target="_blank" rel="noreferrer">
                         원문 지도 <ArrowUpRight size={14} />
