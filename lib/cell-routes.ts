@@ -55,7 +55,7 @@ export function validateCellGpxEnvelope(text: string): void {
   checkInputSize(text);
   if (/<!\s*(?:DOCTYPE|ENTITY)\b/iu.test(text)) throw new Error("DOCTYPE·ENTITY 선언이 있는 GPX는 불러올 수 없어요.");
 }
-export function parseCellGpx(text: string, parseXml?: (text: string) => Document): CellPoint[] {
+export function parseCellGpx(text: string, parseXml?: (text: string) => Document, options: { preserveConsecutiveDuplicates?: boolean } = {}): CellPoint[] {
   validateCellGpxEnvelope(text);
   const document = parseXml ? parseXml(text) : new DOMParser().parseFromString(text, "application/xml");
   if (document.getElementsByTagNameNS("*", "parsererror").length || document.documentElement.localName !== "gpx") throw new Error("올바른 GPX XML 파일이 아니에요.");
@@ -64,11 +64,13 @@ export function parseCellGpx(text: string, parseXml?: (text: string) => Document
   const groups = tracks.length ? tracks : Array.from(document.getElementsByTagNameNS("*", "rte")).map((route) => Array.from(route.getElementsByTagNameNS("*", "rtept"))).filter((points) => points.length);
   if (groups.length !== 1) throw new Error("한 번에 이어진 경로 1개만 등록해 주세요. 여러 트랙·구간은 파일을 나눠주세요.");
   if (groups[0].length > CELL_ROUTE_MAX_POINTS) throw new Error("한 경로는 좌표 2,000개까지 등록할 수 있어요.");
-  return validateCellPoints(groups[0].map((point) => {
+  const points = groups[0].map((point) => {
     const lat = point.getAttribute("lat"), lon = point.getAttribute("lon");
     if (!lat?.trim() || !lon?.trim()) throw new Error("GPX 좌표에 위도나 경도가 빠져 있어요.");
     return { lat: Number(lat), lon: Number(lon) };
-  }));
+  });
+  const validated = validateCellPoints(points);
+  return options.preserveConsecutiveDuplicates ? points : validated;
 }
 export function cellDistanceKm(a: CellPoint, b: CellPoint): number {
   const rad = Math.PI / 180, dlat = (b.lat - a.lat) * rad, dlon = (b.lon - a.lon) * rad;

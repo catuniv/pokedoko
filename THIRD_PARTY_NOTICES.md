@@ -36,8 +36,13 @@ pokedoko는 [https://pokedoko.catuniv.workers.dev](https://pokedoko.catuniv.work
 
 - 지도 데이터: [Natural Earth / Terms of Use](https://www.naturalearthdata.com/about/terms-of-use/). 원본 지도 데이터는 공개 도메인이며 개인·교육·상업적 사용과 수정·배포를 허용한다고 명시합니다.
 - 커뮤니티 추천과 좌표: [docs/recommended-spots.md](docs/recommended-spots.md), [원문·좌표 근거 목록](docs/recommended-spots-sources.json).
+- 공개 셀 루트 상세 지도: [OpenStreetMap](https://www.openstreetmap.org/copyright) 기여자 및 [표준 타일 이용 정책](https://operations.osmfoundation.org/policies/tiles/). 지도 상세가 열릴 때 현재 화면 타일만 요청하며 기본 브라우저 캐시·Referer·가시적인 출처 표시를 유지한다. 오프라인 타일 다운로드·대량 미리 불러오기는 제공하지 않는다.
 
 추천 글과 좌표 근거의 링크를 보존합니다. 추천 사실을 요약해 표시하는 것과 외부 게시글 본문·사진의 권리는 구분합니다. 외부 게시글이나 사진 전체를 이 저장소의 소스 코드와 같은 조건으로 재배포할 권리를 부여하지 않습니다.
+
+## 사용자 제보 게임 Route
+
+제작자 또는 이용 허락을 받은 사용자가 직접 제보하고 운영자가 검토한 자료만 공개한다. 해당 자료의 출처·권리 근거·원본/추정/복원 분류를 카드 상세와 GPX에 보존한다. 개별 자료에 대한 이용 허락이 이 저장소 전체나 다른 Route의 포괄 라이선스가 되지는 않는다. 최초 적격 seed 파일은0개이며 일반 파밍 GPX나 재배포 권한 미확인 안내선을 실제 게임 원본으로 등록하지 않았다. 운영은 [docs/community-routes.md](docs/community-routes.md)를 따른다.
 
 ## 동봉한 외부 소프트웨어
 

@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { check, index, integer, primaryKey, sqliteTable, sqliteView, text } from "drizzle-orm/sqlite-core";
+import { check, index, integer, primaryKey, real, sqliteTable, sqliteView, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 /** Short-lived receipt rows support deduplication; long-term reports use counts. */
 export const growthUsageEvents = sqliteTable("growth_usage_events", {
@@ -96,3 +96,42 @@ export const feedbackInbox = sqliteView("feedback_inbox", {
 }).as(sql`SELECT id, category, message, page, city,
   datetime(created_at, 'unixepoch', '+9 hours') AS created_at_kst
   FROM growth_feedback ORDER BY created_at DESC, id DESC`);
+
+/** User-contributed game Route records stay private until an operator reviews rights and identity. */
+export const communityRoutes = sqliteTable("community_routes", {
+  id: text("id").primaryKey(), fingerprint: text("fingerprint").notNull(), visitorHash: text("visitor_hash").notNull(),
+  name: text("name").notNull(), cityId: text("city_id").notNull(), startName: text("start_name").notNull(), endName: text("end_name").notNull().default(""),
+  startLat: real("start_lat").notNull(), startLon: real("start_lon").notNull(), endLat: real("end_lat"), endLon: real("end_lon"),
+  reportedDistanceM: real("reported_distance_m").notNull(), computedDistanceM: real("computed_distance_m"),
+  geometryType: text("geometry_type").notNull().default("none"), geometryValidation: text("geometry_validation").notNull().default("missing"),
+  pointsJson: text("points_json"), pointCount: integer("point_count").notNull().default(0),
+  sourceUrl: text("source_url").notNull().default(""), creatorName: text("creator_name").notNull(),
+  rightsBasis: text("rights_basis").notNull(), rightsDetails: text("rights_details").notNull(),
+  permissionConfirmed: integer("permission_confirmed").notNull(), inGameConfirmed: integer("in_game_confirmed").notNull(),
+  lastCheckedAt: text("last_checked_at").notNull(), notes: text("notes").notNull().default(""),
+  status: text("status").notNull().default("pending"), rightsReviewed: integer("rights_reviewed").notNull().default(0), routeReviewed: integer("route_reviewed").notNull().default(0),
+  reviewNote: text("review_note").notNull().default(""), reviewedAt: integer("reviewed_at"), publishedAt: integer("published_at"),
+  hourBucket: integer("hour_bucket").notNull(), dayBucket: integer("day_bucket").notNull(), createdAt: integer("created_at").notNull(),
+  submissionPolicy: text("submission_policy").notNull(),
+}, table => [
+  uniqueIndex("community_route_fingerprint_idx").on(table.fingerprint),
+  index("community_route_public_idx").on(table.status, table.cityId, table.publishedAt),
+  check("community_route_status_check", sql`${table.status} IN ('pending','approved','rejected','removed')`),
+  check("community_route_geometry_type_check", sql`${table.geometryType} IN ('none','original','estimated','reconstructed')`),
+  check("community_route_geometry_validation_check", sql`(${table.geometryType} = 'none' AND ${table.geometryValidation} = 'missing' AND ${table.pointCount} = 0 AND ${table.pointsJson} IS NULL) OR (${table.geometryType} != 'none' AND ${table.geometryValidation} = 'passed' AND ${table.pointCount} BETWEEN 2 AND 2000 AND ${table.pointsJson} IS NOT NULL)`),
+  check("community_route_rights_check", sql`${table.rightsBasis} IN ('creator','permission','license') AND ${table.permissionConfirmed} = 1 AND ${table.inGameConfirmed} = 1`),
+  check("community_route_start_check", sql`${table.startLat} BETWEEN -90 AND 90 AND ${table.startLon} BETWEEN -180 AND 180`),
+  check("community_route_distance_check", sql`${table.reportedDistanceM} BETWEEN 100 AND 100000`),
+  check("community_route_publication_check", sql`${table.status} != 'approved' OR (${table.rightsReviewed} = 1 AND ${table.routeReviewed} = 1 AND ${table.reviewedAt} IS NOT NULL AND ${table.publishedAt} IS NOT NULL AND length(${table.reviewNote}) > 0)`),
+]);
+
+/** Bounded admission counters; no IP addresses or raw visitor IDs. */
+export const communityRouteRateLimits = sqliteTable("community_route_rate_limits", {
+  key: text("key").notNull(), kind: text("kind").notNull(), windowStart: integer("window_start").notNull(),
+  count: integer("count").notNull().default(0), expiresAt: integer("expires_at").notNull(),
+}, table => [
+  primaryKey({ columns: [table.key, table.kind, table.windowStart] }),
+  index("community_route_rate_expiry_idx").on(table.expiresAt),
+  check("community_route_rate_kind_check", sql`${table.kind} IN ('hour','day')`),
+  check("community_route_rate_count_check", sql`${table.count} >= 0`),
+]);

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { DatabaseSync } from 'node:sqlite';
 import ts from 'typescript';
 
@@ -8,7 +8,8 @@ const moduleUrl = source => `data:text/javascript;base64,${Buffer.from(ts.transp
 const { CITIES } = await import(moduleUrl(await readFile(new URL('../lib/cities.ts', import.meta.url), 'utf8')));
 const source = (await readFile(new URL('../lib/growth-server.ts', import.meta.url), 'utf8')).replace('import { CITIES } from "./cities";', `const CITIES = ${JSON.stringify(CITIES)};`);
 const { handleUsageRequest, handleFeedbackRequest, growthMethodNotAllowed, pruneGrowthData, createGrowthRetentionScheduler } = await import(moduleUrl(source));
-const migration = await readFile(new URL('../drizzle/0000_sour_zaladane.sql', import.meta.url), 'utf8');
+const migrationFiles = (await readdir(new URL('../drizzle/', import.meta.url))).filter(name => /^\d+.*\.sql$/.test(name)).sort();
+const migrations = await Promise.all(migrationFiles.map(name => readFile(new URL(`../drizzle/${name}`, import.meta.url), 'utf8')));
 const FIXED = Date.parse('2026-11-10T15:00:01Z');
 const visitor = '550e8400-e29b-41d4-a716-446655440000';
 const other = '550e8400-e29b-41d4-a716-446655440001';
@@ -19,7 +20,7 @@ const at = value => () => new Date(value);
 
 /** Real SQLite executes the actual migration and queries behind this tiny D1 adapter. */
 function database() {
-  const sql = new DatabaseSync(':memory:'); sql.exec(migration);
+  const sql = new DatabaseSync(':memory:'); for (const migration of migrations) sql.exec(migration);
   const calls = [];
   return { sql, calls,
     prepare(query) {
@@ -154,7 +155,8 @@ test('bounded retention removes expired private data while preserving ninety-day
   await handleUsageRequest(request(body()), db, at(FIXED));
   await handleFeedbackRequest(request(feedback()), db, at(FIXED));
   const summary = rows(db, 'growth_daily_summary');
-  await pruneGrowthData(db, new Date(FIXED + 31 * 86400000));
+  const retention = await pruneGrowthData(db, new Date(FIXED + 31 * 86400000));
+  assert.equal(retention.deleted.community_route_rate_limits, 0);
   assert.equal(rows(db, 'growth_usage_events').length, 0); assert.equal(rows(db, 'growth_feedback').length, 0);
   assert.equal(rows(db, 'growth_daily_visitors').length, 0); assert.equal(rows(db, 'growth_rate_limits').length, 0);
   assert.deepEqual(rows(db, 'growth_daily_summary'), summary);
@@ -187,6 +189,17 @@ test('retention runs even when the scheduled public source refresh fails, withou
   assert.equal(await (await worker.fetch(new Request('https://pokedoko.example/'), {}, {})).text(), 'existing-fetch');
 });
 
+test('retention expires community route admission counters at the boundary while preserving active windows', async () => {
+  const db = database(), seconds = Math.floor(FIXED / 1000);
+  const insert = db.sql.prepare('INSERT INTO community_route_rate_limits (key, kind, window_start, count, expires_at) VALUES (?, ?, ?, ?, ?)');
+  insert.run('expired-submitter', 'hour', seconds - 7200, 3, seconds - 3600);
+  insert.run('global', 'day', seconds - 86400, 1000, seconds);
+  insert.run('active-submitter', 'hour', seconds, 1, seconds + 3600);
+  const result = await pruneGrowthData(db, new Date(FIXED));
+  assert.equal(result.deleted.community_route_rate_limits, 2);
+  assert.deepEqual(rows(db, 'community_route_rate_limits'), [{ key: 'active-submitter', kind: 'hour', window_start: seconds, count: 1, expires_at: seconds + 3600 }]);
+});
+
 test('opportunistic retention is throttled per database for an hour and has no work when D1 is absent', async () => {
   const queue = createGrowthRetentionScheduler({ now: at(FIXED) });
   const work = [], context = { waitUntil(promise) { work.push(promise); } };
@@ -194,7 +207,7 @@ test('opportunistic retention is throttled per database for an hour and has no w
   const first = database(), second = database();
   assert.equal(queue(first, context), true); assert.equal(queue(first, context), false);
   assert.equal(queue(second, context), true); await Promise.all(work);
-  assert.equal(first.calls.length, 5); assert.equal(second.calls.length, 5);
+  assert.equal(first.calls.length, 6); assert.equal(second.calls.length, 6);
   let dynamic = FIXED;
   const hourly = createGrowthRetentionScheduler({ now: () => new Date(dynamic) });
   const hourlyWork = [], ctx = { waitUntil(promise) { hourlyWork.push(promise); } };

@@ -25,6 +25,12 @@ test('GPX accepts one track, prefers tracks over duplicate rte data and caps cho
  assert.deepEqual(parseCellGpx('<gpx/>',()=>mockXml([points],[Array.from({length:2200},()=>p(9,9))])),points);
  assert.deepEqual(parseCellGpx('<gpx/>',()=>mockXml([],[points])),points);
 });
+test('community GPX import can preserve every repeated source point without changing private planning defaults',()=>{
+ const points=[p(37.566500001,126.978000001),p(37.566500001,126.978000001),p(37.567,126.978),p(37.567,126.978),p(37.566500001,126.978000001)];
+ assert.deepEqual(parseCellGpx('<gpx/>',()=>mockXml([points]),{preserveConsecutiveDuplicates:true}),points);
+ assert.deepEqual(parseCellGpx('<gpx/>',()=>mockXml([points])),[points[0],points[2],points[4]]);
+ assert.throws(()=>parseCellGpx('<gpx/>',()=>mockXml([[p(0),p(0)]]),{preserveConsecutiveDuplicates:true}));
+});
 test('GPX rejects malformed XML, disconnected track segments and missing point attributes',()=>{
  assert.throws(()=>parseCellGpx('<gpx/>',()=>mockXml([],[],true)));
  assert.throws(()=>parseCellGpx('<gpx/>',()=>mockXml([[p(0),p(1)],[p(2),p(3)]])));
