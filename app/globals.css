@@ -4955,3 +4955,46 @@ h4 {
     margin: 18px;
   }
 }
+.live-coverage {
+  margin-top: 8px !important;
+  font-weight: 600;
+}
+.live-source-status {
+  font-weight: 700;
+}
+.live-source-status.status-ready,
+.live-source-status.status-empty {
+  color: #2a5aa6;
+}
+.live-source-status.status-error,
+.live-source-status.status-stale {
+  color: #ad2434;
+}
+.live-result-count {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: 6px;
+  font-weight: 600;
+}
+.live-tier {
+  display: inline-block;
+  font-size: 10px;
+  color: var(--accent);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 2px 5px;
+  margin-left: 8px;
+}
+.live-load-more {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+.live-load-more > span {
+  color: var(--muted);
+  font-size: 12px;
+}

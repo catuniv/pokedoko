@@ -126,7 +126,6 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
         )),
   );
   const eventPokemonCount = entries.filter(([, item]) => item.event).length;
-  const selectedEntry = entries.find(([key]) => key === selected)?.[1];
 
   return (
     <section className="pokemon-availability" aria-label="등장 포켓몬">
@@ -173,7 +172,10 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
           <input
             type="search"
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setSelected(null);
+            }}
             placeholder="이름 또는 도감 번호 검색"
             aria-label="포켓몬 한국어, 영어 이름 또는 도감 번호 검색"
           />
@@ -181,7 +183,10 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
             <button
               type="button"
               aria-label="검색어 지우기"
-              onClick={() => setQuery("")}
+              onClick={() => {
+                setQuery("");
+                setSelected(null);
+              }}
             >
               <X size={15} />
             </button>
@@ -207,7 +212,10 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
             <select
               aria-label="레이드 등급 필터"
               value={tier}
-              onChange={(event) => setTier(event.target.value)}
+              onChange={(event) => {
+                setTier(event.target.value);
+                setSelected(null);
+              }}
             >
               <option value="all">모든 등급</option>
               {tiers.map((value) => (
@@ -231,66 +239,143 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
       )}
       {visible.length > 0 ? (
         <div className="pokemon-grid">
-          {visible.map(([key, item]) => (
-            <button
-              type="button"
-              key={key}
-              className={`pokemon-card ${selected === key ? "is-selected" : ""}`}
-              aria-expanded={selected === key}
-              onClick={() => setSelected(selected === key ? null : key)}
-            >
-              <span className="pokemon-card-top">
-                <span>
-                  {item.pokemon.id
-                    ? `No. ${String(item.pokemon.id).padStart(4, "0")}`
-                    : "POKÉMON"}
-                </span>
-                {item.pokemon.shiny && (
-                  <span
-                    className="pokemon-shiny"
-                    title="색이 다른 모습 등장 가능"
-                  >
-                    <Sparkles size={12} />
+          {visible.map(([key, item]) => {
+            const expanded = selected === key;
+            const toggleId = `pokemon-toggle-${encodeURIComponent(key)}`;
+            const panelId = `pokemon-detail-${encodeURIComponent(key)}`;
+            return (
+              <article
+                key={key}
+                className={`pokemon-card ${expanded ? "is-selected" : ""}`}
+              >
+                <button
+                  type="button"
+                  className="pokemon-card-toggle"
+                  id={toggleId}
+                  aria-expanded={expanded}
+                  aria-controls={panelId}
+                  onClick={() => setSelected(expanded ? null : key)}
+                >
+                  <span className="pokemon-card-top">
+                    <span>
+                      {item.pokemon.id
+                        ? `No. ${String(item.pokemon.id).padStart(4, "0")}`
+                        : "POKÉMON"}
+                    </span>
+                    {item.pokemon.shiny && (
+                      <span
+                        className="pokemon-shiny"
+                        title="색이 다른 모습 등장 가능"
+                      >
+                        <Sparkles size={12} />
+                      </span>
+                    )}
                   </span>
-                )}
-              </span>
-              <span className="pokemon-art">
-                {item.pokemon.image ? (
-                  <img
-                    src={item.pokemon.image}
-                    alt={item.pokemon.nameKo || item.pokemon.name}
-                    loading="lazy"
-                    onError={(event) => {
-                      event.currentTarget.style.opacity = "0";
-                    }}
-                  />
-                ) : (
-                  <span className="pokemon-art-fallback">?</span>
-                )}
-              </span>
-              <strong>{item.pokemon.nameKo || item.pokemon.name}</strong>
-              {item.pokemon.nameKo &&
-                item.pokemon.name !== item.pokemon.nameKo && (
-                  <span className="pokemon-english-name">
-                    {item.pokemon.name}
+                  <span className="pokemon-art">
+                    {item.pokemon.image ? (
+                      <img
+                        src={item.pokemon.image}
+                        alt={item.pokemon.nameKo || item.pokemon.name}
+                        loading="lazy"
+                        onError={(event) => {
+                          event.currentTarget.style.opacity = "0";
+                        }}
+                      />
+                    ) : (
+                      <span className="pokemon-art-fallback">?</span>
+                    )}
                   </span>
-                )}
-              <span className="pokemon-card-tags">
-                {item.tiers.slice(0, 1).map((value) => (
-                  <span key={value}>{value}</span>
-                ))}
-                {item.event && (
-                  <span className="pokemon-event-tag">이벤트</span>
-                )}
-              </span>
-              {item.confirmed && (
-                <span className="pokemon-confirmed">이벤트 기간 확인</span>
-              )}
-              <span className="pokemon-card-detail">
-                자세히 보기 <ArrowUpRight size={12} />
-              </span>
-            </button>
-          ))}
+                  <strong>{item.pokemon.nameKo || item.pokemon.name}</strong>
+                  {item.pokemon.nameKo &&
+                    item.pokemon.name !== item.pokemon.nameKo && (
+                      <span className="pokemon-english-name">
+                        {item.pokemon.name}
+                      </span>
+                    )}
+                  <span className="pokemon-card-tags">
+                    {item.tiers.slice(0, 1).map((value) => (
+                      <span key={value}>{value}</span>
+                    ))}
+                    {item.event && (
+                      <span className="pokemon-event-tag">이벤트</span>
+                    )}
+                  </span>
+                  {item.confirmed && (
+                    <span className="pokemon-confirmed">이벤트 기간 확인</span>
+                  )}
+                  <span className="pokemon-card-detail">
+                    {expanded ? "상세 접기" : "자세히 보기"}
+                    <ChevronDown size={12} />
+                  </span>
+                </button>
+                <div
+                  className="pokemon-detail"
+                  id={panelId}
+                  role="region"
+                  aria-labelledby={toggleId}
+                  hidden={!expanded}
+                >
+                  <div className="pokemon-detail-title">
+                    <h3>상세 정보</h3>
+                    <button
+                      type="button"
+                      aria-label="포켓몬 상세 정보 닫기"
+                      onClick={() => {
+                        setSelected(null);
+                        document.getElementById(toggleId)?.focus();
+                      }}
+                    >
+                      <X size={17} />
+                    </button>
+                  </div>
+                  <div className="pokemon-detail-content">
+                    <div className="pokemon-detail-description">
+                      <p>
+                        {item.pokemon.shiny
+                          ? "색이 다른 모습 등장 가능"
+                          : "색이 다른 모습의 등장 여부는 원문에서 확인하세요."}
+                      </p>
+                      {item.pokemon.types.length > 0 && (
+                        <div className="pokemon-types">
+                          {item.pokemon.types.map((type) => (
+                            <span key={type}>
+                              {TYPE_KO[type.toLowerCase()] || type}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {item.raid && !item.confirmed && (
+                        <small>
+                          최근 게시된 레이드 보스 목록입니다. 실제 체육관의
+                          보스와 등장 기간은 다를 수 있습니다.
+                        </small>
+                      )}
+                    </div>
+                    <div className="pokemon-detail-sources">
+                      {item.sources.map((source) => (
+                        <a
+                          key={source.url}
+                          href={source.url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <span>
+                            <strong>{source.name}</strong>
+                            {source.until && (
+                              <small>
+                                한국시간 {formatKst(source.until, true)}까지
+                              </small>
+                            )}
+                          </span>
+                          <ArrowUpRight size={15} />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       ) : (
         <div className="pokemon-empty">
@@ -309,74 +394,12 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
               onClick={() => {
                 setQuery("");
                 setTier("all");
+                setSelected(null);
               }}
             >
               검색 초기화
             </button>
           )}
-        </div>
-      )}
-      {selectedEntry && (
-        <div className="pokemon-detail" aria-live="polite">
-          <div className="pokemon-detail-title">
-            <div>
-              <span className="pokemon-eyebrow">POKÉMON DETAILS</span>
-              <h3>
-                {selectedEntry.pokemon.nameKo || selectedEntry.pokemon.name}
-              </h3>
-            </div>
-            <button
-              type="button"
-              aria-label="포켓몬 상세 정보 닫기"
-              onClick={() => setSelected(null)}
-            >
-              <X size={20} />
-            </button>
-          </div>
-          <div className="pokemon-detail-content">
-            <div className="pokemon-detail-description">
-              <p>
-                {selectedEntry.pokemon.shiny
-                  ? "색이 다른 모습 등장 가능"
-                  : "색이 다른 모습의 등장 여부는 원문에서 확인하세요."}
-              </p>
-              {selectedEntry.pokemon.types.length > 0 && (
-                <div className="pokemon-types">
-                  {selectedEntry.pokemon.types.map((type) => (
-                    <span key={type}>
-                      {TYPE_KO[type.toLowerCase()] || type}
-                    </span>
-                  ))}
-                </div>
-              )}
-              {selectedEntry.raid && !selectedEntry.confirmed && (
-                <small>
-                  최근 게시된 레이드 보스 목록입니다. 실제 체육관의 보스와 등장
-                  기간은 다를 수 있습니다.
-                </small>
-              )}
-            </div>
-            <div className="pokemon-detail-sources">
-              {selectedEntry.sources.map((source) => (
-                <a
-                  key={source.url}
-                  href={source.url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <span>
-                    <strong>{source.name}</strong>
-                    {source.until && (
-                      <small>
-                        한국 시간 {formatKst(source.until, true)}까지
-                      </small>
-                    )}
-                  </span>
-                  <ArrowUpRight size={17} />
-                </a>
-              ))}
-            </div>
-          </div>
         </div>
       )}
       <p className="pokemon-bottom-note">

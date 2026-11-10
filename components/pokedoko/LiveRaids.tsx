@@ -47,7 +47,7 @@ const STATUS_HELP: Record<LiveRaidStatus | "loading", string> = {
   unconfigured:
     "전 세계 체육관의 진행 상황은 아직 조회할 수 없습니다. 아래에서 직접 확인한 기록을 관리할 수 있습니다.",
   ready:
-    "연결된 공급원의 최근 관측 자료입니다. 관측 후 10분이 지났거나 종료된 레이드는 자동으로 제외됩니다.",
+    "원문에 게시된 레이드 시작·종료 시각 기준입니다. 종료되었거나 유효기간이 지난 자료는 자동으로 제외됩니다.",
   empty:
     "연결된 공급원에서 현재 유효한 레이드가 확인되지 않았습니다. 전 세계에 레이드가 없다는 뜻은 아닙니다.",
   stale:
@@ -83,6 +83,7 @@ export default function LiveRaids({
   const [cityFilter, setCityFilter] = useState("all");
   const [stateFilter, setStateFilter] = useState("active");
   const [query, setQuery] = useState("");
+  const [visibleLimit, setVisibleLimit] = useState(30);
   const request = useRef(0);
   const controller = useRef<AbortController | null>(null);
   const refresh = useCallback(async () => {
@@ -119,13 +120,14 @@ export default function LiveRaids({
   }, []);
   useEffect(() => {
     void refresh();
-    const poll = setInterval(() => void refresh(), 30000);
+    const poll = setInterval(() => void refresh(), 60000);
     return () => {
       clearInterval(poll);
       request.current++;
       controller.current?.abort();
     };
   }, [refresh]);
+  useEffect(() => setVisibleLimit(30), [cityFilter, stateFilter, query]);
 
   const time = now.getTime();
   const feedExpired =
@@ -186,16 +188,22 @@ export default function LiveRaids({
         <div className="live-status-copy">
           <h2>{STATUS_LABEL[status]}</h2>
           <p>{STATUS_HELP[status]}</p>
+          {feed?.sources?.length ? (
+            <p className="live-coverage">
+              수집 지역: 뉴욕 · 시드니 · 싱가포르. 체육관별 마지막 관측 시각은
+              원문에서 제공하지 않습니다.
+            </p>
+          ) : null}
           {feed?.sourceName && (
             <small className="live-source">
               출처: {feed.sourceName}
               {feed.fetchedAt &&
-                ` · 공급원 갱신 ${formatKst(new Date(feed.fetchedAt))}`}
+                ` · 원문 응답 ${formatKst(new Date(feed.fetchedAt))}`}
             </small>
           )}
           {feed?.checkedAt && (
             <small className="live-source">
-              조회 {formatKst(new Date(feed.checkedAt))} · 30초마다 갱신
+              서버 확인 {formatKst(new Date(feed.checkedAt))} · 1분마다 갱신
             </small>
           )}
         </div>
@@ -264,7 +272,7 @@ export default function LiveRaids({
             <span className="mini-label">REGIONAL MAPS</span>
             <h2>지역별 레이드 지도</h2>
           </div>
-          <span className="live-source">외부 사이트에서 확인</span>
+          <span className="live-source">자동 수집 상태 · 원문 링크</span>
         </div>
         <div className="live-external-grid">
           {[
@@ -286,25 +294,48 @@ export default function LiveRaids({
               url: "https://sgpokemap.com/gym.html",
               code: "SG",
             },
-          ].map((source) => (
-            <a
-              key={source.url}
-              href={source.url}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span className="live-external-flag">{flag(source.code)}</span>
-              <span>
-                <strong>{source.name}</strong>
-                <small>{source.title}</small>
-              </span>
-              <ArrowUpRight size={18} />
-            </a>
-          ))}
+          ].map((source) => {
+            const details = feed?.sources?.find((s) => s.url === source.url);
+            const expired =
+              details?.fetchedAt &&
+              time - Date.parse(details.fetchedAt) >= 600000;
+            const sourceStatus = expired ? "stale" : details?.status;
+            return (
+              <a
+                key={source.url}
+                href={source.url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span className="live-external-flag">{flag(source.code)}</span>
+                <span>
+                  <strong>{source.name}</strong>
+                  <small>{source.title}</small>
+                  {details && (
+                    <small
+                      className={`live-source-status status-${sourceStatus}`}
+                    >
+                      {sourceStatus === "ready" || sourceStatus === "empty"
+                        ? `연결됨 · ${records.filter((r) => r.cityId === details.cityId).length}개`
+                        : sourceStatus === "stale"
+                          ? "원문 갱신 지연"
+                          : "조회 실패"}
+                    </small>
+                  )}
+                  {details?.fetchedAt && (
+                    <small>
+                      원문 응답 {formatKst(new Date(details.fetchedAt))}
+                    </small>
+                  )}
+                </span>
+                <ArrowUpRight size={18} />
+              </a>
+            );
+          })}
         </div>
         <p className="panel-caption">
-          pokedoko가 수집·집계하는 데이터는 아닙니다. 각 사이트의 제공 범위와
-          갱신 시각을 확인하세요.
+          각 지역 지도에 게시된 공개 레이드 자료를 1분 간격으로 수집합니다. 서버
+          캐시를 공유하며 지역별 연결 실패를 구분해 표시합니다.
         </p>
       </section>
       <div className="map-layout">
@@ -314,7 +345,7 @@ export default function LiveRaids({
               <span className="mini-label">LIVE RAIDS</span>
               <h2>체육관 레이드 지도</h2>
             </div>
-            <span className="live-label">최근 관측 자료</span>
+            <span className="live-label">지역 지도 게시 자료</span>
           </div>
           <div className="map-legend">
             <span>
@@ -392,7 +423,7 @@ export default function LiveRaids({
           <div className="panel-heading">
             <div>
               <span className="mini-label">BY CITY</span>
-              <h2>도시별 관측 현황</h2>
+              <h2>도시별 레이드 현황</h2>
             </div>
             <MapPin size={20} />
           </div>
@@ -420,7 +451,7 @@ export default function LiveRaids({
             <div className="live-empty">
               <MapPin size={26} />
               <h3>확인된 도시 없음</h3>
-              <p>연결된 관측 자료가 들어오면 도시별로 집계합니다.</p>
+              <p>연결된 지역 지도에서 유효한 레이드를 확인하면 표시합니다.</p>
             </div>
           )}
           <p className="panel-caption">
@@ -439,7 +470,10 @@ export default function LiveRaids({
         <div className="live-toolbar">
           <div>
             <span className="mini-label">RAID LIST</span>
-            <h2>체육관별 진행 상황</h2>
+            <h2>
+              체육관별 진행 상황{" "}
+              <small className="live-result-count">{filtered.length}개</small>
+            </h2>
           </div>
           <span className="live-source">모든 시각은 한국시간(KST)</span>
         </div>
@@ -490,7 +524,7 @@ export default function LiveRaids({
         </div>
         {filtered.length ? (
           <div className="live-grid">
-            {filtered.map((r) => {
+            {filtered.slice(0, visibleLimit).map((r) => {
               const c = CITIES.find((c) => c.id === r.cityId)!;
               const pending = Date.parse(r.startsAt) > time;
               return (
@@ -508,7 +542,26 @@ export default function LiveRaids({
                     </span>
                   </div>
                   <h3>{r.gymName}</h3>
-                  <p>{r.bossName || "보스 정보 미확인"}</p>
+                  <p>
+                    {r.bossName || "알 · 보스 미공개"}
+                    {r.tier && (
+                      <span className="live-tier">
+                        {(
+                          {
+                            1: "1성",
+                            3: "3성",
+                            4: "4성",
+                            5: "5성",
+                            6: "메가",
+                            9: "엘리트",
+                            11: "그림자 1성",
+                            13: "그림자 3성",
+                            15: "그림자 5성",
+                          } as Record<number, string>
+                        )[r.tier] ?? `등급 ${r.tier}`}
+                      </span>
+                    )}
+                  </p>
                   <strong className="gym-countdown">
                     {countdown(
                       Date.parse(pending ? r.startsAt : r.endsAt) - time,
@@ -532,7 +585,9 @@ export default function LiveRaids({
                     </div>
                   </dl>
                   <small className="live-source">
-                    관측 {formatKst(new Date(r.observedAt))}
+                    {r.timeBasis === "source-response" ? "원문 응답" : "관측"}{" "}
+                    {formatKst(new Date(r.observedAt))}
+                    {r.sourceName && ` · ${r.sourceName}`}
                   </small>
                   <div className="live-card-links">
                     <a
@@ -544,7 +599,7 @@ export default function LiveRaids({
                     </a>
                     {r.sourceUrl && (
                       <a href={r.sourceUrl} target="_blank" rel="noreferrer">
-                        관측 출처 <ArrowUpRight size={14} />
+                        원문 지도 <ArrowUpRight size={14} />
                       </a>
                     )}
                   </div>
@@ -579,6 +634,20 @@ export default function LiveRaids({
                 필터 초기화
               </button>
             )}
+          </div>
+        )}
+        {filtered.length > visibleLimit && (
+          <div className="live-load-more">
+            <button
+              className="secondary-button"
+              onClick={() => setVisibleLimit((n) => n + 30)}
+            >
+              레이드 30개 더 보기 <ChevronRight size={15} />
+            </button>
+            <span>
+              {Math.min(visibleLimit, filtered.length)} / {filtered.length}개
+              표시
+            </span>
           </div>
         )}
       </section>
