@@ -26,6 +26,8 @@ import type { LiveRaidFeed, LiveRaidStatus } from "@/lib/live-raid-types";
 import map from "@/lib/world-map.json";
 import CoordinateCopyButton from "./CoordinateCopyButton";
 import { hasMinimumRaidTime } from "@/lib/live-raid-display";
+import { distanceKm } from "@/lib/raid-hotspots";
+import RaidHotspots, { RaidRegionSummary, type RaidRegion } from "./RaidHotspots";
 
 type Props = {
   now: Date;
@@ -85,6 +87,7 @@ export default function LiveRaids({
   const [stateFilter, setStateFilter] = useState("active");
   const [query, setQuery] = useState("");
   const [visibleLimit, setVisibleLimit] = useState(30);
+  const [selectedRegion, setSelectedRegion] = useState<RaidRegion | null>(null);
   const request = useRef(0);
   const controller = useRef<AbortController | null>(null);
   const refresh = useCallback(async () => {
@@ -128,7 +131,11 @@ export default function LiveRaids({
       controller.current?.abort();
     };
   }, [refresh]);
-  useEffect(() => setVisibleLimit(30), [cityFilter, stateFilter, query]);
+  useEffect(() => {
+    setVisibleLimit(30);
+    setSelectedRegion(null);
+  }, [cityFilter, stateFilter, query]);
+  useEffect(() => setVisibleLimit(30), [selectedRegion]);
 
   const time = now.getTime();
   const feedExpired =
@@ -160,7 +167,7 @@ export default function LiveRaids({
   const availableCities = cities
     .filter((c) => c.active || c.upcoming)
     .sort((a, b) => b.active - a.active || b.upcoming - a.upcoming);
-  const filtered = records
+  const matchingRaids = records
     .filter((r) => {
       const c = CITIES.find((c) => c.id === r.cityId);
       const state = Date.parse(r.startsAt) > time ? "upcoming" : "active";
@@ -173,6 +180,9 @@ export default function LiveRaids({
       );
     })
     .sort((a, b) => Date.parse(a.startsAt) - Date.parse(b.startsAt));
+  const filtered = selectedRegion
+    ? matchingRaids.filter((r) => r.cityId === selectedRegion.cityId && distanceKm(selectedRegion, r) <= selectedRegion.radiusKm + 1e-9)
+    : matchingRaids;
   const gyms = observations.filter((o) => o.cityId === city.id);
   function selectCity(id: string) {
     setCityFilter(id);
@@ -526,6 +536,11 @@ export default function LiveRaids({
             />
           </label>
         </div>
+        <RaidHotspots raids={matchingRaids} now={now} selected={selectedRegion} onSelect={setSelectedRegion} />
+        <div id="live-gym-results" className="live-gym-results" tabIndex={-1}>
+          {selectedRegion && <RaidRegionSummary region={selectedRegion} raids={filtered} now={now} onClear={() => setSelectedRegion(null)} />}
+          <p className="live-results-label">{selectedRegion ? `선택한 반경 안 체육관 ${filtered.length}개` : `조건에 맞는 체육관 ${filtered.length}개`}</p>
+        </div>
         {filtered.length ? (
           <div className="live-grid">
             {filtered.slice(0, visibleLimit).map((r) => {
@@ -572,6 +587,11 @@ export default function LiveRaids({
                     )}
                   </strong>
                   <small>{pending ? "시작까지" : "종료까지"}</small>
+                  {!pending && (
+                    <div className="live-raid-elapsed" role="progressbar" aria-label={`${r.gymName} 레이드 경과 시간`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(Math.max(0, Math.min(100, (time - Date.parse(r.startsAt)) / (Date.parse(r.endsAt) - Date.parse(r.startsAt)) * 100)))}>
+                      <span style={{ width: `${Math.max(0, Math.min(100, (time - Date.parse(r.startsAt)) / (Date.parse(r.endsAt) - Date.parse(r.startsAt)) * 100))}%` }} />
+                    </div>
+                  )}
                   <dl className="live-card-times">
                     <div>
                       <dt>시작</dt>

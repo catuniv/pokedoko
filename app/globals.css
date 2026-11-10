@@ -5060,6 +5060,294 @@ h4 {
   line-height: 1.6;
   color: var(--accent);
 }
+
+/* Radius recommendations share the live list's city, state and search filters. */
+.raid-hotspots {
+  min-width: 0;
+  margin: 0 0 24px;
+  padding: 22px;
+  border: 1px solid #cbdaf2;
+  border-radius: 12px;
+  background: #f3f7ff;
+}
+.raid-hotspots-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.raid-hotspots-heading .mini-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.raid-hotspots h3 {
+  margin: 9px 0 7px;
+  font-size: 19px;
+  font-weight: 750;
+}
+.raid-hotspots-heading p,
+.raid-hotspots-method,
+.raid-hotspots-coverage {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+  margin: 0;
+}
+.raid-radius-options {
+  display: flex;
+  flex-shrink: 0;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+}
+.raid-radius-options button {
+  min-width: 48px;
+  min-height: 40px;
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+}
+.raid-radius-options button[aria-pressed="true"] {
+  color: var(--navy);
+  background: var(--pokemon-yellow);
+}
+.raid-hotspots-method {
+  max-width: 760px;
+  margin-top: 15px;
+}
+.raid-hotspot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 12px;
+}
+.raid-hotspot-card {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+}
+.raid-hotspot-card[data-selected="true"] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.raid-hotspot-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.raid-hotspot-top > span:last-child {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.raid-hotspot-rank {
+  padding: 4px 8px;
+  border-radius: 5px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 750;
+}
+.raid-hotspot-card:first-child .raid-hotspot-rank {
+  color: var(--navy);
+  background: var(--pokemon-yellow);
+}
+.raid-hotspot-card h4 {
+  min-height: 40px;
+  margin: 13px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 700;
+}
+.raid-hotspot-count {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  color: var(--accent);
+}
+.raid-hotspot-count strong {
+  font-size: 34px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.raid-hotspot-count > span {
+  font-size: 13px;
+}
+.raid-hotspot-count small {
+  display: inline-block;
+  margin-left: 7px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.raid-hotspot-card > p {
+  margin: 9px 0 12px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.raid-hotspot-coordinates {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  overflow-wrap: anywhere;
+}
+.raid-hotspot-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 13px;
+  margin-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.raid-hotspot-actions > .coordinate-copy:has(.coordinate-copy-fallback) {
+  flex-basis: 100%;
+}
+.raid-hotspot-view,
+.raid-region-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 36px;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+.raid-hotspots-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 125px;
+  padding: 20px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.raid-hotspots-coverage {
+  font-size: 11px;
+}
+.live-gym-results {
+  scroll-margin-top: 90px;
+}
+.live-results-label {
+  margin: 0 0 15px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.raid-region-summary {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding: 18px 24px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.raid-radius-diagram {
+  width: 220px;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+.raid-radius-diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.raid-radius-diagram text {
+  font-size: 11px;
+  fill: var(--muted);
+}
+.raid-radius-disc {
+  fill: #f3f7ff;
+  stroke: #91acd5;
+}
+.raid-radius-inner,
+.raid-radius-axis {
+  fill: none;
+  stroke: #c6d5eb;
+  stroke-dasharray: 3 3;
+}
+.radius-gym-active {
+  fill: var(--pokemon-blue);
+  opacity: 0.75;
+}
+.radius-gym-upcoming {
+  fill: #c19500;
+  opacity: 0.8;
+}
+.raid-radius-center {
+  fill: var(--pokemon-red);
+  stroke: #fff;
+  stroke-width: 2;
+}
+.raid-radius-legend { display: flex; justify-content: center; gap: 12px; margin-top: 8px; color: var(--muted); font-size: 10px; }
+.raid-radius-legend span { display: inline-flex; align-items: center; gap: 4px; }
+.raid-radius-legend i { width: 7px; height: 7px; border-radius: 50%; }
+.radius-key-active { background: var(--pokemon-blue); }
+.radius-key-upcoming { background: #c19500; }
+.radius-key-center { background: var(--pokemon-red); }
+.live-raid-elapsed { height: 5px; margin-top: 12px; overflow: hidden; border-radius: 4px; background: #e2eaf7; }
+.live-raid-elapsed > span { display: block; height: 100%; border-radius: inherit; background: var(--pokemon-blue); }
+.raid-region-copy {
+  min-width: 0;
+}
+.raid-region-copy h3 {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 8px 0;
+}
+.raid-region-copy p {
+  margin: 0 0 7px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.raid-region-copy > small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.raid-region-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 15px;
+  margin-top: 18px;
+}
+@media (max-width: 760px) {
+  .raid-hotspots-heading { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .raid-hotspots { padding: 17px; }
+  .raid-radius-options { flex-wrap: wrap; max-width: 100%; }
+  .raid-hotspot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .raid-region-summary { padding: 17px; flex-direction: column; gap: 12px; align-items: stretch; }
+  .raid-radius-diagram { align-self: center; }
+}
+@media (max-width: 520px) {
+  .raid-hotspot-grid { grid-template-columns: minmax(0, 1fr); }
+  .raid-hotspots h3 { font-size: 17px; }
+  .raid-radius-options { width: 100%; gap: 2px; }
+  .raid-radius-options button { flex: 1; min-width: 0; padding: 9px 5px; }
+  .raid-hotspot-card h4 { min-height: 0; }
+  .raid-region-copy h3 { font-size: 16px; }
+}
 .spot-row > .spot-icon {
   flex-shrink: 0;
 }
