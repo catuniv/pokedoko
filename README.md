@@ -33,8 +33,10 @@ npm run start    # 빌드한 Worker 로컬 실행
 - `/pokemon` 포켓몬 목록: 한국어/영어/도감 번호 검색, 레이드·이벤트 분류, 등급·색이 다른 모습·출처, 선택한 카드 안의 상세 펼침
 - 체육관별 알 부화/시작/종료 타이머: 직접 확인한 시각을 KST로 등록·수정 없이 삭제하며 현재 브라우저에 보관
 - 공개 커뮤니티 피드 갱신: 5분 캐시, 조회 실패 시 마지막 확인 자료 및 조회 시각 표시
+- 일정은 R2 공유 저장본으로 유지하고 열려 있는 화면은5분마다·화면 복귀 시 갱신. 확정된 현재/예정/기간 미확인 포켓몬을 분리하고 종료된 일정은 현재 목록에서 자동 제외
 
 추천 장소의 출처·확인 범위는 [docs/recommended-spots.md](docs/recommended-spots.md)에 정리했습니다.
+일정의 자동 갱신 범위·공유 저장·예약 작업 검증은 [docs/automatic-updates.md](docs/automatic-updates.md), 화이트·블랙큐레무 등 공식 보완 일정은 [docs/official-events.md](docs/official-events.md)에 정리했습니다.
 
 ## 데이터의 의미
 

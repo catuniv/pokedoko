@@ -18,7 +18,7 @@ test('rejects null, rollover and reversed dates and keeps stable unique IDs', ()
 });
 
 test('adds official exceptional raid hours without inventing Wednesday recurrence', () => {
-  const hours = normalizeEvents([]);
+  const hours = normalizeEvents([]).filter(e => e.id.startsWith('official-raid-hour-'));
   assert.deepEqual(hours.map(e => e.start.value.slice(0, 10)), ['2026-11-09', '2026-11-10']);
   const zamazenta = hours.find(e => e.id === 'official-raid-hour-2026-11-10');
   assert.equal(zamazenta.url, 'https://pokemongo.com/news/into-the-wild-2026');
@@ -37,6 +37,18 @@ test('confirms a dated boss window instead of treating a retrieved list as alway
   assert.equal(normalizeBosses(raw, [], new Date('2026-11-10T00:00:00Z'))[0].confirmedWindow, true);
   assert.equal(normalizeBosses(raw, [], new Date('2027-01-10T00:00:00Z'))[0].confirmedWindow, false);
   assert.equal(normalizeBosses(raw)[0].nameKo, '꿈트렁');
+});
+
+test('official White Kyurem periods remain attached after expiry and whole-weekend data cannot blur the two days', () => {
+ const white={name:'White Kyurem',tier:'5-Star Raids',image:'https://cdn.leekduck.com/assets/img/pokemon_icons/pm646.fWHITE.icon.png'};
+ const black={...white,name:'Black Kyurem',image:'https://cdn.leekduck.com/assets/img/pokemon_icons/pm646.fBLACK.icon.png'};
+ const events=normalizeEvents([{...event,eventID:'pokemon-go-wild-area-2026-global',eventType:'event',start:'2026-11-14T10:00:00',end:'2026-11-15T18:00:00',extraData:{raidbattles:{bosses:[white,black]}}}]);
+ assert.equal(events.find(e=>e.id==='pokemon-go-wild-area-2026-global').pokemon.length,0);
+ const current=normalizeBosses([white],events,new Date('2026-11-14T02:00:00Z'))[0];
+ assert.equal(current.nameKo,'화이트큐레무');assert.equal(current.form,'white');assert.equal(current.confirmedWindow,true);
+ assert.equal(current.start.value,'2026-11-14T10:00:00');assert.equal(current.end.value,'2026-11-14T18:00:00');
+ const ended=normalizeBosses([white],events,new Date('2026-11-14T09:00:00Z'))[0];
+ assert.equal(ended.confirmedWindow,false);assert.equal(ended.end.value,current.end.value);
 });
 
 test('network failure never throws or assigns a fresh time to the saved snapshot', async () => {
@@ -83,4 +95,35 @@ test('malformed successful HTTP payloads use the saved data', async () => {
     assert.ok(result.bosses.length);
     assert.ok(result.error);
   } finally { globalThis.fetch = original; }
+});
+
+test('expired schedule requests recover without reusing an abandoned promise or freshening old data', async () => {
+  const originalFetch=globalThis.fetch, originalNow=Date.now;
+  let clock=originalNow(), phase='prime', calls=0, release;
+  const gate=new Promise(resolve=>{release=resolve;});
+  const boss={name:'Grookey',tier:'1-Star Raids',image:'https://cdn.leekduck.com/assets/img/pokemon_icons/pm810.icon.png'};
+  try {
+    Date.now=()=>clock;
+    globalThis.fetch=async url=>{
+      calls++;
+      const part=phase;
+      if(part==='hang')return new Promise(()=>{});
+      if(part==='fresh')await gate;
+      return Response.json(String(url).includes('events.min.json')?[{...event,eventID:part}]:[boss]);
+    };
+    const {loadFeed}=await import('../lib/feed.ts?pending-recovery');
+    await loadFeed();
+    phase='hang';clock+=300001;
+    const abandoned=loadFeed();
+    phase='fresh';clock+=9001;
+    const replacement=loadFeed(), concurrent=loadFeed();
+    assert.equal(calls,6);
+    await abandoned;
+    const stillPending=loadFeed();
+    assert.equal(calls,6);
+    release();
+    for(const result of await Promise.all([replacement,concurrent,stillPending]))assert.ok(result.events.some(e=>e.id==='fresh'));
+    assert.ok((await loadFeed()).events.some(e=>e.id==='fresh'));
+    assert.equal(calls,6);
+  } finally {globalThis.fetch=originalFetch;Date.now=originalNow;release?.();}
 });

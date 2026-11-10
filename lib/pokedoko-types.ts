@@ -31,6 +31,8 @@ export type RaidBoss = Pokemon & {
   tier: string;
   confirmedWindow: boolean;
   sourceUrl: string;
+  start?: EventTime;
+  end?: EventTime;
 };
 export type Feed = {
   events: GoEvent[];

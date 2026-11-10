@@ -1,4 +1,6 @@
 import snapshot from "./feed-snapshot.json" with { type: "json" };
+import pokemonNames from "./pokemon-names.json" with { type: "json" };
+import { withOfficialEvents } from "./official-events.ts";
 import type {
   EventKind,
   EventTime,
@@ -39,6 +41,10 @@ const names: Record<string, string> = {
   "Deoxys (Defense)": "테오키스 · 디펜스",
   "Deoxys (Attack)": "테오키스 · 어택",
   "Deoxys (Speed)": "테오키스 · 스피드",
+  "White Kyurem": "화이트큐레무",
+  "Kyurem (White)": "화이트큐레무",
+  "Black Kyurem": "블랙큐레무",
+  "Kyurem (Black)": "블랙큐레무",
 };
 const eventNames: Record<string, string> = {
   "into-the-wild-2026": "와일드 에리어로 가는 길",
@@ -92,15 +98,20 @@ function pokemon(value: unknown): Pokemon | null {
   if (!name) return null;
   const base = name.replace(/^Shadow /, ""),
     id = Number(image.match(/(?:pm|pokemon_icon_)(\d+)/)?.[1]) || null;
+  const catalog: Record<string, { ko?: string; en?: string }> = pokemonNames;
+  const species = id ? catalog[String(id)] : undefined;
+  const translated = names[base] || (species?.en?.toLowerCase() === base.toLowerCase() ? species.ko : null) || base;
+  const form = /^(White Kyurem|Kyurem \(White\))$/.test(base) ? "white" : /^(Black Kyurem|Kyurem \(Black\))$/.test(base) ? "black" : undefined;
   return {
     id,
     name,
-    nameKo: `${name.startsWith("Shadow ") ? "그림자 " : ""}${names[base] || base}`,
+    nameKo: `${name.startsWith("Shadow ") ? "그림자 " : ""}${translated}`,
     image,
     shiny: raw.canBeShiny === true,
     types: list(raw.types)
       .map((t) => string(object(t).name))
       .filter(Boolean),
+    ...(form ? { form } : {}),
   };
 }
 const kindMap: Record<string, EventKind> = {
@@ -186,7 +197,7 @@ export function normalizeEvents(raw: unknown): GoEvent[] {
                 canBeShiny: true,
               })!,
           )
-        : extracted(row);
+        : extracted(row).filter((p) => id !== "pokemon-go-wild-area-2026-global" || ![643, 644, 646].includes(p.id ?? 0));
     events.set(id, {
       id,
       name,
@@ -218,7 +229,7 @@ export function normalizeEvents(raw: unknown): GoEvent[] {
         events.delete(id);
     events.set(event.id, event);
   }
-  return [...events.values()].sort(
+  return withOfficialEvents([...events.values()]).sort(
     (a, b) =>
       a.start.value.localeCompare(b.start.value) || a.id.localeCompare(b.id),
   );
@@ -239,31 +250,32 @@ export function normalizeBosses(
       tier = string(row.tier);
     if (!p || !tier || seen.has(`${p.name}|${tier}`)) return [];
     seen.add(`${p.name}|${tier}`);
-    const matching = events.find(
+    const isCurrent = (e: GoEvent) =>
+      e.start.kind === "local"
+        ? wall >= e.start.value && wall < e.end.value
+        : now.getTime() >= Date.parse(e.start.value) && now.getTime() < Date.parse(e.end.value);
+    const candidates = events.filter(
       (e) =>
-        e.pokemon.some((q) => q.name === p.name) &&
-        (e.start.kind === "local"
-          ? wall >= e.start.value && wall < e.end.value
-          : now.getTime() >= Date.parse(e.start.value) &&
-            now.getTime() < Date.parse(e.end.value)),
+        e.pokemon.some((q) => q.name === p.name || p.id === q.id && p.form && p.form === q.form) ||
+        /raid|레이드/i.test(e.name) && e.name.toLowerCase().includes(p.name.toLowerCase()),
     );
-    const explicit =
-      [
+    const explicitlyKnown = [
         "Druddigon",
         "Orthworm",
         "Zacian (Crowned Sword)",
         "Zamazenta (Crowned Shield)",
-      ].includes(p.name) &&
-      wall >= "2026-11-09T10:00:00.000" &&
-      wall < "2026-11-13T20:00:00.000";
+      ].includes(p.name);
+    if (explicitlyKnown) candidates.push({ id: "into-the-wild-2026-bosses", name: "Into the Wild raids", nameKo: "와일드 에리어로 가는 길", kind: "event", start: { value: "2026-11-09T10:00:00.000", kind: "local" }, end: { value: "2026-11-13T20:00:00.000", kind: "local" }, image: "", url: OFFICIAL, pokemon: [p], summary: "공식 등장 기간" });
+    const broad = candidates.filter((e) => e.kind !== "raid-hour");
+    const options = (broad.length ? broad : candidates).sort((a, b) => a.start.value.localeCompare(b.start.value));
+    const matching = options.find(isCurrent) || options.find((e) => e.start.kind === "local" ? e.start.value > wall : Date.parse(e.start.value) > now.getTime()) || options.at(-1);
     return [
       {
         ...p,
         tier,
-        confirmedWindow: Boolean(matching || explicit),
-        sourceUrl: explicit
-          ? OFFICIAL
-          : matching?.url || "https://leekduck.com/boss/",
+        confirmedWindow: Boolean(matching && isCurrent(matching)),
+        sourceUrl: matching?.url || "https://leekduck.com/boss/",
+        ...(matching ? { start: matching.start, end: matching.end } : {}),
       },
     ];
   });
@@ -287,27 +299,56 @@ let state = {
 let lastAttempt = 0,
   previous: Feed | null = null,
   pending: Promise<Feed> | null = null;
+let pendingStarted = 0, generation = 0;
+let cancelPending: (() => void) | null = null;
 export async function loadFeed(): Promise<Feed> {
+  if (pending) {
+    if (Date.now() - pendingStarted < 9_000) return pending;
+    generation++;
+    cancelPending?.();
+    pending = null;
+    cancelPending = null;
+    lastAttempt = 0;
+  }
   if (previous && Date.now() - lastAttempt < 300_000)
     return {
       ...previous,
       bosses: normalizeBosses(state.bossesRaw, state.events),
     };
-  if (pending) return pending;
-  pending = (async () => {
+  const attempt = ++generation;
+  pendingStarted = Date.now();
+  const controller = new AbortController();
+  cancelPending = () => controller.abort();
+  const job = (async () => {
     lastAttempt = Date.now();
+    const draft = { ...state };
     const fetchJson = async (file: string) => {
-      const response = await fetch(`${BASE}${file}.min.json`, {
-        signal: AbortSignal.timeout(8000),
-        headers: { Accept: "application/json" },
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data: unknown = await response.json();
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      let aborted: (() => void) | undefined;
+      const work = (async () => {
+        const response = await fetch(`${BASE}${file}.min.json`, {
+          signal: controller.signal, headers: { Accept: "application/json" },
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return await response.json() as unknown;
+      })();
+      let data: unknown;
+      try {
+        data = await Promise.race([work, new Promise<never>((_, reject) => {
+          aborted = () => reject(new Error("Schedule source timed out"));
+          controller.signal.addEventListener("abort", aborted, { once: true });
+          timer = setTimeout(() => { controller.abort(); reject(new Error("Schedule source timed out")); }, 8000);
+          if (controller.signal.aborted) aborted();
+        })]);
+      } finally {
+        if (timer) clearTimeout(timer);
+        if (aborted) controller.signal.removeEventListener("abort", aborted);
+      }
       if (
         !Array.isArray(data) ||
         !data.length ||
         (file === "events"
-          ? normalizeEvents(data).length <= officialHours.length
+          ? !data.some((value) => { const row = object(value), start = time(row.start), end = time(row.end); return string(row.eventID) && string(row.name) && start && end && start.kind === end.kind && (start.kind === "local" ? start.value < end.value : Date.parse(start.value) < Date.parse(end.value)); })
           : normalizeBosses(data, []).length === 0)
       )
         throw new Error("Empty or invalid feed");
@@ -320,17 +361,17 @@ export async function loadFeed(): Promise<Feed> {
     const fetchedAt = new Date().toISOString(),
       failed = events.status === "rejected" || bosses.status === "rejected";
     if (events.status === "fulfilled") {
-      state.events = normalizeEvents(events.value);
-      state.eventsAt = fetchedAt;
+      draft.events = normalizeEvents(events.value);
+      draft.eventsAt = fetchedAt;
     }
     if (bosses.status === "fulfilled") {
-      state.bossesRaw = bosses.value;
-      state.bossesAt = fetchedAt;
+      draft.bossesRaw = bosses.value;
+      draft.bossesAt = fetchedAt;
     }
-    previous = {
-      events: state.events,
-      bosses: normalizeBosses(state.bossesRaw, state.events),
-      fetchedAt: [state.eventsAt, state.bossesAt].sort()[0],
+    const result: Feed = {
+      events: draft.events,
+      bosses: normalizeBosses(draft.bossesRaw, draft.events),
+      fetchedAt: [draft.eventsAt, draft.bossesAt].sort()[0],
       source,
       sourceUrl: FALLBACK_FEED.sourceUrl,
       cached: failed,
@@ -338,14 +379,16 @@ export async function loadFeed(): Promise<Feed> {
         ? "일부 정보를 가져오지 못해 마지막으로 확인한 정보를 함께 보여드려요."
         : null,
     };
-    return previous;
+    if (attempt === generation) { state = draft; previous = result; }
+    return result;
   })()
     .catch(() => ({
       ...FALLBACK_FEED,
       error: "연결하지 못해 저장된 정보를 보여드려요.",
     }))
     .finally(() => {
-      pending = null;
+      if (pending === job) { pending = null; cancelPending = null; }
     });
+  pending = job;
   return pending;
 }

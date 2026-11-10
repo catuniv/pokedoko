@@ -22,6 +22,7 @@ import {
   X,
 } from "lucide-react";
 import { FALLBACK_FEED } from "@/lib/feed";
+import { availableRaidEvents, nextRaidEvent } from "@/lib/feed-availability";
 import { CITIES } from "@/lib/cities";
 import {
   countdown,
@@ -63,7 +64,7 @@ const COPY = {
   calendar: ["이벤트 캘린더", "날짜별 이벤트 일정과 등장 포켓몬을 확인하세요."],
   pokemon: [
     "등장 포켓몬",
-    "최근 게시된 레이드 보스와 이벤트 등장 포켓몬을 확인하세요.",
+    "현재·예정 포켓몬과 확인된 등장 기간을 확인하세요.",
   ],
 };
 const SOURCE = "https://github.com/bigfoott/ScrapedDuck";
@@ -128,7 +129,7 @@ export default function Pokedoko({
     const id = ++requestId.current;
     setLoading(true);
     try {
-      const r = await fetch("/api/feed");
+      const r = await fetch("/api/feed", { cache: "no-store" });
       if (!r.ok) throw Error();
       const next: Feed = await r.json();
       if (!Array.isArray(next.events) || !Array.isArray(next.bosses))
@@ -170,10 +171,13 @@ export default function Pokedoko({
     if (Array.isArray(gs)) setObservations(gs.filter(isObservation));
     setReady(true);
     void refresh();
-    const poll = setInterval(() => void refresh(), 300000);
+    const poll = setInterval(() => { if (document.visibilityState === "visible") void refresh(); }, 300000);
+    const onVisible = () => { if (document.visibilityState === "visible") { setNow(new Date()); void refresh(); } };
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
       clearInterval(tick);
       clearInterval(poll);
+      document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("popstate", fromUrl);
       requestId.current++;
     };
@@ -231,17 +235,8 @@ export default function Pokedoko({
   const raidEvents = feed.events
     .filter((e) => e.kind === "raid-hour" || e.kind === "raid-day")
     .sort((a, b) => a.start.value.localeCompare(b.start.value));
-  const available = raidEvents.filter((e) =>
-    CITIES.some((c) => {
-      const w = eventWindow(e, c);
-      return w && w.end > clock;
-    }),
-  );
-  const event =
-    available.find((e) => e.id === selectedEventId) ??
-    available[0] ??
-    raidEvents.find((e) => e.id === selectedEventId) ??
-    raidEvents.at(-1);
+  const available = availableRaidEvents(raidEvents, CITIES, clock);
+  const event = nextRaidEvent(raidEvents, CITIES, clock, selectedEventId);
   const rows = CITIES.map((c) => {
     const w = event ? eventWindow(event, c) : null;
     return {
@@ -445,7 +440,7 @@ export default function Pokedoko({
                   <span>선택한 공식 일정</span>
                   <h2>{event?.nameKo ?? "확인된 레이드 일정 없음"}</h2>
                   <p>
-                    {event?.start.kind === "local"
+                    {!event ? "진행 중이거나 예정된 확정 일정이 없습니다. 새 공지를 확인하면 자동으로 표시합니다." : event.start.kind === "local"
                       ? "각 도시의 현지 시각에 진행 · 한국시간으로 변환"
                       : "동시에 시작하는 일정 · 한국시간으로 변환"}
                   </p>
@@ -453,9 +448,11 @@ export default function Pokedoko({
                 <select
                   aria-label="레이드 이벤트 선택"
                   value={event?.id ?? ""}
+                  disabled={!available.length}
                   onChange={(e) => setSelectedEventId(e.target.value)}
                 >
-                  {(available.length ? available : raidEvents).map((e) => (
+                  {!available.length && <option value="">확정 일정 없음</option>}
+                  {available.map((e) => (
                     <option value={e.id} key={e.id}>
                       {e.nameKo}
                     </option>

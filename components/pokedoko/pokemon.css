@@ -595,3 +595,22 @@
     font-size: 13px;
   }
 }
+
+/* Current, upcoming and undated records remain visibly distinct. */
+.pokemon-tabs { flex-wrap: wrap; flex-shrink: 1; min-width: 0; }
+.pokemon-tabs button { white-space: nowrap; }
+.pokemon-upcoming-note { display: flex; align-items: center; justify-content: space-between; gap: 14px; width: 100%; min-width: 0; margin: 0 0 18px; padding: 15px 17px; text-align: left; border: 1px solid var(--line); border-radius: 10px; background: var(--accent-soft); color: var(--accent); }
+.pokemon-upcoming-note > span:first-child { display: grid; gap: 5px; min-width: 0; }
+.pokemon-upcoming-note strong { font-size: 13px; }
+.pokemon-upcoming-note span { font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.pokemon-upcoming-note > span:last-child { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.pokemon-availability-unknown { color: var(--muted); }
+.pokemon-start-date { display: block; max-width: 100%; margin: -3px 0 10px; color: var(--muted); font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .pokemon-tabs { gap: 4px; }
+  .pokemon-tabs button { padding: 9px 10px; }
+  .pokemon-upcoming-note { padding: 13px; align-items: flex-start; }
+}
+@media (max-width: 350px) {
+  .pokemon-upcoming-note { flex-direction: column; gap: 6px; }
+}

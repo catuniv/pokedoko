@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowUpRight, ChevronDown, Search, Sparkles, X } from "lucide-react";
 import type { City, Feed, Pokemon } from "@/lib/pokedoko-types";
-import { eventWindow, formatKst } from "@/lib/raid-time";
+import { eventWindow, formatKst, localParts } from "@/lib/raid-time";
+import { bossWindow, classifyBoss, pokemonIdentity } from "@/lib/feed-availability";
 import "./pokemon.css";
 
 type Props = { feed: Feed; now: Date; city: City };
@@ -13,9 +14,10 @@ type Entry = {
   event: boolean;
   tiers: string[];
   confirmed: boolean;
-  sources: { name: string; url: string; until?: Date }[];
+  availability: "current" | "upcoming" | "unknown";
+  sources: { name: string; url: string; start?: Date; until?: Date }[];
 };
-type Tab = "all" | "raid" | "event";
+type Tab = "all" | "raid" | "event" | "upcoming" | "unknown";
 const TYPE_KO: Record<string, string> = {
   normal: "노말",
   fire: "불꽃",
@@ -42,77 +44,58 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
   const [tier, setTier] = useState("all");
-  const activeEvents = useMemo(
-    () =>
-      feed.events.filter((event) => {
-        const window = eventWindow(event, city);
-        return window && window.start <= now && window.end > now;
-      }),
-    [feed.events, city, now],
-  );
   const entries = useMemo(() => {
     const merged = new Map<string, Entry>();
-    function add(
-      pokemon: Pokemon,
-      source: Entry["sources"][number],
-      raid: boolean,
-      tier?: string,
-      confirmed = false,
-    ) {
-      const key = `${pokemon.id ?? pokemon.name.toLowerCase()}-${pokemon.form || pokemon.name.toLowerCase()}`;
+    function add(pokemon: Pokemon, source: Entry["sources"][number], availability: Entry["availability"], raid: boolean, event: boolean, tier?: string) {
+      const key = `${availability}:${pokemonIdentity(pokemon)}`;
       const existing = merged.get(key);
       if (existing) {
         existing.raid ||= raid;
-        existing.event ||= !raid;
-        existing.confirmed ||= confirmed;
+        existing.event ||= event;
+        existing.confirmed ||= availability !== "unknown";
         if (tier && !existing.tiers.includes(tier)) existing.tiers.push(tier);
-        if (!existing.sources.some((item) => item.url === source.url))
-          existing.sources.push(source);
-        if (pokemon.shiny)
-          existing.pokemon = { ...existing.pokemon, shiny: true };
-      } else
-        merged.set(key, {
-          pokemon,
-          raid,
-          event: !raid,
-          tiers: tier ? [tier] : [],
-          confirmed,
-          sources: [source],
-        });
+        if (!existing.sources.some((item) => item.url === source.url && item.start?.getTime() === source.start?.getTime())) existing.sources.push(source);
+        if (pokemon.shiny) existing.pokemon = { ...existing.pokemon, shiny: true };
+      } else merged.set(key, { pokemon, raid, event, tiers: tier ? [tier] : [], confirmed: availability !== "unknown", availability, sources: [source] });
     }
-    feed.bosses.forEach((boss) =>
-      add(
-        boss,
-        {
-          name: "최근 게시된 레이드 보스",
-          url: boss.sourceUrl || feed.sourceUrl,
-        },
-        true,
-        boss.tier,
-        boss.confirmedWindow,
-      ),
-    );
-    activeEvents.forEach((event) => {
-      const until = eventWindow(event, city)?.end;
-      event.pokemon.forEach((pokemon) =>
-        add(
-          pokemon,
-          { name: event.nameKo || event.name, url: event.url, until },
-          false,
-        ),
-      );
+    feed.bosses.forEach((boss) => {
+      const availability = classifyBoss(boss, city, now);
+      if (availability === "expired") return;
+      const window = bossWindow(boss, city);
+      add(boss, {
+        name: availability === "unknown" ? "최근 게시 · 기간 미확인" : availability === "upcoming" ? "예정 레이드" : "레이드 등장 기간 확인",
+        url: boss.sourceUrl || feed.sourceUrl,
+        start: window?.start, until: window?.end,
+      }, availability, true, false, boss.tier);
     });
-    return [...merged.entries()];
-  }, [feed.bosses, feed.sourceUrl, activeEvents, city]);
+    feed.events.forEach((event) => {
+      const window = eventWindow(event, city);
+      if (!window || window.end <= now) return;
+      const availability = window.start > now ? "upcoming" : "current";
+      event.pokemon.forEach((pokemon) => add(pokemon, {
+        name: event.nameKo || event.name, url: event.url, start: window.start, until: window.end,
+      }, availability, event.kind === "raid-hour" || event.kind === "raid-day", true));
+    });
+    for (const entry of merged.values())
+      entry.sources.sort((a, b) => (a.start?.getTime() ?? Infinity) - (b.start?.getTime() ?? Infinity));
+    return [...merged.entries()].sort(([, a], [, b]) => {
+      const start = (entry: Entry) => Math.min(...entry.sources.map((source) => source.start?.getTime() ?? Infinity));
+      return start(a) - start(b) || a.pokemon.name.localeCompare(b.pokemon.name);
+    });
+  }, [feed.bosses, feed.events, feed.sourceUrl, city, now]);
+  const currentEntries = entries.filter(([, item]) => item.availability === "current");
+  const upcomingEntries = entries.filter(([, item]) => item.availability === "upcoming");
+  const unknownEntries = entries.filter(([, item]) => item.availability === "unknown");
+  const tabEntries = tab === "upcoming" ? upcomingEntries : tab === "unknown" ? unknownEntries : currentEntries;
   const normalizedQuery = query
     .trim()
     .toLowerCase()
     .replace(/\s/g, "")
     .replace(/^#/, "");
-  const tiers = [...new Set(feed.bosses.map((boss) => boss.tier))];
-  const visible = entries.filter(
+  const tiers = [...new Set(tabEntries.flatMap(([, item]) => item.tiers))];
+  const visible = tabEntries.filter(
     ([, item]) =>
-      (tab === "all" ||
+      (["all", "upcoming", "unknown"].includes(tab) ||
         (tab === "raid" && item.raid) ||
         (tab === "event" && item.event)) &&
       (tier === "all" || item.tiers.includes(tier)) &&
@@ -125,7 +108,14 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
           value.toLowerCase().replace(/\s/g, "").includes(normalizedQuery),
         )),
   );
-  const eventPokemonCount = entries.filter(([, item]) => item.event).length;
+  const eventPokemonCount = currentEntries.filter(([, item]) => item.event).length;
+  useEffect(() => {
+    if (selected && !visible.some(([key]) => key === selected)) setSelected(null);
+  }, [selected, visible]);
+  const localDate = (date: Date) => {
+    const p = localParts(date, city.zone);
+    return `${p.month}월 ${p.day}일 ${String(p.hour).padStart(2, "0")}:${String(p.minute).padStart(2, "0")}`;
+  };
 
   return (
     <section className="pokemon-availability" aria-label="등장 포켓몬">
@@ -134,15 +124,17 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
           <span className="pokemon-eyebrow">POKÉMON LIST</span>
           <h2>등장 포켓몬</h2>
         </div>
-        <span className="pokemon-city-label">{city.name}의 이벤트 기준</span>
+        <span className="pokemon-city-label">{city.name} 현지 일정 기준 · 매초 자동 판정</span>
       </div>
       <div className="pokemon-controls">
         <div className="pokemon-tabs" aria-label="포켓몬 목록 필터">
           {(
             [
-              { key: "all", name: "전체" },
+              { key: "all", name: "현재 전체" },
               { key: "raid", name: "레이드" },
               { key: "event", name: "이벤트" },
+              { key: "upcoming", name: "예정" },
+              { key: "unknown", name: "기간 미확인" },
             ] as { key: Tab; name: string }[]
           ).map(({ key, name }) => (
             <button
@@ -158,11 +150,7 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
             >
               {name}
               <span>
-                {key === "all"
-                  ? entries.length
-                  : key === "raid"
-                    ? entries.filter(([, item]) => item.raid).length
-                    : eventPokemonCount}
+                {key === "all" ? currentEntries.length : key === "raid" ? currentEntries.filter(([, item]) => item.raid).length : key === "event" ? eventPokemonCount : key === "upcoming" ? upcomingEntries.length : unknownEntries.length}
               </span>
             </button>
           ))}
@@ -196,16 +184,8 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
       <div className="pokemon-list-caption">
         <div>
           <span className="pokemon-status-dot" />
-          <strong>
-            {tab === "event"
-              ? "진행 중인 이벤트의 포켓몬"
-              : "최근 게시된 레이드 보스"}
-          </strong>
-          <span>
-            {tab === "event"
-              ? `${activeEvents.length}개의 진행 중인 이벤트 확인`
-              : "보스별 등장 기간은 원문에서 확인해 주세요"}
-          </span>
+          <strong>{tab === "upcoming" ? "공개된 예정 포켓몬" : tab === "unknown" ? "등장 기간을 확인할 수 없는 보스" : tab === "event" ? "진행 중인 이벤트의 포켓몬" : "현재 일정의 포켓몬"}</strong>
+          <span>{tab === "unknown" ? "현재 등장한다고 보장하지 않습니다" : "선택 도시의 시작·종료 시각을 자동 적용합니다"}</span>
         </div>
         {tab !== "event" && tiers.length > 1 && (
           <label className="pokemon-tier-filter">
@@ -228,15 +208,16 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
           </label>
         )}
       </div>
-      {tab !== "raid" && eventPokemonCount === 0 && (
-        <div className="pokemon-source-note">
-          <Sparkles size={15} />
-          <p>
-            이벤트별 등장 포켓몬 정보가 제공되지 않았습니다. 상세 목록은 이벤트
-            원문에서 확인하세요.
-          </p>
-        </div>
+      {tab !== "upcoming" && upcomingEntries.length > 0 && (
+        <button type="button" className="pokemon-upcoming-note" onClick={() => { setTab("upcoming"); setTier("all"); setSelected(null); }}>
+          <span><strong>예정 포켓몬 {upcomingEntries.length}종</strong><span>{upcomingEntries.slice(0, 3).map(([, item]) => item.pokemon.nameKo || item.pokemon.name).join(" · ")}</span></span>
+          <span>일정 보기 <ArrowUpRight size={15} /></span>
+        </button>
       )}
+      {tab === "event" && eventPokemonCount === 0 && (
+        <div className="pokemon-source-note"><Sparkles size={15} /><p>현재 이벤트에 공개된 포켓몬 목록이 없습니다. 예정 일정은 ‘예정’에서 확인하세요.</p></div>
+      )}
+      {tab === "unknown" && <div className="pokemon-source-note"><p>최근 게시된 목록이지만 시작·종료일이 확인되지 않았습니다. 원문에서 기간을 확인하세요.</p></div>}
       {visible.length > 0 ? (
         <div className="pokemon-grid">
           {visible.map(([key, item]) => {
@@ -300,9 +281,10 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
                       <span className="pokemon-event-tag">이벤트</span>
                     )}
                   </span>
-                  {item.confirmed && (
-                    <span className="pokemon-confirmed">이벤트 기간 확인</span>
-                  )}
+                  <span className={`pokemon-confirmed pokemon-availability-${item.availability}`}>
+                    {item.availability === "upcoming" ? "예정 · 기간 확인" : item.availability === "unknown" ? "기간 미확인" : "현재 · 기간 확인"}
+                  </span>
+                  {item.availability === "upcoming" && item.sources[0]?.start && <span className="pokemon-start-date">KST {formatKst(item.sources[0].start)}</span>}
                   <span className="pokemon-card-detail">
                     {expanded ? "상세 접기" : "자세히 보기"}
                     <ChevronDown size={12} />
@@ -344,10 +326,9 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
                           ))}
                         </div>
                       )}
-                      {item.raid && !item.confirmed && (
+                      {item.availability === "unknown" && (
                         <small>
-                          최근 게시된 레이드 보스 목록입니다. 실제 체육관의
-                          보스와 등장 기간은 다를 수 있습니다.
+                          등장 기간이 확인되지 않은 보스입니다. 현재 체육관에 등장하는지는 이 목록으로 판단할 수 없습니다.
                         </small>
                       )}
                     </div>
@@ -361,11 +342,8 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
                         >
                           <span>
                             <strong>{source.name}</strong>
-                            {source.until && (
-                              <small>
-                                한국시간 {formatKst(source.until, true)}까지
-                              </small>
-                            )}
+                            {source.start && source.until && <small>한국시간 {formatKst(source.start)} ~ {formatKst(source.until)}</small>}
+                            {source.start && source.until && <small>{city.name} 현지 {localDate(source.start)} ~ {localDate(source.until)}</small>}
                           </span>
                           <ArrowUpRight size={15} />
                         </a>
@@ -386,7 +364,7 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
           <p>
             {query
               ? "한국어·영어 이름 또는 도감 번호로 검색하세요."
-              : "공개된 데이터에 포켓몬 목록이 없습니다."}
+              : tab === "unknown" ? "기간 미확인 보스가 없습니다." : tab === "upcoming" ? "확인된 예정 포켓몬이 없습니다." : "현재 등장 기간이 확인된 포켓몬이 없습니다. 예정·기간 미확인 목록을 확인하세요."}
           </p>
           {query && (
             <button
