@@ -15,9 +15,9 @@ const { OFFICIAL_EVENTS } = await importTypeScript('../lib/official-events.ts');
 const { CITIES } = await importTypeScript('../lib/cities.ts');
 const { eventWindow } = await importTypeScript('../lib/raid-time.ts');
 
-test('eight page metadata entries use distinct Korean titles and fixed canonical/OG/Twitter origins', () => {
+test('nine page metadata entries use distinct Korean titles and fixed canonical/OG/Twitter origins', () => {
   assert.equal(SITE_ORIGIN, 'https://pokedoko.catuniv.workers.dev');
-  assert.equal(new Set(Object.values(PAGE_SEO).map(page => page.title)).size, 8);
+  assert.equal(new Set(Object.values(PAGE_SEO).map(page => page.title)).size, 9);
   for (const page of Object.values(PAGE_SEO)) {
     const metadata = pageMetadata(page);
     assert.equal(metadata.alternates.canonical, `${SITE_ORIGIN}${page.path}`);
@@ -37,7 +37,7 @@ test('eight page metadata entries use distinct Korean titles and fixed canonical
 
 test('sitemap contains concrete official events and existing cities, capped at 200 total unique URLs', () => {
   const entries = buildSitemap(CITIES, OFFICIAL_EVENTS);
-  assert.equal(entries.length, 8 + CITIES.length + OFFICIAL_EVENTS.length);
+  assert.equal(entries.length, 9 + CITIES.length + OFFICIAL_EVENTS.length);
   assert.equal(CITIES.length, 24);
   for (const city of CITIES) assert.ok(entries.some(entry => entry.url === `${SITE_ORIGIN}/cities/${city.id}`));
   for (const event of OFFICIAL_EVENTS) assert.ok(entries.some(entry => entry.url === `${SITE_ORIGIN}${eventPath(event.id)}`));
@@ -59,7 +59,7 @@ test('undated, reversed, invalid-calendar and untrusted-source events are never 
     { ...event, start: { value: '2026-11-14T10:00:00', kind: 'instant' } },
     { ...event, url: 'javascript:alert(1)' },
   ]) assert.equal(indexableEvent(invalid), false);
-  assert.equal(buildSitemap([], [{ ...event, start: null }]).length, 8);
+  assert.equal(buildSitemap([], [{ ...event, start: null }]).length, Object.values(PAGE_SEO).length);
   assert.ok(OFFICIAL_EVENTS.every(indexableEvent));
 });
 

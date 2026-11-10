@@ -11,6 +11,7 @@ export const PAGE_SEO = {
   calendar: { path: "/calendar", title: "포켓몬 GO 이벤트 캘린더", description: "커뮤니티 데이·스포트라이트 아워·레이드 데이 등 확인된 포켓몬 GO 일정을 달력에서 살펴보세요. 이벤트별 등장 포켓몬, 시작·종료 시각과 원문을 함께 제공합니다." },
   pokemon: { path: "/pokemon", title: "등장 포켓몬·레이드 보스 일정", description: "포켓몬 GO에 등장하는 포켓몬과 레이드 보스를 확인하세요. 확인된 기간에 따라 현재·예정·기간 미확인을 구분하고 큐레무 등 서로 다른 폼을 따로 표시합니다." },
   routes: { path: "/routes", title: "지가르데 셀 루트 목록·GPX 다운로드", description: "도시별 Pokémon GO 게임 루트와 경로 지도·GPX를 확인하고 루트를 제보하세요. 운영자가 제보를 검토해 공개하며, 추정·복원 경로를 구분하고 셀 획득을 보장하지 않습니다." },
+  regional: { path: "/regional", title: "나라별 한정 이벤트·코스튬·배경 포켓몬", description: "국가와 도시별 포켓몬 GO 한정 이벤트를 확인하세요. 공식 공지로 확인한 코스튬 포켓몬과 지역 배경, 보상 조건·현지 일정·행사 장소의 참고 좌표를 함께 제공합니다." },
   trades: { path: "/trades", title: "포켓몬 교환 상대 찾기", description: "줄 포켓몬과 원하는 포켓몬을 등록하고 지역별 교환 상대를 찾아보세요. 대면 교환과 리모트 교환 준비를 구분하며, 실제 교환 가능 여부와 진행은 Pokémon GO에서 확인합니다." },
   gpx: { path: "/gpx", title: "자동사냥 GPX·포켓스톱 순환 경로", description: "도쿄·시드니·사라고사 등 공개 GPX를 불러오거나 포켓스톱 경로를 만드세요. 걷기 9.3km/h와 순회 15·20km/h, 직접 입력 속도로 거리·예상 시간을 계산하고 GPX를 복사하거나 내려받을 수 있습니다." },
 } as const;

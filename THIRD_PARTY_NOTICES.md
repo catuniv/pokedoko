@@ -19,6 +19,10 @@ pokedoko는 [https://pokedoko.catuniv.workers.dev](https://pokedoko.catuniv.work
 - 자동 갱신 배경 카탈로그·온디맨드 이미지: [psoren/pogo-bg](https://github.com/psoren/pogo-bg). 이 카탈로그는 커뮤니티 자료이며 Pokémon 배경·상표의 권리는 원래 권리자에게 있다. 코드·회원 글·연락처는 가져오지 않는다.
 - 일본어·중국어 검색용 포켓몬 명칭은 위 PokeAPI의 공개 `pokemon_species_names.csv`에서 읽어 `lib/pokemon-localized-names.json`에 저장했다. 영어 교환 식별 이름을 유지하면서 해당 언어 이름으로 검색할 수 있다.
 
+## 지역 이벤트 자료
+
+`/regional`은 Pokémon GO·The Pokémon Company의 공식 행사 공지, 원래 게임 이미지, 공공 장소의 지리 자료를 사용합니다. [지역 이벤트 출처](docs/regional-events.md), [원본 이미지 해시·출처](lib/regional-assets.json)에 항목별 근거를 보존합니다. OpenStreetMap 좌표 자료는 OpenStreetMap 기여자 출처 링크를 제공하며 실제 게임 포켓스톱·체육관 위치라고 주장하지 않습니다. 타 커뮤니티의 글·이미지를 이벤트 자료로 복제하지 않으며, 사용자가 제시한 DC 글의 두 좌표는 출처를 링크한 참고점으로 구분합니다.
+
 ## 이벤트와 레이드 보스 데이터
 
 - 출처: [LeekDuck](https://leekduck.com), [ScrapedDuck](https://github.com/bigfoott/ScrapedDuck).

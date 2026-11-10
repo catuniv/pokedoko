@@ -157,7 +157,7 @@ export default function HuntingRoutesPage() {
   };
 
   return <LanguageScope>{<div className="hunting-page">
-    <header className="hunting-header"><a href="/live" className="hunting-brand">poke<strong>doko</strong></a><nav aria-label="주요 메뉴"><a href="/live">실시간 레이드</a><a href="/raids">레이드아워</a><a href="/calendar">일정</a><a href="/gpx" aria-current="page">GPX 자동사냥</a><a href="/routes">셀 루트</a></nav></header>
+    <header className="hunting-header"><a href="/live" className="hunting-brand">poke<strong>doko</strong></a><nav aria-label="주요 메뉴"><a href="/regional">지역 한정 이벤트</a><a href="/live">실시간 레이드</a><a href="/raids">레이드아워</a><a href="/calendar">일정</a><a href="/gpx" aria-current="page">GPX 자동사냥</a><a href="/routes">셀 루트</a></nav></header>
     <main className="hunting-main">
       <section className="hunting-heading"><span className="hunting-eyebrow"><Route size={15} /> GPX ROUTES</span><h1>자동사냥 GPX 경로</h1><p>포켓스톱 순환 경로와 공개 GPX를 골라 이동 속도를 설정하세요.</p><div className="hunting-tags"><span>걷기 9.3km/h</span><span>순회 15km/h</span><span>빠른 순회 20km/h</span></div></section>
       <div className="hunting-tabs" role="group" aria-label="자동사냥 경로 선택 방식">{([{ id: "catalog", label: "공개 GPX", icon: Route }, { id: "nearby", label: "포켓스톱으로 만들기", icon: LocateFixed }, { id: "import", label: "내 GPX", icon: FileUp }] as const).map((tab) => <button key={tab.id} type="button" aria-pressed={settings.tab === tab.id} onClick={() => changeTab(tab.id)}><tab.icon size={16} />{tab.label}</button>)}</div>

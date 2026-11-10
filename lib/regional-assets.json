@@ -1,0 +1,170 @@
+[
+  {
+    "file": "lc_tpc30th_malaysia.db19c41d33ec.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_tpc30th_malaysia.png",
+    "sha256": "db19c41d33ec0057d4286b34c9cc1819a7f3cee25fd5e3918f1088c382d31c40",
+    "width": 512,
+    "height": 512,
+    "bytes": 532620
+  },
+  {
+    "file": "lc_tpc30th_taiwan.d3ee88a1d9f8.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_tpc30th_taiwan.png",
+    "sha256": "d3ee88a1d9f8acdc51bd72369f0bce8fd233893ba65aacc3c0d872c46d0db07f",
+    "width": 512,
+    "height": 512,
+    "bytes": 423590
+  },
+  {
+    "file": "lc_tpc30th_singapore.6534cefa5fc7.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_tpc30th_singapore.png",
+    "sha256": "6534cefa5fc79723bdac57e760ec55261b42fcd61b59892733ab3135c207d1a7",
+    "width": 512,
+    "height": 512,
+    "bytes": 638179
+  },
+  {
+    "file": "lc_tpc30th_philippines.c963cf8fb2ad.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_tpc30th_philippines.png",
+    "sha256": "c963cf8fb2addf6d37b896e749986ed078007fd17158bd2e5c54bafbd3469bbc",
+    "width": 512,
+    "height": 512,
+    "bytes": 472193
+  },
+  {
+    "file": "lc_ESA_citeDeEspace.e98ae5d1cfcd.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_ESA_citeDeEspace.png",
+    "sha256": "e98ae5d1cfcd3a8ba5d351236bc3f77bd140c26a887a7e85afda3caa634ddb4f",
+    "width": 512,
+    "height": 512,
+    "bytes": 507237
+  },
+  {
+    "file": "lc_ESA_ciudadDeLasArtes.f7e8bf69f601.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_ESA_ciudadDeLasArtes.png",
+    "sha256": "f7e8bf69f6011a6ffed5d19e788216250a7e1cf909b9489cd9514c751b4b1e48",
+    "width": 512,
+    "height": 512,
+    "bytes": 478256
+  },
+  {
+    "file": "lc_ESA_euroSpaceCenter.c60fdac0978b.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_ESA_euroSpaceCenter.png",
+    "sha256": "c60fdac0978ba7a11f13aa98999203570d421b86993076cd8eb96b231488c556",
+    "width": 512,
+    "height": 512,
+    "bytes": 606666
+  },
+  {
+    "file": "lc_ESA_scienceMuseumLondon.68e449fec0ea.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_ESA_scienceMuseumLondon.png",
+    "sha256": "68e449fec0ea5b0affe2ca3332fe1f7871d59740c530a484fb1d9b161990d87e",
+    "width": 512,
+    "height": 512,
+    "bytes": 458555
+  },
+  {
+    "file": "lc_ESA_spaceCenterGermany.f0516c182e8e.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_ESA_spaceCenterGermany.png",
+    "sha256": "f0516c182e8e2852eaa6d4d1e591b953c264bd8b7797613086358a4f5c728fe2",
+    "width": 512,
+    "height": 512,
+    "bytes": 483542
+  },
+  {
+    "file": "lc_ESA_spaceExpoNL.e9769f0113b6.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_ESA_spaceExpoNL.png",
+    "sha256": "e9769f0113b68300d5163ed456ccb0ae9fe71a6d0daec36c81cd986deb77a116",
+    "width": 512,
+    "height": 512,
+    "bytes": 404084
+  },
+  {
+    "file": "lc_nightOut2026_London.f4a370585d1a.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_nightOut2026_London.png",
+    "sha256": "f4a370585d1a95da985c58f10447a92b3ad3cd8bae8d100722979c234be953f2",
+    "width": 512,
+    "height": 512,
+    "bytes": 430048
+  },
+  {
+    "file": "pm25.fANNIVERSARY_2026_MALAYSIA_01.icon.5e4b1d77b6a4.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fANNIVERSARY_2026_MALAYSIA_01.icon.png",
+    "sha256": "5e4b1d77b6a4e626b204299847e2018697e6705401c4206effb04168a5433da3",
+    "width": 256,
+    "height": 256,
+    "bytes": 25985
+  },
+  {
+    "file": "pm25.fANNIVERSARY_2026_TAIWAN_01.icon.42f072cb7e0c.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fANNIVERSARY_2026_TAIWAN_01.icon.png",
+    "sha256": "42f072cb7e0c25ed604e2f7b9fc8be232c0b3a16c34a7cb258c5f7dad12e289b",
+    "width": 256,
+    "height": 256,
+    "bytes": 25324
+  },
+  {
+    "file": "pm25.fANNIVERSARY_2026_SINGAPORE_01.icon.7068092ffc5a.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fANNIVERSARY_2026_SINGAPORE_01.icon.png",
+    "sha256": "7068092ffc5a9aa57b2788e17a2cf08422ee3c124dd7fc17d4e8bdc69d54e82c",
+    "width": 256,
+    "height": 256,
+    "bytes": 25908
+  },
+  {
+    "file": "pm25.fANNIVERSARY_2026_PHILIPPINE_01.icon.3bbdf54e59a2.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fANNIVERSARY_2026_PHILIPPINE_01.icon.png",
+    "sha256": "3bbdf54e59a2c43b02e3a8b3853e60bfb946de8b0db49e67a3be114ba95d4141",
+    "width": 256,
+    "height": 256,
+    "bytes": 26543
+  },
+  {
+    "file": "pm25.fGLASS_HELMET_2026.icon.573bf42d0e7f.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fGLASS_HELMET_2026.icon.png",
+    "sha256": "573bf42d0e7f8f001c51244b3b55b7215998f13895be7b4f2c8a5297a2ddaf5b",
+    "width": 256,
+    "height": 256,
+    "bytes": 24753
+  },
+  {
+    "file": "lc_nightOut2026_LA.55bfefaf8c21.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_nightOut2026_LA.png",
+    "sha256": "55bfefaf8c21edbd15c45fd16f292d6e606f7aa0165a935c64ce894fb4570f5a",
+    "width": 512,
+    "height": 512,
+    "bytes": 334489
+  },
+  {
+    "file": "official-artwork-25.759ceafdb4b8.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+    "sha256": "759ceafdb4b8d637dfcfe673cf672bc3c472354a3b2e7e0835d9cdcacd8d195d",
+    "width": 475,
+    "height": 475,
+    "bytes": 118057
+  },
+  {
+    "file": "official-artwork-94.b6549b805376.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png",
+    "sha256": "b6549b80537676fcf4a589c8853b38cce42f42b5f707bbe2e63797666175cf06",
+    "width": 475,
+    "height": 475,
+    "bytes": 144713
+  },
+  {
+    "file": "official-artwork-131.ffd98849dee0.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/131.png",
+    "sha256": "ffd98849dee0a265bb109d9798dbfd18b35346a1c21ca01aa0dab60a72defbc6",
+    "width": 475,
+    "height": 475,
+    "bytes": 135952
+  },
+  {
+    "file": "official-artwork-701.041072a1c2ef.png",
+    "sourceUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/701.png",
+    "sha256": "041072a1c2ef2b141295050f97a51132370e4db24da7f45286d9f96a1210543e",
+    "width": 475,
+    "height": 475,
+    "bytes": 124806
+  }
+]

@@ -321,6 +321,7 @@ export default function Pokedoko({
               {n.id === "raids" && <span className="nav-dot" />}
             </button>
           ))}
+          <a className="nav-link" href="/regional"><MapPin size={19} />지역 한정 이벤트</a>
           <a className="nav-link" href={`/gpx?city=${encodeURIComponent(selectedCity)}`}><Route size={19} />GPX 자동사냥</a>
         </nav>
         <div className="sidebar-caption saved-caption">나의 플래너</div>
