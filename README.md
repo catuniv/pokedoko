@@ -2,6 +2,8 @@
 
 한국시간(KST) 기준으로 보는 Pokémon GO 글로벌 플래너입니다. 레이드아워 시간표와 실시간 레이드 화면을 분리하고, 이벤트 달력·등장 포켓몬·체육관 기록을 제공합니다. 물려받기 프로젝트와 별도의 저장소입니다.
 
+**서비스 주소: [pokedoko.catuniv.workers.dev](https://pokedoko.catuniv.workers.dev)** — 로그인 없이 무료로 이용할 수 있습니다.
+
 ## 시작하기
 
 Node.js 22.13 이상이 필요합니다.
@@ -33,7 +35,7 @@ npm run start    # 빌드한 Worker 로컬 실행
 - `/pokemon` 포켓몬 목록: 한국어/영어/도감 번호 검색, 레이드·이벤트 분류, 등급·색이 다른 모습·출처, 선택한 카드 안의 상세 펼침
 - 체육관별 알 부화/시작/종료 타이머: 직접 확인한 시각을 KST로 등록·수정 없이 삭제하며 현재 브라우저에 보관
 - 공개 커뮤니티 피드 갱신: 5분 캐시, 조회 실패 시 마지막 확인 자료 및 조회 시각 표시
-- 일정은 R2 공유 저장본으로 유지하고 열려 있는 화면은5분마다·화면 복귀 시 갱신. 확정된 현재/예정/기간 미확인 포켓몬을 분리하고 종료된 일정은 현재 목록에서 자동 제외
+- 일정은 배포 환경의 R2 또는 KV 공유 저장본으로 유지하고 열려 있는 화면은5분마다·화면 복귀 시 갱신. 확정된 현재/예정/기간 미확인 포켓몬을 분리하고 종료된 일정은 현재 목록에서 자동 제외
 
 추천 장소의 출처·확인 범위는 [docs/recommended-spots.md](docs/recommended-spots.md)에 정리했습니다.
 일정의 자동 갱신 범위·공유 저장·예약 작업 검증은 [docs/automatic-updates.md](docs/automatic-updates.md), 화이트·블랙큐레무 등 공식 보완 일정은 [docs/official-events.md](docs/official-events.md)에 정리했습니다.
@@ -73,13 +75,16 @@ tests/                       의미 있는 시간대·데이터 검증
 - 실시간 레이드: [NYCPokeMap](https://www.nycpokemap.com/gym.html), [SydneyPogoMap](https://www.sydneypogomap.com/gym.html), [SGPokeMap](https://sgpokemap.com/gym.html)
 - 추가 수집: [LondonPogoMap](https://londonpogomap.com/gym.html), [VanPokeMap](https://vanpokemap.com/gym.html), [PoGo Radar](https://pokecoords.iflowgo.com/)
 - 포켓몬 명칭: [PokéAPI 공개 명칭 데이터](https://github.com/PokeAPI/pokeapi/blob/master/data/v2/csv/pokemon_species_names.csv)
+- 포켓몬 이미지: [PokeAPI sprites](https://github.com/PokeAPI/sprites), [원본 라이선스·권리 고지](https://github.com/PokeAPI/sprites/blob/master/LICENCE.txt). 저장한 PNG 14개의 출처는 [이미지 문서](docs/pokemon-artwork.md)에 정리했습니다.
 - 지도: [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/), 공개 도메인
 
-ScrapedDuck은 LeekDuck의 허락을 받아 제공되는 커뮤니티 피드입니다. 해당 프로젝트의 출처 표시 및 광고·유료벽 금지 조건을 지켜야 합니다. 재배포·수익화 전 최신 원문 조건을 확인하세요. Pokémon 명칭·이미지의 권리는 해당 권리자에게 있으며 본 프로젝트는 비공식 팬 도구입니다.
+ScrapedDuck은 LeekDuck의 허락을 받아 제공되는 커뮤니티 피드입니다. [원본 사용 조건](https://github.com/bigfoott/ScrapedDuck#for-developers)에 따라 LeekDuck과 ScrapedDuck의 출처를 표시하며 광고 수익화와 유료벽을 사용하지 않습니다. 현재 서비스는 무료입니다.
+
+Pokémon 명칭·이미지의 권리는 해당 권리자에게 있으며 본 프로젝트는 비공식 팬 도구입니다. PokeAPI에서 제공하는 이미지도 저작권 없는 자유 이미지로 취급하지 않습니다. 외부 이미지·피드·지도·동봉한 라이브러리의 조건은 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)를 확인하세요. 이 고지는 프로젝트 소스 코드에 새로운 포괄 라이선스를 부여하지 않습니다.
 
 ## 배포와 접근 권한
 
-현재 Sites 배포는 사용자의 요청으로 **로그인 없이 누구나 접속 가능**한 공개 상태입니다. `.openai/hosting.json`의 Site ID를 유지하고 사용자의 요청 없이 접근 정책을 바꾸지 않습니다. GitHub 저장소의 비공개 여부와 웹사이트 접속 권한은 별개입니다.
+현재 운영 주소는 **[https://pokedoko.catuniv.workers.dev](https://pokedoko.catuniv.workers.dev)**이며 **로그인 없이 누구나 접속 가능**합니다. 저장소에는 Sites 배포 설정도 보존되어 있습니다. `.openai/hosting.json`의 Site ID를 유지하고 사용자의 요청 없이 접근 정책을 바꾸지 않습니다. GitHub 저장소의 공개 여부와 웹사이트 접속 권한은 별개입니다.
 
 현재 서비스는 로그인 없는 공개 정보 도구입니다. 다른 호스팅으로 옮겨도 이 공개 정책을 유지합니다. 폴더의 `npm run dev`는 로컬 확인용입니다. 실시간 공급원 URL·토큰은 서버 환경 변수로만 설정하며 브라우저 코드나 Git에 넣지 않습니다. 배포 전에 `npm test`, `npm run typecheck`, `npm run build`를 확인합니다. 외부 Cloudflare Workers 배포 준비는 [docs/external-deployment.md](docs/external-deployment.md)에 정리합니다.
 
