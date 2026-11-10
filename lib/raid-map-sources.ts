@@ -47,7 +47,7 @@ type Options = { fetcher?: typeof fetch; now?: () => Date; cacheMs?: number };
 type CacheEntry = { result: SourceResult | null; expires: number; pending: Promise<SourceResult> | null };
 type Obj = Record<string, unknown>;
 
-const MAX_BYTES = 4 * 1024 * 1024;
+const MAX_BYTES = 8 * 1024 * 1024;
 const MAX_RAIDS = 5000;
 const MAX_AGE = 10 * 60_000;
 const CLOCK_SKEW = 60_000;

@@ -141,11 +141,20 @@ test('empty and all-failed sources remain distinct and aggregate freshness uses 
 
 test('response limits cover declared size and actual streamed bytes without exposing error text', async () => {
   const collect = collector(city => {
-    if (city.cityId === 'new-york') return new Response('{}', { headers: { 'content-length': String(4 * 1024 * 1024 + 1) } });
-    if (city.cityId === 'sydney') return new Response(new Uint8Array(4 * 1024 * 1024 + 1));
+    if (city.cityId === 'new-york') return new Response('{}', { headers: { 'content-length': String(8 * 1024 * 1024 + 1) } });
+    if (city.cityId === 'sydney') return new Response(new Uint8Array(8 * 1024 * 1024 + 1));
     throw new Error('private internal stack');
   });
   const output = await collect();
   assert.equal(output.sources.every(source => source.status === 'error'), true);
   assert.doesNotMatch(JSON.stringify(output), /private internal stack/);
+});
+
+
+test('large Max Battle sections do not discard genuine gym raids within the bounded response', async () => {
+  const collect = collector(city => Response.json({ ...payload([raid(city)]), battles: city.cityId === 'sydney' ? [{ unrelated: 'x'.repeat(4 * 1024 * 1024 + 512) }] : [] }));
+  const output = await collect();
+  assert.equal(output.sources.every(source => source.status === 'ready'), true);
+  assert.equal(output.feed.raids.length, 3);
+  assert.equal(output.feed.raids.some(entry => 'unrelated' in entry), false);
 });
