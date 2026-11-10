@@ -1,0 +1,1253 @@
+"use client";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  ArrowDownUp,
+  ArrowUpRight,
+  CalendarDays,
+  Check,
+  ChevronRight,
+  Clock3,
+  Compass,
+  Egg,
+  Globe2,
+  Info,
+  LocateFixed,
+  MapPin,
+  Plus,
+  Radio,
+  RefreshCw,
+  Search,
+  Sparkles,
+  Star,
+  Swords,
+  X,
+} from "lucide-react";
+import { FALLBACK_FEED } from "@/lib/feed";
+import { CITIES } from "@/lib/cities";
+import {
+  countdown,
+  eventWindow,
+  formatKst,
+  formatLocal,
+  getCityWindows,
+  getGymState,
+  localToInstant,
+} from "@/lib/raid-time";
+import type { City, Feed, GymObservation, Region } from "@/lib/pokedoko-types";
+import map from "@/lib/world-map.json";
+import EventCalendar from "@/components/pokedoko/EventCalendar";
+import PokemonAvailability from "@/components/pokedoko/PokemonAvailability";
+
+type View = "raids" | "calendar" | "pokemon";
+const NAV = [
+  { id: "raids", label: "글로벌 레이드", icon: Swords },
+  { id: "calendar", label: "이벤트 캘린더", icon: CalendarDays },
+  { id: "pokemon", label: "등장 포켓몬", icon: Sparkles },
+] as const;
+const REGIONS: { id: Region | "all"; label: string }[] = [
+  { id: "all", label: "전 세계" },
+  { id: "asia", label: "아시아" },
+  { id: "oceania", label: "오세아니아" },
+  { id: "europe", label: "유럽" },
+  { id: "america", label: "아메리카" },
+  { id: "africa", label: "아프리카" },
+];
+const COPY = {
+  raids: [
+    "지금, 어디서 레이드가 열릴까요?",
+    "전 세계 시간을 한국시간 하나로. 다음 모험을 미리 찾아보세요.",
+  ],
+  calendar: [
+    "놓치고 싶지 않은 순간을 모아",
+    "레이드아워부터 커뮤니티 데이까지, 이번 달의 모험을 계획하세요.",
+  ],
+  pokemon: [
+    "이번 모험에서 만날 포켓몬",
+    "최근 게시된 레이드 보스와 이벤트 등장 포켓몬을 확인하세요.",
+  ],
+};
+const SOURCE = "https://github.com/bigfoott/ScrapedDuck";
+function flag(code: string) {
+  return code
+    .toUpperCase()
+    .replace(/./g, (c) => String.fromCodePoint(127397 + c.charCodeAt(0)));
+}
+function stored(key: string): unknown {
+  try {
+    return JSON.parse(localStorage.getItem(key) ?? "null");
+  } catch {
+    return null;
+  }
+}
+function save(key: string, value: unknown) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    /* Keep current state if storage is unavailable. */
+  }
+}
+function isObservation(v: unknown): v is GymObservation {
+  if (!v || typeof v !== "object") return false;
+  const o = v as GymObservation;
+  return (
+    typeof o.id === "string" &&
+    typeof o.name === "string" &&
+    typeof o.pokemonName === "string" &&
+    CITIES.some((c) => c.id === o.cityId) &&
+    Number.isFinite(Date.parse(o.startsAt)) &&
+    (o.endsAt === null || Number.isFinite(Date.parse(o.endsAt)))
+  );
+}
+
+export default function Pokedoko() {
+  const [view, setView] = useState<View>("raids"),
+    [now, setNow] = useState<Date | null>(null),
+    [feed, setFeed] = useState<Feed>(FALLBACK_FEED),
+    [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState(""),
+    [region, setRegion] = useState<Region | "all">("all"),
+    [status, setStatus] = useState("all"),
+    [favoriteOnly, setFavoriteOnly] = useState(false),
+    [favorites, setFavorites] = useState<string[]>([]);
+  const [selectedCity, setSelectedCity] = useState("seoul"),
+    [selectedEventId, setSelectedEventId] = useState(""),
+    [observations, setObservations] = useState<GymObservation[]>([]),
+    [ready, setReady] = useState(false),
+    [toast, setToast] = useState(""),
+    [gymForm, setGymForm] = useState(false),
+    [infoOpen, setInfoOpen] = useState(false),
+    [sort, setSort] = useState<"next" | "spots">("next");
+  const requestId = useRef(0);
+  const clock = now ?? new Date(FALLBACK_FEED.fetchedAt);
+  const city = CITIES.find((c) => c.id === selectedCity) ?? CITIES[0];
+  const refresh = useCallback(async () => {
+    const id = ++requestId.current;
+    setLoading(true);
+    try {
+      const r = await fetch("/api/feed");
+      if (!r.ok) throw Error();
+      const next: Feed = await r.json();
+      if (!Array.isArray(next.events) || !Array.isArray(next.bosses))
+        throw Error();
+      if (id === requestId.current) setFeed(next);
+    } catch {
+      if (id === requestId.current)
+        setFeed((p) => ({
+          ...p,
+          cached: true,
+          error: "새 자료를 불러오지 못해 마지막 확인 자료를 보여드려요.",
+        }));
+    } finally {
+      if (id === requestId.current) setLoading(false);
+    }
+  }, []);
+  useEffect(() => {
+    setNow(new Date());
+    const tick = setInterval(() => setNow(new Date()), 1000);
+    const fromUrl = () => {
+      const v = new URLSearchParams(location.search).get("view");
+      setView(v === "calendar" || v === "pokemon" ? v : "raids");
+    };
+    fromUrl();
+    window.addEventListener("popstate", fromUrl);
+    const fs = stored("pokedoko.favorites");
+    if (Array.isArray(fs))
+      setFavorites(
+        fs.filter(
+          (x): x is string =>
+            typeof x === "string" && CITIES.some((c) => c.id === x),
+        ),
+      );
+    const gs = stored("pokedoko.gyms");
+    if (Array.isArray(gs)) setObservations(gs.filter(isObservation));
+    setReady(true);
+    void refresh();
+    const poll = setInterval(() => void refresh(), 300000);
+    return () => {
+      clearInterval(tick);
+      clearInterval(poll);
+      window.removeEventListener("popstate", fromUrl);
+      requestId.current++;
+    };
+  }, [refresh]);
+  useEffect(() => {
+    if (ready) {
+      save("pokedoko.favorites", favorites);
+      save("pokedoko.gyms", observations);
+    }
+  }, [favorites, observations, ready]);
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(""), 2500);
+    return () => clearTimeout(t);
+  }, [toast]);
+  useEffect(() => {
+    document.title = `${NAV.find((n) => n.id === view)?.label} · pokedoko`;
+  }, [view]);
+  // IANA databases can differ between the server and a browser. Calculate the
+  // moving world clock after hydration so both initial renders stay identical.
+  if (!now) return <div className="pokedoko-shell"><aside className="sidebar"><a className="brand" href="?view=raids"><span className="brand-orb"/><span>poke<strong>doko</strong><i>GLOBAL GO PLANNER</i></span></a></aside><div className="workspace"><main className="page"><div className="page-heading"><h1>당신의 다음 모험을 준비하고 있어요</h1></div><div className="panel" role="status">세계 도시의 시간을 계산하는 중이에요.</div></main></div></div>;
+  function navigate(v: View) {
+    setView(v);
+    history.pushState(null, "", `?view=${v}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function favorite(id: string) {
+    setFavorites((xs) =>
+      xs.includes(id) ? xs.filter((x) => x !== id) : [...xs, id],
+    );
+  }
+  async function copySpot(s: City["spots"][number]) {
+    try {
+      await navigator.clipboard.writeText(
+        `${s.lat.toFixed(6)}, ${s.lon.toFixed(6)}`,
+      );
+      setToast(`${s.name} 좌표를 복사했어요.`);
+    } catch {
+      setToast("복사하지 못했어요. 표시된 좌표를 직접 선택해 주세요.");
+    }
+  }
+  const raidEvents = feed.events
+    .filter((e) => e.kind === "raid-hour" || e.kind === "raid-day")
+    .sort((a, b) => a.start.value.localeCompare(b.start.value));
+  const available = raidEvents.filter((e) =>
+    CITIES.some((c) => {
+      const w = eventWindow(e, c);
+      return w && w.end > clock;
+    }),
+  );
+  const event =
+    available.find((e) => e.id === selectedEventId) ??
+    available[0] ??
+    raidEvents.find((e) => e.id === selectedEventId) ??
+    raidEvents.at(-1);
+  const rows = CITIES.map((c) => {
+    const w = event ? eventWindow(event, c) : null;
+    return {
+      city: c,
+      window: w,
+      state: !w
+        ? "unknown"
+        : clock < w.start
+          ? "upcoming"
+          : clock < w.end
+            ? "live"
+            : "ended",
+    };
+  });
+  const active = rows.filter((r) => r.state === "live"),
+    upcoming = rows
+      .filter((r) => r.state === "upcoming")
+      .sort((a, b) => a.window!.start.getTime() - b.window!.start.getTime());
+  const filtered = rows
+    .filter(
+      (r) =>
+        (region === "all" || r.city.region === region) &&
+        (status === "all" || r.state === status) &&
+        (!favoriteOnly || favorites.includes(r.city.id)) &&
+        `${r.city.name} ${r.city.nameEn} ${r.city.country}`
+          .toLowerCase()
+          .includes(query.toLowerCase()),
+    )
+    .sort((a, b) =>
+      sort === "spots"
+        ? b.city.spots.length - a.city.spots.length
+        : (a.state === "live" ? 0 : a.state === "upcoming" ? 1 : 2) -
+            (b.state === "live" ? 0 : b.state === "upcoming" ? 1 : 2) ||
+          (a.window?.start.getTime() ?? Infinity) -
+            (b.window?.start.getTime() ?? Infinity),
+    );
+  const rounds = getCityWindows(city, raidEvents, clock).slice(0, 3),
+    gyms = observations.filter((o) => o.cityId === city.id);
+  return (
+    <div className="pokedoko-shell">
+      <aside className="sidebar">
+        <a
+          className="brand"
+          href="?view=raids"
+          onClick={(e) => {
+            e.preventDefault();
+            navigate("raids");
+          }}
+        >
+          <span className="brand-orb" />
+          <span>
+            poke<strong>doko</strong>
+            <i>GLOBAL GO PLANNER</i>
+          </span>
+        </a>
+        <div className="sidebar-caption">당신의 다음 모험</div>
+        <nav aria-label="주 메뉴">
+          {NAV.map((n) => (
+            <button
+              key={n.id}
+              className={view === n.id ? "nav-link active" : "nav-link"}
+              onClick={() => navigate(n.id)}
+              aria-current={view === n.id ? "page" : undefined}
+              data-tab={n.id}
+            >
+              <n.icon size={19} />
+              {n.label}
+              {n.id === "raids" && <span className="nav-dot" />}
+            </button>
+          ))}
+        </nav>
+        <div className="sidebar-caption saved-caption">나의 플래너</div>
+        <button
+          className="nav-link"
+          onClick={() => {
+            navigate("raids");
+            setFavoriteOnly(true);
+          }}
+        >
+          <Star size={18} />
+          즐겨찾는 도시<span className="nav-count">{favorites.length}</span>
+        </button>
+        <button
+          className="nav-link"
+          onClick={() => {
+            navigate("raids");
+            setTimeout(
+              () =>
+                document
+                  .getElementById("gym-timers")
+                  ?.scrollIntoView({ behavior: "smooth" }),
+              60,
+            );
+          }}
+        >
+          <Egg size={19} />
+          체육관 타이머<span className="nav-count">{observations.length}</span>
+        </button>
+        <div className="sidebar-note">
+          <div className="orbit-decoration">✦</div>
+          <span>
+            지구 반대편에서도,
+            <br />
+            모험은 계속돼요.
+          </span>
+          <small>KST로 보는 포켓몬 GO</small>
+        </div>
+        <a
+          className="source-side"
+          href={SOURCE}
+          target="_blank"
+          rel="noreferrer"
+        >
+          데이터 출처 <ArrowUpRight size={14} />
+        </a>
+      </aside>
+      <div className="workspace">
+        <header className="topbar">
+          <div className="breadcrumb">
+            플래너 <ChevronRight size={14} />
+            <strong>{NAV.find((n) => n.id === view)?.label}</strong>
+          </div>
+          <div className="header-actions">
+            <span className="timezone-pill">
+              <Globe2 size={14} />
+              Asia / Seoul
+            </span>
+            <button
+              className="icon-button"
+              aria-label="시간과 데이터 안내"
+              onClick={() => setInfoOpen(true)}
+            >
+              <Info size={19} />
+            </button>
+            <span className="trainer-avatar">P</span>
+          </div>
+        </header>
+        <main className="page">
+          <div className="page-heading">
+            <div>
+              <span className="eyebrow">
+                <span />
+                POKÉMON GO, AROUND THE WORLD
+              </span>
+              <h1>{COPY[view][0]}</h1>
+              <p>{COPY[view][1]}</p>
+            </div>
+            <div className="korean-clock">
+              <div>
+                <Clock3 size={15} />
+                한국 표준시 <b>KST</b>
+              </div>
+              <strong suppressHydrationWarning>
+                {now ? formatLocal(now, "Asia/Seoul") : "--:--:--"}
+              </strong>
+              <span>
+                {new Intl.DateTimeFormat("ko-KR", {
+                  timeZone: "Asia/Seoul",
+                  month: "long",
+                  day: "numeric",
+                  weekday: "long",
+                }).format(clock)}
+              </span>
+            </div>
+          </div>
+          <div className={`feed-note ${feed.cached ? "is-cached" : ""}`}>
+            <span>
+              <i />
+              {feed.cached ? "보관된 자료" : "커뮤니티 자료"} ·{" "}
+              {feed.error ?? `조회 ${formatKst(new Date(feed.fetchedAt))}`}
+            </span>
+            <button onClick={() => void refresh()} disabled={loading}>
+              <RefreshCw size={13} className={loading ? "spinning" : ""} />
+              {loading ? "불러오는 중" : "새로고침"}
+            </button>
+          </div>
+          {view === "calendar" ? (
+            <EventCalendar events={feed.events} now={clock} city={city} />
+          ) : view === "pokemon" ? (
+            <PokemonAvailability feed={feed} now={clock} city={city} />
+          ) : (
+            <>
+              <section className="event-band">
+                <div className="event-band-icon">
+                  <Swords size={24} />
+                </div>
+                <div>
+                  <span>선택한 공식 일정</span>
+                  <h2>{event?.nameKo ?? "새 레이드 일정을 기다리고 있어요"}</h2>
+                  <p>
+                    {event?.start.kind === "local"
+                      ? "각 도시의 현지 시각에 진행 · 한국시간으로 변환"
+                      : "동시에 시작하는 일정 · 한국시간으로 변환"}
+                  </p>
+                </div>
+                <select
+                  aria-label="레이드 이벤트 선택"
+                  value={event?.id ?? ""}
+                  onChange={(e) => setSelectedEventId(e.target.value)}
+                >
+                  {(available.length ? available : raidEvents).map((e) => (
+                    <option value={e.id} key={e.id}>
+                      {e.nameKo}
+                    </option>
+                  ))}
+                </select>
+                {event && (
+                  <a
+                    href={event.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="event-source"
+                  >
+                    <ArrowUpRight size={17} />
+                    <span>일정 원문</span>
+                  </a>
+                )}
+              </section>
+              <div className="metrics">
+                <article>
+                  <span>
+                    <Radio size={16} />
+                    일정 진행 도시
+                  </span>
+                  <strong>
+                    {active.length}
+                    <small> / {CITIES.length}</small>
+                  </strong>
+                  <p>선택한 일정의 현지 운영시간 기준</p>
+                </article>
+                <article>
+                  <span>
+                    <Clock3 size={16} />
+                    다음 시작까지
+                  </span>
+                  <strong className="count-number">
+                    {upcoming[0]
+                      ? countdown(
+                          upcoming[0].window!.start.getTime() - clock.getTime(),
+                        )
+                      : "다음 공지 대기"}
+                  </strong>
+                  <p>
+                    {upcoming[0]
+                      ? `${flag(upcoming[0].city.countryCode)} ${upcoming[0].city.name} · ${formatKst(upcoming[0].window!.start, false)}`
+                      : "예정된 시작 시간이 없어요"}
+                  </p>
+                </article>
+                <article>
+                  <span>
+                    <MapPin size={16} />
+                    추천 스팟
+                  </span>
+                  <strong>
+                    {CITIES.reduce((n, c) => n + c.spots.length, 0)}
+                    <small>곳</small>
+                  </strong>
+                  <p>대표 장소 목록 · 실제 체육관 수 아님</p>
+                </article>
+                <article>
+                  <span>
+                    <Egg size={16} />
+                    나의 부화 대기
+                  </span>
+                  <strong>
+                    {
+                      observations.filter(
+                        (o) => getGymState(o, clock) === "waiting",
+                      ).length
+                    }
+                    <small>개</small>
+                  </strong>
+                  <p>직접 확인하고 등록한 체육관</p>
+                </article>
+              </div>
+              <div className="map-layout">
+                <section className="panel world-panel">
+                  <div className="panel-heading">
+                    <div>
+                      <span className="mini-label">WORLD RAID WINDOW</span>
+                      <h2>지금의 레이드 세계 지도</h2>
+                    </div>
+                    <span className="live-label">
+                      <i />
+                      시간대 자동 계산
+                    </span>
+                  </div>
+                  <div className="map-legend">
+                    <span>
+                      <i className="dot mint" />
+                      일정 진행
+                    </span>
+                    <span>
+                      <i className="dot gold" />
+                      시작 예정
+                    </span>
+                    <span>
+                      <i className="dot gray" />
+                      선택 일정 종료
+                    </span>
+                  </div>
+                  <svg
+                    className="world-map"
+                    viewBox="0 0 1000 470"
+                    role="group"
+                    aria-label="세계 도시별 선택한 레이드 일정"
+                  >
+                    <defs>
+                      <pattern
+                        id="grid"
+                        width="55.55"
+                        height="55.3"
+                        patternUnits="userSpaceOnUse"
+                      >
+                        <path
+                          d="M55.55 0H0V55.3"
+                          fill="none"
+                          stroke="#e4ece9"
+                          strokeWidth=".8"
+                          strokeDasharray="2 4"
+                        />
+                      </pattern>
+                    </defs>
+                    <rect width="1000" height="470" fill="url(#grid)" />
+                    {map.paths.map((d, i) => (
+                      <path key={i} d={d} className="land" />
+                    ))}
+                    {rows.map((r) => {
+                      const x = ((r.city.lon + 180) * 1000) / 360,
+                        y = ((85 - r.city.lat) * 470) / 170;
+                      return (
+                        <g
+                          key={r.city.id}
+                          transform={`translate(${x},${y})`}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`${r.city.name} ${r.state === "live" ? "일정 진행" : "시간 확인"}`}
+                          className={`map-pin ${r.state}${selectedCity === r.city.id ? " selected" : ""}`}
+                          onClick={() => setSelectedCity(r.city.id)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setSelectedCity(r.city.id);
+                            }
+                          }}
+                        >
+                          <circle className="pin-halo" r="14" />
+                          <circle className="pin-core" r="5" />
+                          {selectedCity === r.city.id && (
+                            <>
+                              <rect
+                                x="-42"
+                                y="-43"
+                                width="84"
+                                height="26"
+                                rx="7"
+                              />
+                              <text textAnchor="middle" y="-25">
+                                {r.city.name}
+                              </text>
+                            </>
+                          )}
+                        </g>
+                      );
+                    })}
+                  </svg>
+                  <div className="map-bottom">
+                    <span>
+                      <LocateFixed size={15} />
+                      {flag(city.countryCode)} {city.name} 선택됨
+                    </span>
+                    <small>체육관 실황이 아닌 공식 일정 시간대 지도예요.</small>
+                  </div>
+                </section>
+                <aside className="panel next-panel">
+                  <div className="panel-heading">
+                    <div>
+                      <span className="mini-label">UP NEXT</span>
+                      <h2>다음 모험은 여기</h2>
+                    </div>
+                    <Compass size={22} />
+                  </div>
+                  {upcoming.slice(0, 4).map((r, i) => (
+                    <button
+                      className="next-city"
+                      key={r.city.id}
+                      onClick={() => setSelectedCity(r.city.id)}
+                    >
+                      <span className="ranking">{i + 1}</span>
+                      <span>
+                        <strong>
+                          {flag(r.city.countryCode)} {r.city.name}
+                        </strong>
+                        <small>
+                          {r.city.country} · KST{" "}
+                          {formatKst(r.window!.start, false)}
+                        </small>
+                      </span>
+                      <b>
+                        {countdown(r.window!.start.getTime() - clock.getTime())}
+                      </b>
+                    </button>
+                  ))}
+                  {!upcoming.length && (
+                    <p className="empty-small">
+                      새 공식 일정이 등록되면 다음 도시를 계산해요.
+                    </p>
+                  )}
+                  <div className="next-tip">
+                    <Sparkles size={17} />
+                    <p>
+                      도시를 누르면 다음 회차와 추천 스팟을 확인할 수 있어요.
+                    </p>
+                  </div>
+                </aside>
+              </div>
+              <section className="panel city-panel">
+                <div className="panel-heading">
+                  <div>
+                    <span className="mini-label">FOLLOW THE SUN</span>
+                    <h2>
+                      도시별 레이드 타임보드 <small>{filtered.length}</small>
+                    </h2>
+                  </div>
+                  <button
+                    className={`subtle-button ${favoriteOnly ? "is-on" : ""}`}
+                    onClick={() => setFavoriteOnly(!favoriteOnly)}
+                  >
+                    <Star
+                      size={15}
+                      fill={favoriteOnly ? "currentColor" : "none"}
+                    />
+                    즐겨찾기
+                  </button>
+                </div>
+                <div className="table-controls">
+                  <div className="region-tabs">
+                    {REGIONS.map((r) => (
+                      <button
+                        className={region === r.id ? "selected" : ""}
+                        onClick={() => setRegion(r.id)}
+                        key={r.id}
+                      >
+                        {r.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="filter-controls">
+                    <label className="search-box">
+                      <Search size={16} />
+                      <input
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="도시 또는 국가 검색"
+                        aria-label="도시 또는 국가 검색"
+                      />
+                      {query && (
+                        <button
+                          aria-label="검색 지우기"
+                          onClick={() => setQuery("")}
+                        >
+                          <X size={14} />
+                        </button>
+                      )}
+                    </label>
+                    <select
+                      aria-label="진행 상태"
+                      value={status}
+                      onChange={(e) => setStatus(e.target.value)}
+                    >
+                      <option value="all">모든 상태</option>
+                      <option value="live">일정 진행</option>
+                      <option value="upcoming">시작 예정</option>
+                      <option value="ended">종료</option>
+                    </select>
+                    <button
+                      className="sort-button"
+                      onClick={() =>
+                        setSort(sort === "next" ? "spots" : "next")
+                      }
+                    >
+                      <ArrowDownUp size={14} />
+                      {sort === "next" ? "시간순" : "등록 스팟순"}
+                    </button>
+                  </div>
+                </div>
+                <div className="table-scroll">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>도시 / 국가</th>
+                        <th>현지 시각</th>
+                        <th>선택 일정 (한국시간)</th>
+                        <th>시작 / 종료까지</th>
+                        <th>추천 스팟</th>
+                        <th>
+                          <Star size={14} />
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filtered.map((r) => (
+                        <tr
+                          key={r.city.id}
+                          className={
+                            selectedCity === r.city.id ? "selected" : ""
+                          }
+                        >
+                          <td>
+                            <button
+                              className="city-name"
+                              onClick={() => setSelectedCity(r.city.id)}
+                            >
+                              <span className="flag">
+                                {flag(r.city.countryCode)}
+                              </span>
+                              <span>
+                                <strong>{r.city.name}</strong>
+                                <small>
+                                  {r.city.country} · {r.city.nameEn}
+                                </small>
+                              </span>
+                            </button>
+                          </td>
+                          <td>
+                            <strong className="time-mono">
+                              {formatLocal(clock, r.city.zone)}
+                            </strong>
+                            <small className="zone-name">{r.city.zone}</small>
+                          </td>
+                          <td>
+                            {r.window ? (
+                              <>
+                                <strong>{formatKst(r.window.start)}</strong>
+                                <small className="zone-name">
+                                  ~ {formatKst(r.window.end, false)}
+                                </small>
+                              </>
+                            ) : (
+                              <span>확인할 일정 없음</span>
+                            )}
+                          </td>
+                          <td>
+                            <span className={`state-chip ${r.state}`}>
+                              <i />
+                              {r.state === "live"
+                                ? "일정 진행"
+                                : r.state === "upcoming"
+                                  ? "시작 예정"
+                                  : r.state === "ended"
+                                    ? "종료"
+                                    : "확인 필요"}
+                            </span>
+                            <small className="zone-name time-mono">
+                              {r.window &&
+                                (r.state === "live"
+                                  ? `${countdown(r.window.end.getTime() - clock.getTime())} 남음`
+                                  : r.state === "upcoming"
+                                    ? countdown(
+                                        r.window.start.getTime() -
+                                          clock.getTime(),
+                                      )
+                                    : "다음 회차 확인")}
+                            </small>
+                          </td>
+                          <td>
+                            <button
+                              className="spot-count"
+                              onClick={() => setSelectedCity(r.city.id)}
+                            >
+                              <MapPin size={14} />
+                              {r.city.spots.length}곳<ChevronRight size={13} />
+                            </button>
+                          </td>
+                          <td>
+                            <button
+                              className="star-button"
+                              onClick={() => favorite(r.city.id)}
+                              aria-label={`${r.city.name} 즐겨찾기 ${favorites.includes(r.city.id) ? "해제" : "추가"}`}
+                              aria-pressed={favorites.includes(r.city.id)}
+                            >
+                              <Star
+                                size={17}
+                                fill={
+                                  favorites.includes(r.city.id)
+                                    ? "currentColor"
+                                    : "none"
+                                }
+                              />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {!filtered.length && (
+                  <div className="empty-state">
+                    <Search size={28} />
+                    <h3>조건에 맞는 도시가 없어요</h3>
+                    <p>검색어나 지역, 즐겨찾기 필터를 바꿔보세요.</p>
+                    <button
+                      onClick={() => {
+                        setQuery("");
+                        setRegion("all");
+                        setStatus("all");
+                        setFavoriteOnly(false);
+                      }}
+                    >
+                      필터 초기화
+                    </button>
+                  </div>
+                )}
+                <div className="table-foot">
+                  국가마다 시간대가 다를 수 있어 대표 도시를 기준으로 계산해요.
+                  서머타임은 자동 반영돼요.
+                </div>
+              </section>
+              <div className="details-layout">
+                <section className="panel">
+                  <div className="panel-heading">
+                    <div>
+                      <span className="mini-label">YOUR NEXT ROUND</span>
+                      <h2>{city.name}의 다음 공식 회차</h2>
+                    </div>
+                    <span className="city-mini-flag">
+                      {flag(city.countryCode)}
+                    </span>
+                  </div>
+                  <div className="rounds">
+                    {rounds.map((r, i) => (
+                      <a
+                        href={r.event.url}
+                        key={r.event.id}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="round"
+                      >
+                        <span
+                          className={
+                            r.active ? "round-number live" : "round-number"
+                          }
+                        >
+                          {i + 1}
+                        </span>
+                        <div>
+                          <strong>{r.event.nameKo}</strong>
+                          <p>
+                            {formatKst(r.start)} ~ {formatKst(r.end, false)} KST
+                          </p>
+                          <small>
+                            {r.active ? "진행 중 · 종료까지" : "시작까지"}{" "}
+                            {countdown(
+                              (r.active ? r.end : r.start).getTime() -
+                                clock.getTime(),
+                            )}
+                          </small>
+                        </div>
+                        <ArrowUpRight size={16} />
+                      </a>
+                    ))}
+                    {!rounds.length && (
+                      <p className="empty-small">
+                        공지가 확인된 다음 회차가 없어요. 새 일정이 올라오면
+                        표시돼요.
+                      </p>
+                    )}
+                  </div>
+                </section>
+                <section className="panel">
+                  <div className="panel-heading">
+                    <div>
+                      <span className="mini-label">PLACES TO EXPLORE</span>
+                      <h2>{city.name} 추천 스팟</h2>
+                    </div>
+                    <MapPin size={21} />
+                  </div>
+                  {city.spots.map((s) => (
+                    <div className="spot-row" key={s.name}>
+                      <div className="spot-icon">
+                        <MapPin size={18} />
+                      </div>
+                      <div>
+                        <strong>{s.name}</strong>
+                        <small>
+                          {s.lat.toFixed(5)}, {s.lon.toFixed(5)}
+                        </small>
+                      </div>
+                      <button onClick={() => void copySpot(s)}>
+                        좌표 복사
+                      </button>
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={`${s.name} 지도 열기`}
+                      >
+                        <ArrowUpRight size={17} />
+                      </a>
+                    </div>
+                  ))}
+                  <p className="panel-caption">
+                    직접 선정한 대표 장소예요. 현재 레이드 수나 체육관 밀집도를
+                    측정한 순위가 아니에요.
+                  </p>
+                </section>
+              </div>
+              <section id="gym-timers" className="panel gym-panel">
+                <div className="panel-heading">
+                  <div>
+                    <span className="mini-label">GYM HATCH TRACKER</span>
+                    <h2>확인한 알, 다음 부화까지</h2>
+                    <p>{city.name} · 직접 확인한 체육관 시간을 등록해보세요.</p>
+                  </div>
+                  <button
+                    className="primary-button"
+                    onClick={() => setGymForm(true)}
+                  >
+                    <Plus size={17} />
+                    부화 시간 등록
+                  </button>
+                </div>
+                {gyms.length ? (
+                  <div className="gym-grid">
+                    {gyms.map((o) => {
+                      const state = getGymState(o, clock);
+                      return (
+                        <article className="gym-card" key={o.id}>
+                          <div className="gym-card-top">
+                            <span className="manual-label">직접 등록</span>
+                            <button
+                              aria-label={`${o.name} 삭제`}
+                              onClick={() =>
+                                setObservations((xs) =>
+                                  xs.filter((x) => x.id !== o.id),
+                                )
+                              }
+                            >
+                              <X size={15} />
+                            </button>
+                          </div>
+                          <h3>{o.name}</h3>
+                          <p>{o.pokemonName || "보스 정보 미등록"}</p>
+                          <strong className="gym-countdown">
+                            {state === "waiting"
+                              ? countdown(
+                                  Date.parse(o.startsAt) - clock.getTime(),
+                                )
+                              : state === "active" && o.endsAt
+                                ? countdown(
+                                    Date.parse(o.endsAt) - clock.getTime(),
+                                  )
+                                : state === "ended"
+                                  ? "종료"
+                                  : "종료 시각 미등록"}
+                          </strong>
+                          <small>
+                            {state === "waiting"
+                              ? "부화까지"
+                              : state === "active"
+                                ? "종료까지"
+                                : state === "ended"
+                                  ? "등록된 종료 시각 기준"
+                                  : "시작 이후 · 종료 여부 확인 필요"}{" "}
+                            · {formatKst(new Date(o.startsAt))}
+                          </small>
+                        </article>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="gym-empty">
+                    <span>
+                      <Egg size={32} />
+                    </span>
+                    <div>
+                      <h3>아직 등록한 체육관이 없어요</h3>
+                      <p>
+                        실시간 관측 데이터가 연결되기 전에는 확인한 부화·종료
+                        시각을 직접 기록할 수 있어요.
+                      </p>
+                    </div>
+                    <button
+                      className="text-button"
+                      onClick={() => setGymForm(true)}
+                    >
+                      첫 타이머 만들기 <ChevronRight size={15} />
+                    </button>
+                  </div>
+                )}
+              </section>
+            </>
+          )}
+          <footer className="footer">
+            <span className="footer-brand">
+              pokedoko<span>오늘의 모험을, 조금 더 가깝게.</span>
+            </span>
+            <p>
+              <a href="https://leekduck.com" target="_blank" rel="noreferrer">
+                LeekDuck
+              </a>{" "}
+              ·{" "}
+              <a href={SOURCE} target="_blank" rel="noreferrer">
+                ScrapedDuck
+              </a>{" "}
+              커뮤니티 일정 /{" "}
+              <a
+                href="https://pokemongo.com/news"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Pokémon GO 공식 공지
+              </a>{" "}
+              / 지도 Natural Earth
+            </p>
+            <small>
+              비공식 팬 프로젝트입니다. Pokémon과 관련 명칭·이미지의 권리는 해당
+              권리자에게 있습니다. 일정은 변경될 수 있어요.
+            </small>
+          </footer>
+        </main>
+      </div>
+      {toast && (
+        <div className="toast" role="status">
+          <Check size={17} />
+          {toast}
+        </div>
+      )}
+      {gymForm && (
+        <GymForm
+          city={city}
+          onClose={() => setGymForm(false)}
+          onSave={(o) => {
+            setObservations((xs) => [...xs, o]);
+            setGymForm(false);
+            setToast("체육관 타이머를 등록했어요.");
+          }}
+        />
+      )}
+      {infoOpen && (
+        <Modal
+          title="시간과 데이터, 이렇게 읽어주세요"
+          onClose={() => setInfoOpen(false)}
+        >
+          <div className="info-copy">
+            <h3>모든 일정은 한국시간으로</h3>
+            <p>
+              대표 도시의 IANA 시간대를 사용해요. 현지 날짜와 서머타임을
+              반영해서 KST로 변환해요.
+            </p>
+            <h3>공식 일정과 실제 체육관은 달라요</h3>
+            <p>
+              초록색 도시는 선택한 이벤트 시간에 해당한다는 뜻이에요. 실제
+              체육관의 알·보스·남은 시간과 레이드 수는 별도 관측 자료가
+              필요해요.
+            </p>
+            <h3>라운드를 임의로 만들지 않아요</h3>
+            <p>
+              공지가 확인된 레이드아워·레이드데이 회차만 표시해요. 개별 체육관은
+              확인한 부화·종료 시각을 직접 등록할 수 있어요.
+            </p>
+            <h3>추천 장소와 밀집도</h3>
+            <p>
+              추천 스팟은 직접 고른 대표 장소 목록이에요. 실제 체육관 수나 현재
+              참가 인원을 측정한 수치가 아니에요.
+            </p>
+          </div>
+          <button
+            className="primary-button modal-confirm"
+            onClick={() => setInfoOpen(false)}
+          >
+            확인했어요
+          </button>
+        </Modal>
+      )}
+    </div>
+  );
+}
+function Modal({
+  title,
+  onClose,
+  children,
+}: {
+  title: string;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const dialog = ref.current;
+    const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    dialog?.showModal();
+    dialog?.querySelector<HTMLInputElement>('.gym-form input')?.focus();
+    return () => {
+      dialog?.close();
+      if (trigger?.isConnected) trigger.focus();
+    };
+  }, []);
+  return (
+    <dialog
+      className="modal"
+      ref={ref}
+      onCancel={(e) => {
+        e.preventDefault();
+        onClose();
+      }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="modal-header">
+        <h2>{title}</h2>
+        <button className="icon-button" aria-label="닫기" onClick={onClose}>
+          <X size={20} />
+        </button>
+      </div>
+      {children}
+    </dialog>
+  );
+}
+function GymForm({
+  city,
+  onClose,
+  onSave,
+}: {
+  city: City;
+  onClose: () => void;
+  onSave: (o: GymObservation) => void;
+}) {
+  const [name, setName] = useState(""),
+    [starts, setStarts] = useState(""),
+    [ends, setEnds] = useState(""),
+    [pokemon, setPokemon] = useState(""),
+    [error, setError] = useState("");
+  return (
+    <Modal title={`${city.name} 체육관 부화 시간 등록`} onClose={onClose}>
+      <form
+        className="gym-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setError("");
+          try {
+            if (!name.trim()) throw Error("체육관 이름을 적어주세요.");
+            const start = localToInstant(starts, "Asia/Seoul"),
+              end = ends ? localToInstant(ends, "Asia/Seoul") : null;
+            if (
+              !Number.isFinite(start.getTime()) ||
+              (end && !Number.isFinite(end.getTime()))
+            )
+              throw Error("날짜와 시간을 확인해주세요.");
+            if (end && end <= start)
+              throw Error("종료 시각은 부화 시각보다 늦어야 해요.");
+            onSave({
+              id: crypto.randomUUID(),
+              name: name.trim(),
+              cityId: city.id,
+              startsAt: start.toISOString(),
+              endsAt: end?.toISOString() ?? null,
+              recordedAt: new Date().toISOString(),
+              pokemonName: pokemon.trim(),
+            });
+          } catch (cause) {
+            setError(
+              cause instanceof Error ? cause.message : "시간을 확인해주세요.",
+            );
+          }
+        }}
+      >
+        <p>
+          직접 확인한 시각만 기록해요. 아래 입력은 모두{" "}
+          <strong>한국시간(KST)</strong>이에요.
+        </p>
+        <label>
+          체육관 이름
+          <input
+            autoFocus
+            required
+            maxLength={70}
+            placeholder="예: 센트럴 파크 분수"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </label>
+        <label>
+          알 부화 / 레이드 시작 시각
+          <input
+            type="datetime-local"
+            required
+            value={starts}
+            onChange={(e) => setStarts(e.target.value)}
+          />
+        </label>
+        <label>
+          확인한 종료 시각 <small>선택</small>
+          <input
+            type="datetime-local"
+            value={ends}
+            onChange={(e) => setEnds(e.target.value)}
+          />
+        </label>
+        <label>
+          보스 이름 <small>선택</small>
+          <input
+            maxLength={50}
+            placeholder="아직 모르면 비워두세요"
+            value={pokemon}
+            onChange={(e) => setPokemon(e.target.value)}
+          />
+        </label>
+        <p className="form-note">
+          종료 시각을 모르면 남은 시간을 추측하지 않아요. 이 기록은 현재
+          브라우저에만 저장돼요.
+        </p>
+        {error && (
+          <p className="form-error" role="alert">
+            {error}
+          </p>
+        )}
+        <div className="modal-actions">
+          <button type="button" className="secondary-button" onClick={onClose}>
+            취소
+          </button>
+          <button type="submit" className="primary-button">
+            타이머 등록
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
