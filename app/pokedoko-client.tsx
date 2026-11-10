@@ -23,6 +23,8 @@ import {
 } from "lucide-react";
 import { FALLBACK_FEED } from "@/lib/feed";
 import { availableRaidEvents, nextRaidEvent } from "@/lib/feed-availability";
+import { parseShareState } from "@/lib/share-state";
+import { cityPath } from "@/lib/site-metadata";
 import { CITIES } from "@/lib/cities";
 import {
   countdown,
@@ -39,6 +41,7 @@ import EventCalendar from "@/components/pokedoko/EventCalendar";
 import PokemonAvailability from "@/components/pokedoko/PokemonAvailability";
 import LiveRaids from "@/components/pokedoko/LiveRaids";
 import CoordinateCopyButton from "@/components/pokedoko/CoordinateCopyButton";
+import ShareButton, { useSharedUrlState } from "@/components/pokedoko/ShareButton";
 
 type View = "live" | "raids" | "calendar" | "pokemon";
 const NAV = [
@@ -196,6 +199,15 @@ export default function Pokedoko({
   useEffect(() => {
     document.title = `${NAV.find((n) => n.id === view)?.label} · pokedoko`;
   }, [view]);
+  const raidEvents = feed.events
+    .filter((e) => e.kind === "raid-hour" || e.kind === "raid-day")
+    .sort((a, b) => a.start.value.localeCompare(b.start.value));
+  const available = availableRaidEvents(raidEvents, CITIES, clock);
+  const event = nextRaidEvent(raidEvents, CITIES, clock, selectedEventId);
+  useSharedUrlState(view, { city: selectedCity, event: view === "raids" ? event?.id : undefined }, (shared) => {
+    setSelectedCity(shared.city ?? "seoul");
+    setSelectedEventId(shared.event ?? "");
+  });
   // IANA databases can differ between the server and a browser. Calculate the
   // moving world clock after hydration so both initial renders stay identical.
   if (!now)
@@ -224,7 +236,12 @@ export default function Pokedoko({
     );
   function navigate(v: View) {
     setView(v);
-    history.pushState(null, "", `/${v}`);
+    const destination = new URL(`/${v}`, location.origin);
+    if (selectedCity !== "seoul") destination.searchParams.set("city", selectedCity);
+    const campaign = parseShareState(location.search, CITIES.map((city) => city.id)).from;
+    if (campaign) destination.searchParams.set("from", campaign);
+    history.pushState(null, "", destination.pathname + destination.search);
+    window.dispatchEvent(new CustomEvent("pokedoko:navigate", { detail: { view: v } }));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function favorite(id: string) {
@@ -232,11 +249,6 @@ export default function Pokedoko({
       xs.includes(id) ? xs.filter((x) => x !== id) : [...xs, id],
     );
   }
-  const raidEvents = feed.events
-    .filter((e) => e.kind === "raid-hour" || e.kind === "raid-day")
-    .sort((a, b) => a.start.value.localeCompare(b.start.value));
-  const available = availableRaidEvents(raidEvents, CITIES, clock);
-  const event = nextRaidEvent(raidEvents, CITIES, clock, selectedEventId);
   const rows = CITIES.map((c) => {
     const w = event ? eventWindow(event, c) : null;
     return {
@@ -382,6 +394,7 @@ export default function Pokedoko({
               </span>
               <h1>{COPY[view][0]}</h1>
               <p>{COPY[view][1]}</p>
+              <ShareButton view={view} city={selectedCity} state={view === "raids" ? { event: event?.id } : {}} />
             </div>
             <div className="korean-clock">
               <div>
@@ -930,7 +943,7 @@ export default function Pokedoko({
                         </small>
                       </h2>
                     </div>
-                    <MapPin size={21} />
+                    <a className="page-detail-link" href={cityPath(city.id)}>도시 안내 <ArrowUpRight size={15} /></a>
                   </div>
                   {city.spots.map((s) => (
                     <div className="spot-row" key={s.name}>
@@ -968,6 +981,7 @@ export default function Pokedoko({
                         lat={s.lat}
                         lon={s.lon}
                         name={s.name}
+                        city={city.id}
                       />
                       <a
                         href={`https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}`}

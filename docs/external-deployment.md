@@ -49,6 +49,7 @@ dist/external-cloudflare/pokedoko/
   server/                  # 기존 Worker 빌드 복사본
     wrangler.json          # 계정·KV 또는 R2를 지정한 별도 설정
   client/                  # 같은 빌드의 CSS/JS/이미지
+  drizzle/                 # DB가 있는 빌드에서만: SQL + meta 복사본
   preparation.json         # 준비 시각·저장소 종류·미배포 상태
   dry-run/                 # --dry-run 사용 시
 ```
@@ -62,6 +63,27 @@ dist/external-cloudflare/pokedoko/
 미리 만들어 둔 R2 버킷이 있으면 위 준비 명령의 `--kv-namespace` 대신 `--bucket "$POKEDOKO_CF_BUCKET"`을 사용한다. 버킷 자체를 공개할 필요는 없다. `site-creator-r2` 같은 Sites 기본 버킷 이름이나 예제 이름은 허용하지 않는다. [R2 버킷 규칙](https://developers.cloudflare.com/r2/buckets/create-buckets/).
 
 R2 옵션은 기존 BUCKET 구성을 보존하고 KV용 Cron을 자동 추가하지 않는다. 별도 예약 운영이 필요하면 소유자가 확인한 뒤 추가한다.
+
+## 선택 사항: D1 DB 바인딩
+
+새 빌드의 `d1_databases`에 `DB` 바인딩이 있으면 실제 외부 D1 UUID를 `--d1-id`로 명시해야 한다. `--d1-name`을 생략하면 `pokedoko-growth`를 사용한다. 로컬 개발용 `00000000-0000-4000-8000-000000000000` ID나 예제 이름으로는 준비할 수 없다. 반대로 DB가 없는 오래된 빌드에 D1 옵션만 붙여서는 진행하지 않으며, 먼저 DB를 사용하는 소스를 다시 빌드해야 한다.
+
+KV와 D1을 함께 쓰는 경우:
+
+```sh
+read -r POKEDOKO_CF_D1_ID
+node scripts/prepare-cloudflare-deploy.mjs \
+  --account-id "$POKEDOKO_CF_ACCOUNT_ID" \
+  --kv-namespace "$POKEDOKO_CF_KV_NAMESPACE" \
+  --d1-id "$POKEDOKO_CF_D1_ID" \
+  --d1-name pokedoko-growth \
+  --name pokedoko \
+  --dry-run
+```
+
+별도 설정에는 `DB`의 실제 `database_id`·`database_name`과 `migrations_dir: "../drizzle"`을 넣는다. 저장소 루트의 `drizzle` SQL 및 `meta`를 산출물 루트의 `drizzle`로 그대로 복사한다. 따라서 `server/wrangler.json` 기준으로 `../drizzle`가 같은 빌드에 준비한 마이그레이션을 가리킨다. DB가 없는 빌드는 기존 KV/R2 구성대로 동작한다. 추가 DB·다른 DB 바인딩·미검토 설정은 자동으로 넘기지 않는다.
+
+준비·dry-run은 DB를 만들거나 SQL을 적용하지 않는다. 실제 계정의 DB와 SQL 내용을 확인한 담당자만 원격 마이그레이션을 별도로 진행한다. `wrangler d1 migrations list`로 미적용 목록을 보고 `wrangler d1 migrations apply`를 실행할 때는 정확한 외부 설정 파일과 데이터베이스 이름을 지정해야 한다. 이 원격 작업은 준비 스크립트에 포함되지 않는다. [Cloudflare D1 마이그레이션 및 migrations_dir](https://developers.cloudflare.com/d1/reference/migrations/).
 
 ## 실제 배포와 확인
 

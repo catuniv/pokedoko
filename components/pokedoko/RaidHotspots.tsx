@@ -6,6 +6,7 @@ import { CITIES } from "@/lib/cities";
 import type { LiveRaid } from "@/lib/live-raid-types";
 import { findRaidHotspots, findRecommendedRaidHotspots, type CommunityRaidSpot, type RaidHotspot } from "@/lib/raid-hotspots";
 import CoordinateCopyButton from "./CoordinateCopyButton";
+import { useSharedUrlState } from "./ShareButton";
 import hotspotWorkerUrl from "../../lib/raid-hotspots.worker.ts?worker&url";
 
 const RECOMMENDATIONS: CommunityRaidSpot[] = CITIES.flatMap((city) =>
@@ -40,6 +41,10 @@ type Props = {
 export default function RaidHotspots({ raids, now, selected, onSelect }: Props) {
   const [radiusKm, setRadiusKm] = useState(3);
   const [mode, setMode] = useState<RankingMode>("density");
+  useSharedUrlState("live", { radius: radiusKm, mode }, (shared) => {
+    setRadiusKm(shared.radius ?? 3);
+    setMode(shared.mode ?? "density");
+  });
   const [result, setResult] = useState<{
     key: string;
     spots: RaidHotspot[];
@@ -190,7 +195,7 @@ export default function RaidHotspots({ raids, now, selected, onSelect }: Props) 
                 )}
                 <small className="raid-hotspot-coordinates">{spot.lat},{spot.lon}</small>
                 <div className="raid-hotspot-actions">
-                  <CoordinateCopyButton lat={spot.lat} lon={spot.lon} name={`${spot.gymName} 주변 중심`} />
+                  <CoordinateCopyButton lat={spot.lat} lon={spot.lon} name={`${spot.gymName} 주변 중심`} city={spot.cityId} />
                   <button type="button" className="raid-hotspot-view" aria-pressed={isSelected} onClick={() => {
                     onSelect({ id: spot.id, cityId: spot.cityId, lat: spot.lat, lon: spot.lon, gymName: spot.gymName, radiusKm });
                     requestAnimationFrame(() => document.getElementById("live-gym-results")?.scrollIntoView({ block: "start" }));
@@ -248,7 +253,7 @@ export function RaidRegionSummary({ region, raids, now, onClear }: {
         <p>반경 {region.radiusKm}km · 현재 조건에 맞는 레이드 <strong>{raids.length}개</strong></p>
         <small>중심에서 직선거리 기준의 체육관 분포예요.</small>
         <div className="raid-region-actions">
-          <CoordinateCopyButton lat={region.lat} lon={region.lon} name={`${region.gymName} 주변 중심`} />
+          <CoordinateCopyButton lat={region.lat} lon={region.lon} name={`${region.gymName} 주변 중심`} city={region.cityId} />
           <button type="button" className="raid-region-clear" onClick={onClear}><X size={14} /> 지역 선택 해제</button>
         </div>
       </div>

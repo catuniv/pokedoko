@@ -2,15 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Check, Copy } from "lucide-react";
+import { emitUsage } from "./ShareButton";
 
 export default function CoordinateCopyButton({
   lat,
   lon,
   name,
+  city,
 }: {
   lat: number;
   lon: number;
   name: string;
+  city?: string;
 }) {
   // Preserve the source coordinates without rounding or adding whitespace.
   const coordinates = `${lat},${lon}`;
@@ -37,6 +40,7 @@ export default function CoordinateCopyButton({
     setPending(true);
     try {
       await navigator.clipboard.writeText(coordinates);
+      emitUsage("coordinate_copy", city);
       setStatus("copied");
       reset.current = setTimeout(() => setStatus("idle"), 2500);
     } catch {

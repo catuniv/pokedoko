@@ -25,6 +25,8 @@ import type { City, GymObservation } from "@/lib/pokedoko-types";
 import type { LiveRaidFeed, LiveRaidStatus } from "@/lib/live-raid-types";
 import map from "@/lib/world-map.json";
 import CoordinateCopyButton from "./CoordinateCopyButton";
+import { useSharedUrlState } from "./ShareButton";
+import type { RaidKind } from "@/lib/live-raid-filters";
 import { hasMinimumRaidTime } from "@/lib/live-raid-display";
 import { distanceKm } from "@/lib/raid-hotspots";
 import RaidHotspots, { RaidRegionSummary, type RaidRegion } from "./RaidHotspots";
@@ -110,6 +112,22 @@ export default function LiveRaids({
   );
   const [visibleLimit, setVisibleLimit] = useState(30);
   const [selectedRegion, setSelectedRegion] = useState<RaidRegion | null>(null);
+  useSharedUrlState("live", {
+    liveCity: cityFilter, boss: raidFilters.bossKey, kind: raidFilters.kind, tier: raidFilters.tier,
+    state: stateFilter, q: query, center: selectedRegion,
+  }, (shared) => {
+    setCityFilter(shared.liveCity ?? shared.city ?? "all");
+    setStateFilter(shared.state ?? "active");
+    setQuery(shared.q ?? "");
+    setRaidFilters({ bossKey: shared.boss ?? "all", kind: (shared.kind ?? "all") as RaidKind, tier: shared.tier ?? "all" });
+    setSelectedRegion(shared.center ?? null);
+    setVisibleLimit(30);
+  });
+  function updateRaidFilters(update: RaidFilters | ((current: RaidFilters) => RaidFilters)) {
+    setSelectedRegion(null);
+    setRaidFilters(update);
+  }
+
   const request = useRef(0);
   const controller = useRef<AbortController | null>(null);
   const refresh = useCallback(async function doRefresh(attempt = 0) {
@@ -173,7 +191,6 @@ export default function LiveRaids({
   }, [refresh]);
   useEffect(() => {
     setVisibleLimit(30);
-    setSelectedRegion(null);
   }, [cityFilter, stateFilter, query, raidFilters]);
   useEffect(() => setVisibleLimit(30), [selectedRegion]);
 
@@ -238,6 +255,7 @@ export default function LiveRaids({
     : matchingRaids;
   const gyms = observations.filter((o) => o.cityId === city.id);
   function selectCity(id: string) {
+    setSelectedRegion(null);
     setCityFilter(id);
     onCityChange(id);
   }
@@ -479,6 +497,7 @@ export default function LiveRaids({
               aria-label="실시간 레이드 도시"
               value={cityFilter}
               onChange={(e) => {
+                setSelectedRegion(null);
                 setCityFilter(e.target.value);
                 if (e.target.value !== "all") onCityChange(e.target.value);
               }}
@@ -501,7 +520,7 @@ export default function LiveRaids({
                 key={s.id}
                 aria-pressed={stateFilter === s.id}
                 className={stateFilter === s.id ? "active" : ""}
-                onClick={() => setStateFilter(s.id)}
+                onClick={() => { setSelectedRegion(null); setStateFilter(s.id); }}
               >
                 {s.name}
               </button>
@@ -511,9 +530,10 @@ export default function LiveRaids({
             <Search size={16} />
             <input
               aria-label="실시간 레이드 검색"
+              maxLength={100}
               placeholder="체육관·지역 검색"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => { setSelectedRegion(null); setQuery(e.target.value.slice(0, 100)); }}
             />
           </label>
         </div>
@@ -521,7 +541,7 @@ export default function LiveRaids({
           <div className="live-choice-heading">
             <h3>보스·종류 선택</h3>
             {hasRaidFilters && (
-              <button type="button" onClick={() => setRaidFilters(resetRaidFilters())}>
+              <button type="button" onClick={() => updateRaidFilters(resetRaidFilters())}>
                 선택 초기화
               </button>
             )}
@@ -541,7 +561,7 @@ export default function LiveRaids({
                     disabled={!count && raidFilters.kind !== option.key && option.key !== "all"}
                     onClick={() => {
                       if (raidFilters.kind !== option.key)
-                        setRaidFilters((current) => changeRaidFilters(current, { kind: option.key }));
+                        updateRaidFilters((current) => changeRaidFilters(current, { kind: option.key }));
                     }}
                   >
                     {option.label}<span>{count}</span>
@@ -556,11 +576,11 @@ export default function LiveRaids({
           <div className="live-choice-group">
             <span className="live-choice-label" id="raid-grade-label">등급</span>
             <div className="live-choice-chips" role="group" aria-labelledby="raid-grade-label">
-              <button type="button" aria-pressed={raidFilters.tier === "all"} onClick={() => setRaidFilters((current) => changeRaidFilters(current, { tier: "all" }))}>
+              <button type="button" aria-pressed={raidFilters.tier === "all"} onClick={() => updateRaidFilters((current) => changeRaidFilters(current, { tier: "all" }))}>
                 전체<span>{gradeCandidates.length}</span>
               </button>
               {tierKeys.map((key) => (
-                <button type="button" key={key} aria-pressed={raidFilters.tier === key} onClick={() => setRaidFilters((current) => changeRaidFilters(current, { tier: key }))}>
+                <button type="button" key={key} aria-pressed={raidFilters.tier === key} onClick={() => updateRaidFilters((current) => changeRaidFilters(current, { tier: key }))}>
                   {raidTierLabel(key)}<span>{gradeCandidates.filter((r) => raidTierKey(r) === key).length}</span>
                 </button>
               ))}
@@ -569,11 +589,11 @@ export default function LiveRaids({
           <div className="live-choice-group">
             <span className="live-choice-label" id="raid-boss-label">보스</span>
             <div className="live-choice-chips live-boss-chips" role="group" aria-labelledby="raid-boss-label">
-              <button type="button" aria-pressed={raidFilters.bossKey === "all"} onClick={() => setRaidFilters((current) => changeRaidFilters(current, { bossKey: "all" }))}>
+              <button type="button" aria-pressed={raidFilters.bossKey === "all"} onClick={() => updateRaidFilters((current) => changeRaidFilters(current, { bossKey: "all" }))}>
                 전체<span>{bossCandidates.length}</span>
               </button>
               {visibleBossOptions.map((option) => (
-                <button type="button" key={option.key} aria-pressed={raidFilters.bossKey === option.key} onClick={() => setRaidFilters((current) => changeRaidFilters(current, { bossKey: current.bossKey === option.key ? "all" : option.key }))}>
+                <button type="button" key={option.key} aria-pressed={raidFilters.bossKey === option.key} onClick={() => updateRaidFilters((current) => changeRaidFilters(current, { bossKey: current.bossKey === option.key ? "all" : option.key }))}>
                   {option.label}<span>{option.count}</span>
                 </button>
               ))}
@@ -669,6 +689,7 @@ export default function LiveRaids({
                       lat={r.lat}
                       lon={r.lon}
                       name={r.gymName}
+                      city={r.cityId}
                     />
                     {r.sourceUrl && (
                       <a href={r.sourceUrl} target="_blank" rel="noreferrer">
@@ -702,7 +723,7 @@ export default function LiveRaids({
                   setQuery("");
                   setCityFilter("all");
                   setStateFilter("active");
-                  setRaidFilters(resetRaidFilters());
+                  updateRaidFilters(resetRaidFilters());
                 }}
               >
                 필터 초기화

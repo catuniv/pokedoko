@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowUpRight,
   CalendarDays,
@@ -14,6 +14,8 @@ import type { City, EventKind, GoEvent } from "@/lib/pokedoko-types";
 import { eventWindow, formatKst } from "@/lib/raid-time";
 import { PokemonArtwork } from "./PokemonArtwork";
 import "./calendar.css";
+import { useSharedUrlState } from "./ShareButton";
+import { eventPath } from "@/lib/site-metadata";
 
 type Props = { events: GoEvent[]; now: Date; city: City };
 type CalendarEvent = { event: GoEvent; start: Date; end: Date };
@@ -72,6 +74,26 @@ export default function EventCalendar({ events, now, city }: Props) {
   const [selectedDay, setSelectedDay] = useState(today);
   const [filter, setFilter] = useState<"all" | EventKind>("all");
   const [detailId, setDetailId] = useState<string | null>(null);
+  const [linkedEventId, setLinkedEventId] = useState<string | null>(null);
+  useSharedUrlState("calendar", { month, day: selectedDay, detail: detailId ?? "", calendarKind: filter }, (shared) => {
+    const day = shared.day ?? (shared.month ? `${shared.month}-01` : today);
+    setMonth(day.slice(0, 7));
+    setSelectedDay(day);
+    setDetailId(shared.detail ?? null);
+    setLinkedEventId(!shared.day && !shared.detail ? shared.event ?? null : null);
+    setFilter((shared.calendarKind ?? "all") as "all" | EventKind);
+  });
+  useEffect(() => {
+    if (!linkedEventId) return;
+    const event = events.find((item) => item.id === linkedEventId);
+    const window = event && eventWindow(event, city);
+    if (!window) return;
+    const day = dayKey(window.start);
+    setMonth(day.slice(0, 7));
+    setSelectedDay(day);
+    setDetailId(linkedEventId);
+    setLinkedEventId(null);
+  }, [linkedEventId, events, city]);
   const [year, monthNumber] = month.split("-").map(Number);
   const timedEvents = useMemo(
     () =>
@@ -116,6 +138,7 @@ export default function EventCalendar({ events, now, city }: Props) {
   const nextEvent = filtered.find((item) => item.start > now);
 
   function goMonth(direction: number) {
+    setLinkedEventId(null);
     const value = new Date(Date.UTC(year, monthNumber - 1 + direction, 1))
       .toISOString()
       .slice(0, 7);
@@ -124,11 +147,13 @@ export default function EventCalendar({ events, now, city }: Props) {
     setDetailId(null);
   }
   function selectDay(key: string) {
+    setLinkedEventId(null);
     setSelectedDay(key);
     setMonth(key.slice(0, 7));
     setDetailId(null);
   }
   function goToday() {
+    setLinkedEventId(null);
     setMonth(today.slice(0, 7));
     setSelectedDay(today);
     setDetailId(null);
@@ -155,6 +180,7 @@ export default function EventCalendar({ events, now, city }: Props) {
             aria-pressed={filter === key}
             onClick={() => {
               setFilter(key);
+              setLinkedEventId(null);
               setDetailId(null);
             }}
           >
@@ -376,6 +402,9 @@ export default function EventCalendar({ events, now, city }: Props) {
                           ))}
                         </div>
                       )}
+                      <a href={eventPath(item.event.id)}>
+                        상세 안내 <ArrowUpRight size={15} />
+                      </a>
                       <a href={item.event.url} target="_blank" rel="noreferrer">
                         이벤트 원문 <ArrowUpRight size={15} />
                       </a>

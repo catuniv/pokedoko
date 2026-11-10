@@ -20,6 +20,7 @@ npm test          # 시간대·데이터 정규화 테스트
 npm run typecheck
 npm run build
 npm run start    # 빌드한 Worker 로컬 실행
+npm run growth:report # 운영자 Cloudflare 계정의 최근7일 이용 집계
 ```
 
 ## 구현된 기능
@@ -36,9 +37,13 @@ npm run start    # 빌드한 Worker 로컬 실행
 - 체육관별 알 부화/시작/종료 타이머: 직접 확인한 시각을 KST로 등록·수정 없이 삭제하며 현재 브라우저에 보관
 - 공개 커뮤니티 피드 갱신: 5분 캐시, 조회 실패 시 마지막 확인 자료 및 조회 시각 표시
 - 일정은 배포 환경의 R2 또는 KV 공유 저장본으로 유지하고 열려 있는 화면은5분마다·화면 복귀 시 갱신. 확정된 현재/예정/기간 미확인 포켓몬을 분리하고 종료된 일정은 현재 목록에서 자동 제외
+- 현재 선택한 도시·보스·반경 등을 담은 화면 공유 링크. 직접 열기와 뒤로가기 시 선택을 복원하며 자동 공유가 막히면 링크를 직접 복사
+- 이벤트·도시별 서버 렌더링 상세 안내, 화면별 검색 제목·공유 미리보기·사이트맵. 검색 서비스의 등록이나 검색 순위를 보장하지 않음
+- 로그인 없는 비공개 오류 제보와 운영자용 익명 브라우저 기준 사용·채널별 재방문 집계. 통계 중단·DNT/GPC 지원
 
 추천 장소의 출처·확인 범위는 [docs/recommended-spots.md](docs/recommended-spots.md)에 정리했습니다.
 일정의 자동 갱신 범위·공유 저장·예약 작업 검증은 [docs/automatic-updates.md](docs/automatic-updates.md), 화이트·블랙큐레무 등 공식 보완 일정은 [docs/official-events.md](docs/official-events.md)에 정리했습니다.
+제보·집계 확인과 보관 기준은 [docs/growth-operations.md](docs/growth-operations.md), 게시할 채널별 링크는 [docs/community-launch.md](docs/community-launch.md), 검색·공유 메타데이터는 [docs/seo-and-sharing.md](docs/seo-and-sharing.md)에 정리했습니다.
 
 ## 데이터의 의미
 

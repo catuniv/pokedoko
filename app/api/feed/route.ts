@@ -24,6 +24,7 @@ export async function GET(request: Request) {
   } : result.feed;
   return Response.json(body, { headers: {
     'Cache-Control': 'no-store',
+    'X-Robots-Tag': 'noindex, nofollow',
     'X-Pokedoko-Feed-Cache': result.cache,
     'X-Pokedoko-Feed-Storage': result.storage,
     'X-Pokedoko-Feed-Storage-Kind': storageKind,

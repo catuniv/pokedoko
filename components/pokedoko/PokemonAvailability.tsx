@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ArrowUpRight, ChevronDown, Search, Sparkles, X } from "lucide-react";
 import type { City, Feed, Pokemon } from "@/lib/pokedoko-types";
 import { eventWindow, formatKst, localParts } from "@/lib/raid-time";
 import { bossWindow, classifyBoss, pokemonIdentity } from "@/lib/feed-availability";
 import { PokemonArtwork } from "./PokemonArtwork";
 import "./pokemon.css";
+import { useSharedUrlState } from "./ShareButton";
 
 type Props = { feed: Feed; now: Date; city: City };
 type Entry = {
@@ -45,6 +46,12 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
   const [tier, setTier] = useState("all");
+  useSharedUrlState("pokemon", { tab, search: query, grade: tier, pokemon: selected ?? "" }, (shared) => {
+    setTab((shared.tab ?? "all") as Tab);
+    setQuery(shared.search ?? "");
+    setTier(shared.grade ?? "all");
+    setSelected(shared.pokemon ?? null);
+  });
   const entries = useMemo(() => {
     const merged = new Map<string, Entry>();
     function add(pokemon: Pokemon, source: Entry["sources"][number], availability: Entry["availability"], raid: boolean, event: boolean, tier?: string) {
@@ -110,9 +117,6 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
         )),
   );
   const eventPokemonCount = currentEntries.filter(([, item]) => item.event).length;
-  useEffect(() => {
-    if (selected && !visible.some(([key]) => key === selected)) setSelected(null);
-  }, [selected, visible]);
   const localDate = (date: Date) => {
     const p = localParts(date, city.zone);
     return `${p.month}월 ${p.day}일 ${String(p.hour).padStart(2, "0")}:${String(p.minute).padStart(2, "0")}`;
@@ -160,9 +164,10 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
           <Search size={17} />
           <input
             type="search"
+            maxLength={100}
             value={query}
             onChange={(event) => {
-              setQuery(event.target.value);
+              setQuery(event.target.value.slice(0, 100));
               setSelected(null);
             }}
             placeholder="이름 또는 도감 번호 검색"

@@ -1,0 +1,10 @@
+.page-share { position: relative; min-width: 0; width: fit-content; max-width: 100%; margin-top: 14px; }
+.page-share-button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 36px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); font: inherit; font-size: 12px; cursor: pointer; }
+.page-share-button:disabled { opacity: .6; cursor: wait; }
+.page-share-button:focus-visible,.page-share-fallback input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.page-share-fallback { display: flex; align-items: start; gap: 8px; margin-top: 9px; padding: 12px; width: 360px; max-width: min(100%, calc(100vw - 48px)); border: 1px solid var(--line); border-radius: 9px; background: var(--surface); box-sizing: border-box; }
+.page-share-fallback label { flex: 1; min-width: 0; }
+.page-share-fallback label span { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; }
+.page-share-fallback input { width: 100%; min-width: 0; border: 1px solid var(--line); border-radius: 5px; padding: 7px; color: var(--ink); background: var(--page); font: inherit; font-size: 12px; box-sizing: border-box; }
+.page-share-fallback>button { border: 0; background: transparent; color: var(--muted); padding: 2px; }
+.page-detail-link { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; color: var(--accent); font-size: 12px; text-decoration: none; white-space: nowrap; }
