@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink, LocateFixed, Minus, Plus } from "lucide-react";
@@ -69,7 +70,7 @@ export default function RouteGeometryMap({ name, points = [], start, end, kindLa
     }
   }
   const mapUrl = `https://www.openstreetmap.org/?mlat=${start.lat}&mlon=${start.lon}#map=${zoom}/${start.lat}/${start.lon}`;
-  return <figure className="community-geometry-map">
+  return <LanguageScope>{<figure className="community-geometry-map">
     <div className="community-map-canvas" ref={container} style={{ height: MAP_HEIGHT }} role="group" aria-label={`${name} 지도. ${points.length > 1 ? kindLabel + " 전체 좌표선" : "시작 위치와 확인된 종료 위치만 표시"}`}>
       <div className="community-map-tiles" aria-hidden="true">{tiles.map((tile) => <img key={tile.key} src={tile.src} alt="" width={TILE_SIZE} height={TILE_SIZE} decoding="async" referrerPolicy="strict-origin-when-cross-origin" draggable={false} onError={() => setTileError(true)} style={{ left: tile.x, top: tile.y }} />)}</div>
       <svg width={width} height={MAP_HEIGHT} viewBox={`0 0 ${width} ${MAP_HEIGHT}`} className="community-map-overlay" aria-hidden="true">
@@ -82,5 +83,5 @@ export default function RouteGeometryMap({ name, points = [], start, end, kindLa
     </div>
     <figcaption><span>S 시작 · E 종료 · {points.length > 1 ? kindLabel : "전체 경로 미확보"}</span><a href={mapUrl} target="_blank" rel="noreferrer">큰 지도 <ExternalLink size={12} /></a></figcaption>
     {tileError && <p className="community-map-error" role="status">일부 지도 배경을 불러오지 못했어요. 경로선과 좌표는 확인할 수 있어요.</p>}
-  </figure>;
+  </figure>}</LanguageScope>;
 }

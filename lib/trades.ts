@@ -7,13 +7,13 @@ export type TradePostStatus = "pending" | "approved" | "closed" | "removed" | "r
 export type TradeContactKind = "friend_code" | "discord" | "kakao";
 export type TradePostSummary = {
   id: string; cityId: string; mode: "local" | "remote"; offer: TradePokemon; want: TradePokemon;
-  trainerName: string; notes: string; status: TradePostStatus; createdAt: string; expiresAt: string;
+  gpsCapable?: boolean; trainerName: string; notes: string; status: TradePostStatus; createdAt: string; expiresAt: string;
 };
 export type TradePostDetail = TradePostSummary & { contactKind: TradeContactKind; contactValue: string };
 export type TradeSubmission = {
   visitorId: string; ownerKey: string; trainerName: string; cityId: string; mode: "local" | "remote";
   offer: TradePokemon; want: TradePokemon; contactKind: TradeContactKind; contactValue: string;
-  contactPublicConsent: true; notes: string; expiresInDays: 1 | 3 | 7; website?: string;
+  gpsCapable?: boolean; contactPublicConsent: true; notes: string; expiresInDays: 1 | 3 | 7; website?: string;
 };
 export const TRADE_HELP_URL = "https://scopelyexplore.helpshift.com/hc/en/5-pokemon-go/faq/1143-trading-pokemon/";
 export const REMOTE_TRADE_HELP_URL = "https://scopelyexplore.helpshift.com/hc/en/5-pokemon-go/faq/861-trading-remotely/";
@@ -66,8 +66,9 @@ export function normalizeTradeContact(kind: TradeContactKind, value: unknown): s
   } catch { return invalid("invalid_contact", "카카오 오픈채팅은 https://open.kakao.com/o/로 시작하는 공개 초대 주소를 입력해 주세요."); }
 }
 export function validateTradeSubmission(input: unknown): TradeSubmission {
-  const allowed = new Set(["visitorId", "ownerKey", "trainerName", "cityId", "mode", "offer", "want", "contactKind", "contactValue", "contactPublicConsent", "notes", "expiresInDays", "website"]);
+  const allowed = new Set(["visitorId", "ownerKey", "trainerName", "cityId", "mode", "offer", "want", "contactKind", "contactValue", "contactPublicConsent", "notes", "expiresInDays", "website", "gpsCapable"]);
   if (!object(input) || Object.keys(input).some(key => !allowed.has(key)) || typeof input.visitorId !== "string" || !UUID.test(input.visitorId) || !validTradeOwnerKey(input.ownerKey)) return invalid("invalid_payload", "모집 글 내용을 다시 확인해 주세요.");
+  if (input.gpsCapable !== undefined && typeof input.gpsCapable !== "boolean") return invalid("invalid_gps", "GPS 위치 변경 가능 여부를 다시 선택해 주세요.");
   if (input.contactPublicConsent !== true) return invalid("consent_required", "닉네임과 연락 방법의 공개에 동의해 주세요.");
   if (typeof input.cityId !== "string" || !CITIES.some(city => city.id === input.cityId)) return invalid("invalid_city", "목록에서 지역을 선택해 주세요.");
   if (input.mode !== "local" && input.mode !== "remote") return invalid("invalid_mode", "대면 또는 리모트 교환 준비를 선택해 주세요.");
@@ -75,6 +76,7 @@ export function validateTradeSubmission(input: unknown): TradeSubmission {
   if (input.expiresInDays !== 1 && input.expiresInDays !== 3 && input.expiresInDays !== 7) return invalid("invalid_expiry", "모집 기간은 1일·3일·7일 중 선택해 주세요.");
   return {
     visitorId: input.visitorId.toLowerCase(), ownerKey: input.ownerKey.toLowerCase(), trainerName: clean(input.trainerName, "공개 닉네임", 40),
+    ...(input.gpsCapable !== undefined ? { gpsCapable: input.gpsCapable } : {}),
     cityId: input.cityId, mode: input.mode, offer: pokemon(input.offer), want: pokemon(input.want, true),
     contactKind: input.contactKind, contactValue: normalizeTradeContact(input.contactKind, input.contactValue), contactPublicConsent: true,
     notes: clean(input.notes, "모집 설명", 500, true, true), expiresInDays: input.expiresInDays,

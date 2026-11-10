@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 
 import { useState } from "react";
 import type { Pokemon } from "@/lib/pokedoko-types";
@@ -13,13 +14,13 @@ type Props = {
 function ArtworkImage({ pokemon, className, loading = "lazy", candidates }: Props & { candidates: string[] }) {
   const [source, setSource] = useState<string | null>(candidates[0] ?? null);
   const name = pokemon.nameKo || pokemon.name;
-  if (!source) return (
+  if (!source) return <LanguageScope>{(
     <span className={className} role="img" aria-label={`${name} · ${pokemonArtworkFallbackLabel(pokemon)}`} data-artwork-state="unavailable">
       <span className="pokemon-artwork-placeholder-name">{name}</span>
       <small className="pokemon-artwork-placeholder-note">{pokemonArtworkFallbackLabel(pokemon)}</small>
     </span>
-  );
-  return (
+  )}</LanguageScope>;
+  return <LanguageScope>{(
     <img
       className={className}
       src={source}
@@ -28,11 +29,11 @@ function ArtworkImage({ pokemon, className, loading = "lazy", candidates }: Prop
       decoding="async"
       onError={() => setSource(current => current === source ? nextPokemonArtworkCandidate(candidates, source) : current)}
     />
-  );
+  )}</LanguageScope>;
 }
 
 export function PokemonArtwork(props: Props) {
   const candidates = pokemonArtworkCandidates(props.pokemon);
   // A changed record resets failures without effects or render-time state updates.
-  return <ArtworkImage key={JSON.stringify([props.pokemon.id, props.pokemon.name, props.pokemon.form, candidates])} {...props} candidates={candidates} />;
+  return <LanguageScope>{<ArtworkImage key={JSON.stringify([props.pokemon.id, props.pokemon.name, props.pokemon.form, candidates])} {...props} candidates={candidates} />}</LanguageScope>;
 }

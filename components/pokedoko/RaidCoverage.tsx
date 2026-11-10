@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 
 import { useState } from "react";
 import { ArrowUpRight, ChevronRight, Globe2 } from "lucide-react";
@@ -36,7 +37,7 @@ export default function RaidCoverage({ sources, raids, now, selectedCity, onSele
     return priority(b.city.id) - priority(a.city.id) || b.current.length - a.current.length || a.city.name.localeCompare(b.city.name, "ko");
   });
   const shown = expanded ? cities : cities.filter((item, index) => index < 6 || item.city.id === selectedCity);
-  return (
+  return <LanguageScope>{(
     <section className="panel live-external-maps world-raid-coverage" aria-label="세계 주요 도시 실시간 수집 상태">
       <div className="live-toolbar">
         <div><span className="mini-label">WORLD COVERAGE</span><h2><Globe2 size={19} /> 세계 주요 도시 수집 상태</h2></div>
@@ -67,5 +68,5 @@ export default function RaidCoverage({ sources, raids, now, selectedCity, onSele
       <div className="world-coverage-links"><span>함께 수집하는 지역 지도</span>{regionalMaps.map((source) => <a key={source.name} href={source.url} target="_blank" rel="noreferrer">{source.name}<ArrowUpRight size={12} /></a>)}<a href="https://pokecoords.iflowgo.com/" target="_blank" rel="noreferrer">PoGo Radar<ArrowUpRight size={12} /></a></div>
       <p className="world-coverage-footnote">응답이 비어 있으면 야간·미수집·미보고 여부를 구분할 수 없어 ‘자료 미확인’으로 표시해요. 참여 인원·모집 상태는 공급원에서 제공하지 않습니다.</p>
     </section>
-  );
+  )}</LanguageScope>;
 }

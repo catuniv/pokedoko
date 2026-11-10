@@ -1,0 +1,812 @@
+{
+  "이용 통계와 제보 안내 · pokedoko": [
+    "Analytics and submissions · pokedoko",
+    "统计与投稿说明 · pokedoko",
+    "利用統計と投稿について · pokedoko"
+  ],
+  "pokedoko의 익명 이용 통계, 오류 제보, 저장 기간과 통계 중단 방법을 안내합니다.": [
+    "Information about pokedoko's anonymous analytics, error reports, retention periods, and how to disable analytics.",
+    "说明pokedoko的匿名使用统计、错误报告、保存期限及停止统计的方法。",
+    "pokedokoの匿名利用統計、不具合報告、保存期間、統計の停止方法をご案内します。"
+  ],
+  "← pokedoko로 돌아가기": [
+    "← Back to pokedoko",
+    "← 返回pokedoko",
+    "← pokedokoに戻る"
+  ],
+  "pokedoko는 로그인 없이 이용하는 비공식 Pokémon GO 팬 도구입니다. 이 안내는 사이트가 직접 기록하는 이용 통계와 제보를 설명합니다.": [
+    "pokedoko is an unofficial Pokémon GO fan tool that requires no login. This notice explains the analytics and submissions recorded directly by the site.",
+    "pokedoko是无需登录的非官方Pokémon GO粉丝工具。本说明介绍网站直接记录的使用统计及投稿。",
+    "pokedokoはログイン不要の非公式Pokémon GOファンツールです。この案内では、サイトが直接記録する利用統計と投稿について説明します。"
+  ],
+  "방문, 링크 공유, 좌표 복사 횟수와 재방문을 집계합니다. 브라우저에서 임의로 만든 식별자를 사용하며 서버에는 해시로 바꾼 값만 저장합니다. 이름, 연락처, 원래 IP 주소, 사용자 에이전트, 좌표, 검색어를 통계 테이블에 기록하지 않습니다.": [
+    "We count visits, link shares, coordinate copies, and return visits. A randomly generated browser identifier is used, and only its hashed value is stored on the server. Analytics tables do not record names, contact details, original IP addresses, user agents, coordinates, or search terms.",
+    "我们统计访问、链接分享、坐标复制及再次访问次数。使用浏览器随机生成的标识符，服务器仅保存其哈希值。统计表不记录姓名、联系方式、原始IP地址、用户代理、坐标或搜索词。",
+    "訪問、リンク共有、座標のコピー、再訪問を集計します。ブラウザーでランダムに生成した識別子を使用し、サーバーにはハッシュ化した値のみ保存します。名前、連絡先、元のIPアドレス、ユーザーエージェント、座標、検索語は統計テーブルに記録しません。"
+  ],
+  "화면 종류, 선택한 도시, 정해진 홍보 채널 이름만 함께 집계할 수 있습니다. 광고 추적 서비스에 보내지 않으며 원래 유입 페이지 주소나 임의의 광고 추적 문자열을 저장하지 않습니다.": [
+    "Counts may also include only the screen type, selected city, and predefined promotional channel name. Data is not sent to advertising tracking services. Original referring page URLs and arbitrary advertising tracking strings are not stored.",
+    "还可能同时统计页面类型、所选城市及预设推广渠道名称。数据不会发送至广告跟踪服务，也不保存原始来源页面地址或任意广告跟踪字符串。",
+    "画面の種類、選択した都市、あらかじめ定めた宣伝チャネル名のみ、あわせて集計する場合があります。広告追跡サービスには送信せず、元の流入元ページのURLや任意の広告追跡文字列は保存しません。"
+  ],
+  "브라우저의 임의 식별자: 생성 후 30일 이내 사용": [
+    "Random browser identifier: used for no more than 30 days after creation",
+    "浏览器随机标识符：生成后最多使用30天",
+    "ブラウザーのランダム識別子：生成後30日以内に使用"
+  ],
+  "서버의 일별 식별자 기록: 30일 보관 후 정리": [
+    "Daily server identifier records: cleared after 30 days",
+    "服务器每日标识符记录：保存30天后清理",
+    "サーバーの日別識別子記録：30日保存後に整理"
+  ],
+  "접수 중복 확인용 이용 기록: 1일 보관 후 정리": [
+    "Usage records for duplicate submission checks: cleared after 1 day",
+    "用于检查重复提交的使用记录：保存1天后清理",
+    "重複受付確認用の利用記録：1日保存後に整理"
+  ],
+  "개별 식별자를 포함하지 않는 일별 집계: 90일 보관 후 정리": [
+    "Daily aggregates without individual identifiers: cleared after 90 days",
+    "不含个别标识符的每日汇总：保存90天后清理",
+    "個別識別子を含まない日別集計：90日保存後に整理"
+  ],
+  "화면의 ‘의견 보내기’에서 ‘익명 이용 통계’를 끄면 앞으로의 통계 전송을 중단하고 브라우저에 보관한 식별자를 지웁니다. 브라우저의 Do Not Track 또는 Global Privacy Control 설정도 존중합니다. 브라우저 저장소를 지우거나 다른 기기를 쓰면 같은 사람이 별도 이용자로 집계될 수 있으므로 수치는 실제 인원과 다를 수 있습니다.": [
+    "Turning off Anonymous usage analytics in Send feedback stops future analytics transmission and deletes the identifier stored in your browser. We also respect browser Do Not Track and Global Privacy Control settings. Clearing browser storage or using another device may count the same person as a separate user, so counts can differ from actual people.",
+    "在“发送反馈”中关闭“匿名使用统计”后，将停止后续统计发送并删除浏览器中保存的标识符。我们也尊重浏览器的Do Not Track和Global Privacy Control设置。清除浏览器存储或使用其他设备时，同一人可能被计为不同用户，因此统计数可能与实际人数不同。",
+    "「ご意見を送信」の「匿名の利用統計」をオフにすると、以後の統計送信を停止し、ブラウザーに保存した識別子を削除します。ブラウザーのDo Not TrackとGlobal Privacy Controlの設定も尊重します。ブラウザーの保存データを消した場合や別の端末を使う場合、同じ人を別の利用者として数えることがあるため、数値は実際の人数と異なる場合があります。"
+  ],
+  "브라우저가 설정 저장을 막으면 현재 탭에만 설정을 적용하고 화면에 안내합니다. 저장소 사용이 허용되지 않는 환경에서는 새로 접속할 때 설정을 다시 확인해주세요.": [
+    "If your browser blocks saving settings, the setting applies only to the current tab and a notice is shown. If storage is unavailable, check the setting again on your next visit.",
+    "若浏览器阻止保存设置，设置将仅应用于当前标签页，并在页面提示。在无法使用存储的环境中，下次访问时请重新确认设置。",
+    "ブラウザーが設定の保存を制限する場合は、現在のタブにのみ適用し、画面で案内します。保存領域を利用できない環境では、次回アクセス時に設定を再確認してください。"
+  ],
+  "오류 제보와 기능 제안": [
+    "Error reports and feature suggestions",
+    "错误报告与功能建议",
+    "不具合報告と機能の提案"
+  ],
+  "제보 종류, 직접 작성한 내용, 화면 종류와 선택 도시, 접수 시각을 운영자만 확인할 수 있는 저장소에 보관합니다. 내용은 30일을 정리 기준으로 관리합니다. 이메일·전화번호 등 개인정보는 적지 말아주세요. 통계를 중단해도 제보는 보낼 수 있으며, 이때는 제보 횟수 제한에 필요한 임시 식별자만 사용합니다.": [
+    "Report type, your written content, screen type, selected city, and submission time are stored where only administrators can view them. Content is managed using a 30-day cleanup period. Do not include personal information such as email addresses or phone numbers. Reports can still be sent with analytics disabled; only a temporary identifier needed to limit report frequency is then used.",
+    "报告类型、填写内容、页面类型、所选城市和提交时间保存在仅管理员可查看的存储中，内容按30天清理标准管理。请勿填写邮箱、电话号码等个人信息。停止统计后仍可发送报告，此时仅使用限制报告频率所需的临时标识符。",
+    "報告の種類、入力した内容、画面の種類、選択した都市、受付時刻を、運営者のみが確認できる保存先に保管します。内容は30日を整理の目安として管理します。メールアドレス・電話番号などの個人情報は記入しないでください。統計を停止しても報告でき、その場合は報告回数の制限に必要な一時的識別子のみを使用します。"
+  ],
+  "데이터가 보관되는 곳": [
+    "Where data is stored",
+    "数据保存位置",
+    "データの保存先"
+  ],
+  "셀 루트 화면의 ‘개인 GPX 등록’과 개인 방문 계획·완료·셀 수 기록은 현재 브라우저에만 저장하며 서버로 전송하지 않습니다. 브라우저 데이터를 지우면 이 기록도 삭제됩니다. 자동사냥 GPX의 개인 파일은 현재 탭에서만 사용하며 서버에 올리지 않습니다. 공개 GPX를 고르면 원본 호스트에 파일을 요청합니다. 포켓스톱 조회에는 선택한 도시·장소·반경만 사용합니다.": [
+    "Personal GPX registration on the Cell routes screen and personal visit plans, completion records, and Cell counts are saved only in this browser and are not sent to the server. Clearing browser data also deletes these records. Personal auto-hunting GPX files are used only in the current tab and are not uploaded. Selecting a public GPX requests the file from its original host. PokéStop searches use only the selected city, location, and radius.",
+    "细胞路线页面的“个人GPX登记”、个人访问计划、完成记录及细胞数仅保存在当前浏览器中，不会发送至服务器。清除浏览器数据也会删除这些记录。自动捕捉GPX的个人文件仅在当前标签页使用，不会上传。选择公开GPX时会向原始主机请求文件。宝可补给站查询仅使用所选城市、地点及半径。",
+    "セルルート画面の「個人GPXを登録」と個人の訪問計画・完了・セル数の記録は、現在のブラウザーにのみ保存し、サーバーには送信しません。ブラウザーのデータを消すと、これらの記録も削除されます。自動捕獲GPXの個人ファイルは現在のタブでのみ使用し、サーバーにはアップロードしません。公開GPXを選ぶと元のホストにファイルを要求します。ポケストップの検索には、選択した都市・場所・半径のみを使用します。"
+  ],
+  "공개 루트 제보": [
+    "Public route submissions",
+    "公开路线投稿",
+    "公開ルートの投稿"
+  ],
+  "‘루트 제보’로 직접 제출하면 루트 이름·도시·시작과 종료 위치·거리·공개 닉네임·출처·이용 허락 근거·확인 날짜·설명과 선택한 GPX의 좌표를 운영자 Cloudflare 데이터베이스에 보관합니다. 실제 이름·연락처·집 주소 등 개인정보는 적지 말아주세요. 원본 XML 파일 대신 검증한 좌표를 저장합니다.": [
+    "When you submit through Submit a route, the route name, city, start and end locations, distance, public nickname, source, permission basis, verification date, description, and coordinates from any selected GPX are stored in the administrator's Cloudflare database. Do not include personal information such as real names, contact details, or home addresses. Validated coordinates are stored instead of the original XML file.",
+    "通过“提交路线”投稿时，路线名称、城市、起终点位置、距离、公开昵称、来源、授权依据、确认日期、说明及所选GPX的坐标将保存在管理员的Cloudflare数据库中。请勿填写真实姓名、联系方式、家庭住址等个人信息。我们保存验证后的坐标，不保存原始XML文件。",
+    "「ルートを投稿」から提出すると、ルート名・都市・開始と終了位置・距離・公開ニックネーム・出典・利用許可の根拠・確認日・説明と、選択したGPXの座標を運営者のCloudflareデータベースに保存します。本名・連絡先・自宅住所などの個人情報は記入しないでください。元のXMLファイルではなく、検証済みの座標を保存します。"
+  ],
+  "접수 자료는 운영자 검토 전에는 비공개이며 승인 후 위 루트 정보와 닉네임·설명·출처·권리 근거가 공개됩니다. 루트 정보는 목록 운영과 검토를 위해 보관하며 오류 제보의 30일 정리 기준과 다릅니다. 공개 중단이나 삭제 요청은 접수번호·공개 루트 주소와 함께 ‘의견 보내기’로 남겨주세요. 브라우저 식별자는 해시로만 저장하고 공개하지 않으며 통계를 중단해도 루트를 제보할 수 있습니다.": [
+    "Submissions remain private until administrator review. After approval, the route details above, nickname, description, source, and rights basis become public. Route information is retained for listing and review, separately from the 30-day cleanup rule for error reports. To request unpublishing or deletion, use Send feedback with the submission ID and public route URL. Browser identifiers are stored only as hashes and are not public. Routes can be submitted with analytics disabled.",
+    "提交资料在管理员审核前不公开。通过审核后，上述路线信息、昵称、说明、来源及权利依据将公开。路线信息为列表运营和审核而保留，不适用错误报告的30天清理标准。如需停止公开或删除，请通过“发送反馈”提供提交编号及公开路线地址。浏览器标识符仅以哈希值保存且不公开，停止统计后仍可提交路线。",
+    "提出データは運営者の確認前には非公開で、承認後に上記のルート情報とニックネーム・説明・出典・権利の根拠が公開されます。ルート情報は一覧の運営と確認のため保存し、不具合報告の30日という整理基準とは異なります。公開停止・削除の依頼は、受付番号・公開ルートURLとともに「ご意見を送信」からお送りください。ブラウザー識別子はハッシュのみを保存し公開せず、統計を停止してもルートを投稿できます。"
+  ],
+  "익명 통계와 오류 제보도 운영자 Cloudflare 계정의 데이터베이스에서 관리합니다. 일반 방문자가 오류 제보·검토 대기 루트·브라우저 식별자를 조회하는 공개 API는 제공하지 않습니다. 예약 작업과 정기 일정 조회 때 보관 기간이 지난 통계·오류 제보·접수 제한 카운터를 나누어 정리합니다. 접수가 몰리거나 작업이 지연되면 실제 정리까지 추가 시간이 걸릴 수 있습니다.": [
+    "Anonymous analytics and error reports are also managed in a database under the administrator's Cloudflare account. No public API allows visitors to view error reports, routes awaiting review, or browser identifiers. Scheduled tasks and regular event checks separately clear expired analytics, error reports, and submission rate-limit counters. Heavy submission volume or delayed tasks may extend the time before cleanup occurs.",
+    "匿名统计和错误报告也在管理员Cloudflare账号下的数据库中管理。不提供供普通访客查询错误报告、待审核路线或浏览器标识符的公开API。定时任务及常规日程查询时，会分别清理已超过保存期限的统计、错误报告及提交限流计数器。若提交量较大或任务延迟，实际清理可能需要更长时间。",
+    "匿名統計と不具合報告も、運営者のCloudflareアカウントのデータベースで管理します。一般の閲覧者が不具合報告・確認待ちルート・ブラウザー識別子を取得できる公開APIは提供しません。予約処理と定期的な予定取得時に、保存期間を過ぎた統計・不具合報告・受付制限カウンターを分けて整理します。受付の集中や処理の遅延により、実際の整理まで追加の時間がかかる場合があります。"
+  ],
+  "공개 루트의 지도 상세를 열면 현재 표시 영역의 지도 타일을 OpenStreetMap 서버에서 불러옵니다. 해당 서버의 네트워크 처리 정책은 별도로 적용됩니다.": [
+    "Opening a public route's map details loads map tiles for the visible area from OpenStreetMap servers. Those servers' network processing policies apply separately.",
+    "打开公开路线的地图详情时，会从OpenStreetMap服务器加载当前显示区域的地图图块。相关服务器的网络处理政策另行适用。",
+    "公開ルートの地図詳細を開くと、表示中の範囲の地図タイルをOpenStreetMapのサーバーから読み込みます。そのサーバーのネットワーク処理方針は別途適用されます。"
+  ],
+  "포켓몬 교환 모집": [
+    "Pokémon trade posts",
+    "宝可梦交换招募",
+    "ポケモン交換の募集"
+  ],
+  "교환 모집 글을 직접 제출하면 공개 닉네임·지역·교환 방식·줄 포켓몬과 원하는 포켓몬·설명·모집 기간·동의한 연락 방법을 운영자 Cloudflare 데이터베이스에 저장합니다. 연락 방법은 트레이너 코드, Discord 사용자 이름 또는 카카오 공개 오픈채팅 주소 중 선택합니다. 실제 이름·전화번호·집 주소·게임 비밀번호는 입력하지 마세요.": [
+    "When you submit a trade post, your public nickname, region, trade method, offered and wanted Pokémon, description, recruitment period, and agreed contact method are saved in the administrator's Cloudflare database. Choose a Trainer Code, Discord username, or public Kakao Open Chat URL as your contact method. Do not enter your real name, phone number, home address, or game password.",
+    "提交交换招募时，公开昵称、地区、交换方式、提供及想要的宝可梦、说明、招募期限和已同意公开的联系方式将保存在管理员的Cloudflare数据库中。联系方式可选训练家代码、Discord用户名或Kakao公开聊天地址。请勿填写真实姓名、电话号码、家庭住址或游戏密码。",
+    "交換募集を投稿すると、公開ニックネーム・地域・交換方法・出すポケモンと欲しいポケモン・説明・募集期間・同意した連絡方法を、運営者のCloudflareデータベースに保存します。連絡方法はトレーナーコード、Discordユーザー名、カカオの公開オープンチャットURLから選びます。本名・電話番号・自宅住所・ゲームのパスワードは入力しないでください。"
+  ],
+  "검토 대기 글은 작성자와 운영자만 확인할 수 있습니다. 승인된 모집 글의 연락 방법은 상세를 열면 공개되며 누구나 볼 수 있습니다. 게임 계정·실제 보유 포켓몬·우정 단계는 연동하거나 인증하지 않습니다. 공개 동의는 해당 연락 방법의 공개를 포함합니다.": [
+    "Only the author and administrators can view posts awaiting review. Approved posts reveal their contact details when opened, and anyone can view them. Game accounts, actual Pokémon ownership, and friendship levels are neither linked nor verified. Consent to publication includes publication of the selected contact method.",
+    "待审核帖子仅作者和管理员可查看。已通过审核的招募在打开详情后会公开联系方式，任何人均可查看。我们不关联或认证游戏账号、实际持有的宝可梦或好友等级。公开同意也包括公开所选联系方式。",
+    "確認待ちの投稿は投稿者と運営者のみが閲覧できます。承認済みの募集は詳細を開くと連絡方法が公開され、誰でも閲覧できます。ゲームアカウント・実際の所持ポケモン・仲良し度は連携も認証もしません。公開への同意には、選択した連絡方法の公開を含みます。"
+  ],
+  "작성한 글을 관리하는 임의 키는 접수 전에 작성 기기에 보관하고, 서버에는 원래 키 대신 해시를 저장합니다. 응답을 받지 못한 작성 기록도 같은 기기에서 접수 여부를 다시 확인할 수 있습니다. 관리 정보를 저장할 수 없으면 새 글 등록을 중단하고 안내합니다. 이 기기에서 글을 마감하거나 삭제할 수 있으며 관리 키는 공개 목록·주소·이용 통계에 넣지 않습니다. 브라우저 데이터를 지우거나 다른 기기로 이동하면 글 관리 정보가 사라질 수 있습니다. 글 ID와 함께 ‘의견 보내기’로 삭제를 요청할 수 있습니다.": [
+    "A random post-management key is stored on the submitting device before submission. The server stores its hash rather than the original key. Records without a response can also be checked again on the same device. If management information cannot be saved, new submissions stop and a notice appears. You can close or delete posts from this device. Management keys are not included in public listings, URLs, or analytics. Clearing browser data or switching devices may lose management information. You can request deletion through Send feedback with the post ID.",
+    "用于管理帖子的随机密钥会在提交前保存在发布设备上，服务器仅保存其哈希值。未收到响应的记录也可在同一设备上再次确认是否已受理。若无法保存管理信息，将停止提交新帖并提示。您可在此设备上结束或删除帖子。管理密钥不会出现在公开列表、地址或统计中。清除浏览器数据或更换设备可能导致管理信息丢失。可通过“发送反馈”提供帖子ID申请删除。",
+    "投稿管理用のランダムなキーは受付前に投稿端末へ保存し、サーバーには元のキーではなくハッシュを保存します。応答を受け取れなかった投稿履歴も、同じ端末で受付状況を再確認できます。管理情報を保存できない場合は新規投稿を停止し、案内を表示します。この端末で募集の終了や削除ができ、管理キーは公開一覧・URL・利用統計には含めません。ブラウザーのデータ削除や別端末への移動で管理情報が失われる場合があります。投稿IDを添えて「ご意見を送信」から削除を依頼できます。"
+  ],
+  "모집 기간은 1·3·7일이며 만료되거나 마감된 글의 연락 방법은 공개 조회에서 숨깁니다. 만료 후 30일이 지난 글은 정리 기준에 따라 삭제하고, 작성자가 삭제하면 데이터베이스에서 해당 글을 삭제합니다. 정리 작업이 지연되면 실제 삭제까지 시간이 더 걸릴 수 있습니다. 이미 다른 이용자가 확인하거나 복사한 연락 정보를 회수하는 기능은 아닙니다.": [
+    "Recruitment periods are 1, 3, or 7 days. Contact details for expired or closed posts are hidden from public queries. Posts more than 30 days past expiry are deleted under the cleanup policy. Author deletion removes the post from the database. Delayed cleanup may postpone actual deletion. This does not retrieve contact details already viewed or copied by others.",
+    "招募期限为1、3或7天。已到期或结束的帖子会在公开查询中隐藏联系方式。到期超过30天的帖子将按清理标准删除，作者删除时会从数据库中删除该帖。清理任务延迟可能使实际删除时间推后。此功能无法撤回其他用户已经查看或复制的联系方式。",
+    "募集期間は1・3・7日で、期限切れや終了した投稿の連絡方法は公開取得時に非表示にします。期限切れから30日を過ぎた投稿は整理基準に従って削除し、投稿者が削除した場合はデータベースから当該投稿を削除します。整理処理の遅延により、実際の削除まで時間がかかる場合があります。他の利用者がすでに閲覧・コピーした連絡情報を回収する機能ではありません。"
+  ],
+  "Cloudflare의 네트워크 처리·운영 로그는 서비스가 직접 보관하는 위 통계와 별개이며 해당 제공자의 정책이 적용됩니다. 제보 관련 요청은 ‘의견 보내기’로 남겨주세요.": [
+    "Cloudflare network processing and operational logs are separate from the analytics retained directly by this service and follow the provider's policies. Use Send feedback for submission-related requests.",
+    "Cloudflare的网络处理和运行日志独立于本服务直接保存的上述统计，适用该提供商的政策。与投稿相关的请求请通过“发送反馈”提交。",
+    "Cloudflareのネットワーク処理・運用ログは、このサービスが直接保存する上記の統計とは別で、提供元の方針が適用されます。投稿に関する依頼は「ご意見を送信」からお送りください。"
+  ],
+  "최종 수정: 2026년 11월 10일": [
+    "Last updated: November 10, 2026",
+    "最后更新：2026年11月10日",
+    "最終更新：2026年11月10日"
+  ],
+  "도시를 찾을 수 없습니다 | pokedoko": [
+    "City not found | pokedoko",
+    "找不到城市 | pokedoko",
+    "都市が見つかりません | pokedoko"
+  ],
+  "레이드 시간표": [
+    "Raid timetable",
+    "团体战时间表",
+    "レイド時間表"
+  ],
+  "현재 위치": [
+    "Current location",
+    "当前位置",
+    "現在位置"
+  ],
+  "홈": [
+    "Home",
+    "首页",
+    "ホーム"
+  ],
+  "도시별 안내": [
+    "City guides",
+    "各城市指南",
+    "都市別ガイド"
+  ],
+  "레이드·추천 장소": [
+    "Raids and recommended locations",
+    "团体战与推荐地点",
+    "レイド・おすすめの場所"
+  ],
+  "현지 시각과 한국시간으로 확인된 이벤트를 비교하고, 사용자 추천 장소": [
+    "Compare confirmed events in local and Korean time, and view user-recommended locations:",
+    "以当地时间和韩国时间比较已确认的活动，并查看用户推荐地点：",
+    "現地時刻と韓国時間で確認済みのイベントを比較し、ユーザーおすすめの場所"
+  ],
+  "곳의 좌표와 원문을 확인하세요.": [
+    "locations, with coordinates and sources.",
+    "个地点的坐标及原文。",
+    "か所の座標と原文を確認してください。"
+  ],
+  "일부 일정 갱신이 지연되어 마지막 확인 자료를 표시합니다. 각 이벤트의 원문도 확인하세요.": [
+    "Some event updates are delayed, so the last verified data is shown. Check each event's source too.",
+    "部分活动更新延迟，因此显示最近确认的数据。请同时查看各活动原文。",
+    "一部の予定の更新が遅れているため、最後に確認したデータを表示しています。各イベントの原文も確認してください。"
+  ],
+  "사용자 추천 장소": [
+    "User-recommended locations",
+    "用户推荐地点",
+    "ユーザーおすすめの場所"
+  ],
+  "추천 글에서 확인한 장소와 대표 좌표입니다. 현재 체육관 수·레이드 발생·참가 인원을 보장하지 않습니다.": [
+    "Locations and representative coordinates from recommendation posts. Current Gym counts, raid activity, and participant numbers are not guaranteed.",
+    "这些地点及代表坐标来自推荐帖，不保证当前道馆数量、团体战出现或参与人数。",
+    "おすすめの投稿で確認した場所と代表座標です。現在のジム数・レイド発生・参加人数を保証するものではありません。"
+  ],
+  "사용자 추천 원문 ↗": [
+    "User recommendation source ↗",
+    "用户推荐原文 ↗",
+    "ユーザーおすすめの原文 ↗"
+  ],
+  "좌표 근거 ↗": [
+    "Coordinate source ↗",
+    "坐标依据 ↗",
+    "座標の根拠 ↗"
+  ],
+  "기준 현재·예정 이벤트": [
+    "current and upcoming events",
+    "当前及即将开始的活动",
+    "基準の開催中・開催予定イベント"
+  ],
+  "현재 자료에 확인된 진행·예정 일정이 없습니다. 요일이나 작년 날짜로 다음 행사를 만들지 않습니다.": [
+    "No ongoing or upcoming events are confirmed in the current data. We do not create future events from weekdays or last year's dates.",
+    "当前数据中暂无已确认的进行中或即将开始的活动。不会根据星期或去年的日期生成下一次活动。",
+    "現在のデータに確認済みの開催中・開催予定イベントはありません。曜日や昨年の日付から次の開催予定を作成することはありません。"
+  ],
+  "이벤트 운영 시간과 실제 체육관 레이드 운영은 다릅니다. 확인된 현지 일정은": [
+    "Event hours and actual Gym raid operation differ. Confirmed local schedules use the",
+    "活动举办时间与实际道馆团体战运行时间不同。已确认的当地日程按",
+    "イベントの開催時間と実際のジムのレイド開催は異なります。確認済みの現地予定は"
+  ],
+  "시간대로 해석합니다.": [
+    "time zone.",
+    "时区解释。",
+    "の時間帯で解釈します。"
+  ],
+  "시간 기준": [
+    "Time reference",
+    "时间基准",
+    "時刻の基準"
+  ],
+  "페이지를 연 시점의 현지 시각": [
+    "Local time when the page opened",
+    "打开页面时的当地时间",
+    "ページを開いた時点の現地時刻"
+  ],
+  "IANA 시간대": [
+    "IANA time zone",
+    "IANA时区",
+    "IANAタイムゾーン"
+  ],
+  "한국과 시차": [
+    "Time difference from Korea",
+    "与韩国的时差",
+    "韓国との時差"
+  ],
+  "도시 중심 대표 좌표": [
+    "Representative city-center coordinates",
+    "城市中心代表坐标",
+    "都市中心の代表座標"
+  ],
+  "서머타임을 적용하는 도시는 날짜에 따라 시차가 바뀝니다. 실시간 화면에서 현재 시각을 계속 확인할 수 있습니다.": [
+    "Cities observing daylight saving time have date-dependent time differences. The live page continuously shows the current time.",
+    "实行夏令时的城市会随日期改变时差。实时页面可持续查看当前时间。",
+    "サマータイムを採用する都市は日付によって時差が変わります。リアルタイム画面では現在時刻を継続して確認できます。"
+  ],
+  "자료를 읽는 방법": [
+    "How to read the data",
+    "数据阅读说明",
+    "データの見方"
+  ],
+  "실시간 레이드는 공개 공급원이 확인한 체육관 자료입니다. 조회 범위와 자료 시각을 함께 확인하세요. 자료가 없다는 이유만으로 도시 전체의 레이드가 없다고 판단하지 않습니다.": [
+    "Live raids use Gym data verified by public sources. Check both the coverage and data time. Missing data does not mean the entire city has no raids.",
+    "实时团体战采用公开数据源确认的道馆数据。请同时确认查询范围及数据时间。不能仅因缺少数据就判断整个城市没有团体战。",
+    "リアルタイムレイドは公開提供元が確認したジムのデータです。取得範囲とデータ時刻をあわせて確認してください。データがないことだけで、都市全体にレイドがないとは判断しません。"
+  ],
+  "레이드 로비의 실제 참가 인원이나 모집 상태는 제공되지 않으므로 추정하지 않습니다.": [
+    "Actual raid lobby participant counts and recruitment status are not provided or estimated.",
+    "不提供也不推测团体战大厅的实际参与人数或招募状态。",
+    "レイドロビーの実際の参加人数や募集状況は提供されないため、推測しません。"
+  ],
+  "다른 도시": [
+    "Other cities",
+    "其他城市",
+    "他の都市"
+  ],
+  "이벤트를 찾을 수 없습니다 | pokedoko": [
+    "Event not found | pokedoko",
+    "找不到活动 | pokedoko",
+    "イベントが見つかりません | pokedoko"
+  ],
+  "도시별 현지 시각과 한국시간을 구분해 제공합니다.": [
+    "Local times for each city and Korean time are shown separately.",
+    "分别提供各城市当地时间与韩国时间。",
+    "都市別の現地時刻と韓国時間を区別して提供します。"
+  ],
+  "전 세계 공통 시각을 한국시간으로 확인할 수 있습니다.": [
+    "View the worldwide simultaneous schedule in Korean time.",
+    "以韩国时间查看全球同步活动时间。",
+    "世界共通の時刻を韓国時間で確認できます。"
+  ],
+  "한국시간 기준 종료된 일정": [
+    "Ended in Korean time",
+    "已结束（韩国时间）",
+    "韓国時間基準で終了した予定"
+  ],
+  "한국시간 기준 진행 중": [
+    "Ongoing in Korean time",
+    "进行中（韩国时间）",
+    "韓国時間基準で開催中"
+  ],
+  "한국시간 기준 예정": [
+    "Upcoming in Korean time",
+    "即将开始（韩国时间）",
+    "韓国時間基準で開催予定"
+  ],
+  "시각 확인 필요": [
+    "Time needs confirmation",
+    "时间需确认",
+    "時刻の確認が必要"
+  ],
+  "상세": [
+    "Details",
+    "详情",
+    "詳細"
+  ],
+  "· 확인된 일정": [
+    "· Confirmed schedule",
+    "· 已确认的日程",
+    "· 確認済みの予定"
+  ],
+  "공개 원문에서 확인한 이벤트 일정과 등장 포켓몬입니다.": [
+    "Event schedules and featured Pokémon verified from public sources.",
+    "根据公开原文确认的活动日程及登场宝可梦。",
+    "公開された原文で確認したイベント予定と登場ポケモンです。"
+  ],
+  "달력에서 보기": [
+    "View in calendar",
+    "在日历中查看",
+    "カレンダーで見る"
+  ],
+  "레이드 시간표 보기": [
+    "View raid timetable",
+    "查看团体战时间表",
+    "レイド時間表を見る"
+  ],
+  "종료된 일정의 기록입니다. 새로운 개최일이나 반복 일정으로 해석하지 마세요. 아래에서 다음에 시작하는 확인된 일정을 볼 수 있습니다.": [
+    "This is a record of an ended event. Do not interpret it as a new event date or recurring schedule. Confirmed upcoming events appear below.",
+    "这是已结束活动的记录，请勿将其理解为新的举办日期或重复日程。下方可查看已确认的后续活动。",
+    "終了した予定の記録です。新しい開催日や繰り返し予定と解釈しないでください。次に始まる確認済みの予定は下で確認できます。"
+  ],
+  "일부 원문 갱신이 지연되어 마지막으로 확인한 자료를 표시합니다. 원문의 최신 안내를 확인하세요.": [
+    "Some source updates are delayed, so the last verified data is shown. Check the latest source announcements.",
+    "部分原文更新延迟，因此显示最近确认的数据。请查看原文的最新说明。",
+    "一部の原文の更新が遅れているため、最後に確認したデータを表示しています。原文の最新案内を確認してください。"
+  ],
+  "시작·종료 시각": [
+    "Start and end times",
+    "开始与结束时间",
+    "開始・終了時刻"
+  ],
+  "각 도시 현지 시각": [
+    "Local time in each city",
+    "各城市当地时间",
+    "各都市の現地時刻"
+  ],
+  "전 세계 공통 시각": [
+    "Worldwide simultaneous time",
+    "全球同步时间",
+    "世界共通の時刻"
+  ],
+  "같은 날짜·시각이라도 도시의 IANA 시간대와 서머타임에 따라 실제 시작 순간이 다릅니다. 한국시간으로 고정된 세계 공통 일정이 아닙니다.": [
+    "Even with the same local date and time, the actual start instant differs according to each city's IANA time zone and daylight saving time. This is not a worldwide simultaneous event fixed to Korean time.",
+    "即使当地日期和时间相同，实际开始时刻也会因各城市的IANA时区及夏令时而不同。这并非以韩国时间固定的全球同步活动。",
+    "同じ日付・時刻でも、都市のIANAタイムゾーンとサマータイムによって実際の開始の瞬間は異なります。韓国時間で固定された世界同時開催の予定ではありません。"
+  ],
+  "시간대가 포함된 원문 시각을 기준으로 모든 도시에서 같은 순간에 시작하고 종료합니다.": [
+    "Starts and ends at the same instant in all cities, based on the source time with its time zone.",
+    "根据带时区的原文时间，所有城市在同一时刻开始和结束。",
+    "時間帯を含む原文の時刻を基準に、すべての都市で同じ瞬間に開始・終了します。"
+  ],
+  "도시별 시작·종료를 한국시간으로 비교": [
+    "Compare city start and end times in Korean time",
+    "以韩国时间比较各城市的开始及结束时间",
+    "都市別の開始・終了を韓国時間で比較"
+  ],
+  "도시·IANA 시간대": [
+    "City / IANA time zone",
+    "城市 / IANA时区",
+    "都市・IANAタイムゾーン"
+  ],
+  "한국시간 시작": [
+    "Start in Korean time",
+    "开始（韩国时间）",
+    "韓国時間での開始"
+  ],
+  "한국시간 종료": [
+    "End in Korean time",
+    "结束（韩国时间）",
+    "韓国時間での終了"
+  ],
+  "안내된 등장 포켓몬": [
+    "Announced Pokémon",
+    "已公布的登场宝可梦",
+    "案内された登場ポケモン"
+  ],
+  "이 자료에 개별 등장 포켓몬 목록은 등록되어 있지 않습니다. 원문의 야생·레이드·맥스배틀 항목을 확인하세요.": [
+    "No individual Pokémon list is registered for this data. Check the source's wild, raid, and Max Battle sections.",
+    "此资料尚未登记具体登场宝可梦列表。请查看原文中的野外、团体战及极巨对战部分。",
+    "このデータに個別の登場ポケモン一覧は登録されていません。原文の野生・レイド・マックスバトルの項目を確認してください。"
+  ],
+  "위 목록은 이벤트에서 안내한 포켓몬입니다. 모든 포켓몬이 야생에 나오거나 배틀 후 같은 폼으로 포획되는 것은 아닙니다. 티켓·리서치·포획 조건은 원문 안내를 따릅니다.": [
+    "The list above contains Pokémon announced for the event. Not all appear in the wild or are caught in the same form after battles. Follow the source for ticket, research, and catch requirements.",
+    "以上为活动中公布的宝可梦，并非所有宝可梦都会在野外出现或在对战后以相同形态捕获。门票、调查及捕获条件以原文说明为准。",
+    "上の一覧はイベントで案内されたポケモンです。すべてが野生で登場したり、バトル後に同じ姿で捕獲できたりするわけではありません。チケット・リサーチ・捕獲条件は原文の案内に従ってください。"
+  ],
+  "자료 원문": [
+    "Data sources",
+    "资料原文",
+    "データの原文"
+  ],
+  "이벤트 공지 원문 보기 ↗": [
+    "View original event announcement ↗",
+    "查看活动公告原文 ↗",
+    "イベントのお知らせ原文を見る ↗"
+  ],
+  "공식 공지와 공개 커뮤니티 자료에 기반합니다. 일정이나 참가 조건이 바뀌면 원문 안내가 우선합니다.": [
+    "Based on official announcements and public community sources. If schedules or participation requirements change, the source announcement takes priority.",
+    "依据官方公告及公开社区资料。若日程或参与条件变更，以原文说明为准。",
+    "公式のお知らせと公開コミュニティ情報に基づきます。予定や参加条件が変わった場合は、原文の案内を優先してください。"
+  ],
+  "피드 원문 조회 시각:": [
+    "Feed source checked at:",
+    "动态原文查询时间：",
+    "フィード原文の取得時刻："
+  ],
+  "다음에 시작하는 일정": [
+    "Next events to start",
+    "接下来开始的活动",
+    "次に始まる予定"
+  ],
+  "시작 · 한국시간": [
+    "Start · Korean time",
+    "开始 · 韩国时间",
+    "開始 · 韓国時間"
+  ],
+  "새로 시작할 확인된 일정이 없습니다. 아직 발표되지 않은 날짜는 표시하지 않습니다.": [
+    "No confirmed upcoming events. Unannounced dates are not shown.",
+    "暂无已确认即将开始的活动，未公布的日期不会显示。",
+    "次に始まる確認済みの予定はありません。未発表の日付は表示しません。"
+  ],
+  "체육관 레이드는 따로 확인": [
+    "Check Gym raids separately",
+    "请另行确认道馆团体战",
+    "ジムのレイドは別途確認"
+  ],
+  "이벤트 시간만으로 특정 체육관에서 레이드가 열렸다고 판단하지 않습니다. 실제 공개 관측 자료는 별도 화면에서 확인하세요.": [
+    "Event hours alone do not confirm a raid at a particular Gym. View actual public observations on the separate live page.",
+    "不能仅凭活动时间判断某个道馆已出现团体战。实际公开观测数据请在独立页面查看。",
+    "イベントの時間だけでは、特定のジムでレイドが開催されたとは判断しません。実際の公開観測データは別の画面で確認してください。"
+  ],
+  "서울 실시간 레이드": [
+    "Seoul live raids",
+    "首尔实时团体战",
+    "ソウルのリアルタイムレイド"
+  ],
+  "유효하지 않은 날짜예요.": [
+    "Invalid date.",
+    "日期无效。",
+    "無効な日付です。"
+  ],
+  "현지 날짜는 시간대 없는 ISO 형식이어야 해요.": [
+    "Local dates must use ISO format without a time zone.",
+    "当地日期须使用不含时区的ISO格式。",
+    "現地日付は時間帯なしのISO形式にしてください。"
+  ],
+  "유효하지 않은 현지 날짜예요.": [
+    "Invalid local date.",
+    "当地日期无效。",
+    "無効な現地日付です。"
+  ],
+  "일광 절약 시간 전환으로 존재하지 않는 현지 시각이에요.": [
+    "This local time does not exist due to a daylight saving time transition.",
+    "该当地时间因夏令时切换而不存在。",
+    "サマータイムの切り替えにより存在しない現地時刻です。"
+  ],
+  "일정 날짜가 없어요.": [
+    "No event date.",
+    "缺少活动日期。",
+    "予定の日付がありません。"
+  ],
+  "전 세계 공통 일정에는 시간대가 필요해요.": [
+    "Worldwide simultaneous events require a time zone.",
+    "全球同步活动需要指定时区。",
+    "世界同時開催の予定には時間帯が必要です。"
+  ],
+  "유효하지 않은 일정 날짜예요.": [
+    "Invalid event date.",
+    "活动日期无效。",
+    "無効な予定日付です。"
+  ],
+  "한국과 같은 시간": [
+    "Same time as Korea",
+    "与韩国时间相同",
+    "韓国と同じ時刻"
+  ],
+  "빠름": [
+    "ahead",
+    "快",
+    "進んでいます"
+  ],
+  "느림": [
+    "behind",
+    "慢",
+    "遅れています"
+  ],
+  "위도·경도는 정상 범위의 숫자여야 합니다.": [
+    "Latitude and longitude must be numbers within valid ranges.",
+    "纬度和经度必须为有效范围内的数字。",
+    "緯度・経度は有効範囲内の数値にしてください。"
+  ],
+  "전체 경로 데이터 있음": [
+    "Full path data available",
+    "有完整路径数据",
+    "全経路データあり"
+  ],
+  "추정 경로": [
+    "Estimated path",
+    "估算路径",
+    "推定経路"
+  ],
+  "복원 경로": [
+    "Reconstructed path",
+    "还原路径",
+    "復元経路"
+  ],
+  "역방향 가능 여부": [
+    "Reverse availability",
+    "是否允许反向",
+    "逆方向の可否"
+  ],
+  "예상 시간은 1~1,440분 사이의 정수로 입력해 주세요.": [
+    "Enter an estimated time as a whole number from 1 to 1,440 minutes.",
+    "请输入1~1,440分钟的整数作为预计时间。",
+    "所要時間の目安は1~1,440分の整数で入力してください。"
+  ],
+  "순환 루트는 시작·종료 위치를 모두 지정하고 두 위치가 100m 이내여야 합니다.": [
+    "Loop routes require both start and end locations, no more than 100m apart.",
+    "环形路线必须指定起终点，且两点距离不超过100m。",
+    "周回ルートは開始・終了位置を両方指定し、2つの位置が100m以内である必要があります。"
+  ],
+  "전체 경로 좌표는 2~2,000개여야 합니다.": [
+    "The full path must contain 2 to 2,000 coordinates.",
+    "完整路径须包含2~2,000个坐标。",
+    "全経路の座標は2~2,000個にしてください。"
+  ],
+  "게임에 표시된 거리를 100~100,000m 범위로 입력해 주세요.": [
+    "Enter the in-game distance between 100 and 100,000m.",
+    "请输入100~100,000m范围内的游戏显示距离。",
+    "ゲームに表示された距離を100~100,000mの範囲で入力してください。"
+  ],
+  "이웃 좌표 사이가 500m를 넘습니다. 전체 경로가 빠짐없이 들어 있는지 확인해 주세요.": [
+    "Adjacent coordinates are more than 500m apart. Check that the entire path is included.",
+    "相邻坐标间距超过500m。请确认完整路径没有遗漏。",
+    "隣り合う座標の間隔が500mを超えています。全経路が抜けなく含まれているか確認してください。"
+  ],
+  "서로 다른 위치를 잇는 전체 경로가 필요합니다.": [
+    "A complete path connecting different locations is required.",
+    "需要连接不同位置的完整路径。",
+    "異なる位置を結ぶ全経路が必要です。"
+  ],
+  "좌표 길이와 게임 표시 거리가 크게 다릅니다. 원본 경로와 거리를 확인해 주세요.": [
+    "The coordinate length differs greatly from the in-game distance. Check the original path and distance.",
+    "坐标长度与游戏显示距离相差较大。请检查原始路径和距离。",
+    "座標からの距離とゲーム表示距離が大きく異なります。元の経路と距離を確認してください。"
+  ],
+  "입력한 시작·종료 위치와 GPX 끝점이 100m 넘게 떨어져 있습니다.": [
+    "The entered start or end location is more than 100m from the GPX endpoint.",
+    "输入的起点或终点距GPX端点超过100m。",
+    "入力した開始・終了位置とGPXの端点が100mを超えて離れています。"
+  ],
+  "제보 내용을 다시 확인해 주세요.": [
+    "Please review your route submission.",
+    "请重新确认投稿内容。",
+    "投稿内容を再確認してください。"
+  ],
+  "게임 루트 확인과 공개 이용 허락에 동의해 주세요.": [
+    "Agree to the in-game route verification and public usage permission.",
+    "请同意游戏路线确认及公开使用授权。",
+    "ゲーム内ルートの確認と公開利用の許可に同意してください。"
+  ],
+  "목록에서 도시를 선택해 주세요.": [
+    "Select a city from the list.",
+    "请从列表中选择城市。",
+    "一覧から都市を選択してください。"
+  ],
+  "경로 종류와 이용 허락 근거를 선택해 주세요.": [
+    "Select the path type and permission basis.",
+    "请选择路径类型及授权依据。",
+    "経路の種類と利用許可の根拠を選択してください。"
+  ],
+  "게임에서 확인한 날짜를 해당 도시의 오늘 또는 이전 날짜로 입력해 주세요.": [
+    "Enter the in-game verification date as today or earlier in the selected city.",
+    "请输入所选城市当地今天或更早的游戏内确认日期。",
+    "ゲーム内で確認した日は、選択した都市の今日以前の日付で入力してください。"
+  ],
+  "출처는 공개 HTTPS 주소를 입력해 주세요.": [
+    "Enter a public HTTPS URL as the source.",
+    "请提供公开HTTPS地址作为来源。",
+    "出典には公開HTTPS URLを入力してください。"
+  ],
+  "본인이 제작하고 공개 이용을 허락한 자료": [
+    "Created by me and permitted for public use",
+    "由本人制作并允许公开使用的资料",
+    "自分で作成し、公開利用を許可したデータ"
+  ],
+  "제작자 허락 또는 라이선스의 공개 주소와 근거를 20자 이상 적어 주세요.": [
+    "Provide a public URL for the creator permission or license and at least 20 characters explaining the basis.",
+    "请提供作者许可或许可证的公开地址，并用至少20个字符说明依据。",
+    "作成者の許可またはライセンスの公開URLと、20文字以上の根拠を入力してください。"
+  ],
+  "선택한 도시와 루트 위치가 너무 멉니다. 도시와 좌표를 확인해 주세요.": [
+    "The selected city and route are too far apart. Check the city and coordinates.",
+    "所选城市与路线位置相距过远，请检查城市及坐标。",
+    "選択した都市とルートの位置が離れすぎています。都市と座標を確認してください。"
+  ],
+  "전체 경로가 없는 항목에는 좌표 배열을 등록할 수 없습니다.": [
+    "Coordinate arrays cannot be submitted for entries without a complete path.",
+    "没有完整路径的条目不能登记坐标数组。",
+    "全経路がない項目には座標配列を登録できません。"
+  ],
+  "시작 위치 이름": [
+    "Start location name",
+    "起点名称",
+    "開始位置の名前"
+  ],
+  "종료 위치 이름": [
+    "End location name",
+    "终点名称",
+    "終了位置の名前"
+  ],
+  "설명": [
+    "Description",
+    "说明",
+    "説明"
+  ],
+  "다운로드할 전체 경로가 없습니다.": [
+    "No full path is available to download.",
+    "没有可下载的完整路径。",
+    "ダウンロードできる全経路がありません。"
+  ],
+  "커뮤니티 제공·운영자 검토 자료이며 공식 게임 내보내기를 보증하지 않음": [
+    "Community-provided and administrator-reviewed data; not guaranteed to be an official game export",
+    "由社区提供并经管理员审核的资料，不保证为官方游戏导出",
+    "コミュニティ提供・運営者確認済みのデータであり、公式のゲーム書き出しを保証するものではありません"
+  ],
+  "게임 원본 경로와 동일함을 보장하지 않음": [
+    "Not guaranteed to match the original in-game path",
+    "不保证与原始游戏路径完全一致",
+    "元のゲーム内経路との一致は保証しません"
+  ],
+  "포켓몬 배경을 다시 선택해 주세요.": [
+    "Select the Pokémon background again.",
+    "请重新选择宝可梦背景。",
+    "ポケモンの背景を選び直してください。"
+  ],
+  "배경 없음·배경 무관에는 배경 이름을 입력할 수 없어요.": [
+    "Background names cannot be entered for No background or Any background.",
+    "选择“无背景”或“不限背景”时不能输入背景名称。",
+    "「背景なし」「背景不問」では背景名を入力できません。"
+  ],
+  "배경 이름": [
+    "Background name",
+    "背景名称",
+    "背景名"
+  ],
+  "도감 목록에서 포켓몬을 선택해 주세요.": [
+    "Select a Pokémon from the Pokédex list.",
+    "请从图鉴列表中选择宝可梦。",
+    "図鑑一覧からポケモンを選択してください。"
+  ],
+  "모습 설명": [
+    "Form description",
+    "形态说明",
+    "姿の説明"
+  ],
+  "트레이너 코드는 숫자 12자리로 입력해 주세요.": [
+    "Enter a 12-digit numeric Trainer Code.",
+    "请输入12位数字训练家代码。",
+    "トレーナーコードは12桁の数字で入力してください。"
+  ],
+  "Discord 사용자 이름을 영문·숫자·밑줄·점 2~32자로 입력해 주세요.": [
+    "Enter a Discord username of 2 to 32 English letters, numbers, underscores, or periods.",
+    "请输入由英文字母、数字、下划线或句点组成的2~32字符Discord用户名。",
+    "Discordユーザー名は英字・数字・アンダースコア・ピリオドの2~32文字で入力してください。"
+  ],
+  "카카오 오픈채팅은 https://open.kakao.com/o/로 시작하는 공개 초대 주소를 입력해 주세요.": [
+    "Enter a public Kakao Open Chat invite URL starting with https://open.kakao.com/o/.",
+    "请输入以https://open.kakao.com/o/开头的Kakao公开聊天邀请地址。",
+    "カカオのオープンチャットはhttps://open.kakao.com/o/から始まる公開招待URLを入力してください。"
+  ],
+  "모집 글 내용을 다시 확인해 주세요.": [
+    "Please review your trade post.",
+    "请重新确认交换招募内容。",
+    "募集の内容を再確認してください。"
+  ],
+  "GPS 위치 변경 가능 여부를 다시 선택해 주세요.": [
+    "Select GPS location-changing availability again.",
+    "请重新选择能否更改GPS位置。",
+    "GPS位置変更の可否を選び直してください。"
+  ],
+  "닉네임과 연락 방법의 공개에 동의해 주세요.": [
+    "Agree to publish your nickname and contact method.",
+    "请同意公开昵称和联系方式。",
+    "ニックネームと連絡方法の公開に同意してください。"
+  ],
+  "목록에서 지역을 선택해 주세요.": [
+    "Select a region from the list.",
+    "请从列表中选择地区。",
+    "一覧から地域を選択してください。"
+  ],
+  "대면 또는 리모트 교환 준비를 선택해 주세요.": [
+    "Select in-person or remote trade preparation.",
+    "请选择面对面或远程交换准备方式。",
+    "対面またはリモート交換の準備を選択してください。"
+  ],
+  "연락 방법을 선택해 주세요.": [
+    "Select a contact method.",
+    "请选择联系方式。",
+    "連絡方法を選択してください。"
+  ],
+  "모집 기간은 1일·3일·7일 중 선택해 주세요.": [
+    "Choose a recruitment period of 1, 3, or 7 days.",
+    "请选择1天、3天或7天的招募期限。",
+    "募集期間は1日・3日・7日から選択してください。"
+  ],
+  "모집 설명": [
+    "Trade description",
+    "招募说明",
+    "募集の説明"
+  ],
+  "와일드에리어 2026 · 글로벌": [
+    "GO Wild Area 2026 · Global",
+    "GO Wild Area 2026 · 全球",
+    "GO Wild Area 2026 · グローバル"
+  ],
+  "울트라홀 · GO Fest 2024": [
+    "Ultra Wormhole · GO Fest 2024",
+    "究极之洞 · GO Fest 2024",
+    "ウルトラホール · GO Fest 2024"
+  ],
+  "GO Fest 2025 · 글로벌": [
+    "GO Fest 2025 · Global",
+    "GO Fest 2025 · 全球",
+    "GO Fest 2025 · グローバル"
+  ],
+  "센다이 · GO Wild Area 2026": [
+    "Sendai · GO Wild Area 2026",
+    "仙台 · GO Wild Area 2026",
+    "仙台 · GO Wild Area 2026"
+  ],
+  "멕시코시티 · GO Wild Area 2026": [
+    "Mexico City · GO Wild Area 2026",
+    "墨西哥城 · GO Wild Area 2026",
+    "メキシコシティ · GO Wild Area 2026"
+  ],
+  "로스앤젤레스 · GO Tour: Kalos 2026": [
+    "Los Angeles · GO Tour: Kalos 2026",
+    "洛杉矶 · GO Tour: Kalos 2026",
+    "ロサンゼルス · GO Tour: Kalos 2026"
+  ],
+  "맨체스터 · Road Trip 2025": [
+    "Manchester · Road Trip 2025",
+    "曼彻斯特 · Road Trip 2025",
+    "マンチェスター · Road Trip 2025"
+  ],
+  "런던 · Road Trip 2025": [
+    "London · Road Trip 2025",
+    "伦敦 · Road Trip 2025",
+    "ロンドン · Road Trip 2025"
+  ],
+  "파리 · Road Trip 2025": [
+    "Paris · Road Trip 2025",
+    "巴黎 · Road Trip 2025",
+    "パリ · Road Trip 2025"
+  ],
+  "발렌시아 · Road Trip 2025": [
+    "Valencia · Road Trip 2025",
+    "瓦伦西亚 · Road Trip 2025",
+    "バレンシア · Road Trip 2025"
+  ],
+  "베를린 · Road Trip 2025": [
+    "Berlin · Road Trip 2025",
+    "柏林 · Road Trip 2025",
+    "ベルリン · Road Trip 2025"
+  ],
+  "헤이그 · Road Trip 2025": [
+    "The Hague · Road Trip 2025",
+    "海牙 · Road Trip 2025",
+    "ハーグ · Road Trip 2025"
+  ],
+  "쾰른 · Road Trip 2025": [
+    "Cologne · Road Trip 2025",
+    "科隆 · Road Trip 2025",
+    "ケルン · Road Trip 2025"
+  ],
+  "블랙 버전 · Road to Unova 2025": [
+    "Black Version · Road to Unova 2025",
+    "黑版 · Road to Unova 2025",
+    "ブラック版 · Road to Unova 2025"
+  ],
+  "화이트 버전 · Road to Unova 2025": [
+    "White Version · Road to Unova 2025",
+    "白版 · Road to Unova 2025",
+    "ホワイト版 · Road to Unova 2025"
+  ],
+  "Patterns of the Wild 2026 · 바틱 셔츠": [
+    "Patterns of the Wild 2026 · Batik Shirt",
+    "Patterns of the Wild 2026 · 蜡染衬衫",
+    "Patterns of the Wild 2026 · バティックシャツ"
+  ]
+}

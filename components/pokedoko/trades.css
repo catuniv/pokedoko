@@ -30,3 +30,26 @@
 .trade-owned-background{margin-bottom:7px!important;overflow-wrap:anywhere}
 @media(max-width:600px){.trade-variant-filters{gap:7px}.trade-variant-filters>button{padding:9px 12px;font-size:12px}.trade-form-pair>section>.trade-pokemon-preview{min-height:110px}.trade-pair .trade-preview-text>strong{font-size:15px}.trade-pair .trade-pokemon-preview{padding:10px 7px}.trade-background-picker select{font-size:16px}}
 .trade-pair{align-items:stretch}.trade-pair>svg{align-self:center}.trade-pair>section{display:flex;flex-direction:column}.trade-pair .trade-pokemon-preview{flex:1;height:auto}
+
+/* Use the selected game background, with an independent transparent Pokémon layer. */
+.trade-pokemon-preview{flex-direction:column;align-items:stretch;padding:0;gap:0;isolation:isolate}
+.trade-pokemon-stage{position:relative;flex:none;width:100%;aspect-ratio:1;background:#edf2fa;overflow:hidden;border-bottom:1px solid #dce5f2}
+.trade-pokemon-background{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;z-index:0}
+.trade-pokemon-stage .trade-pokemon-illustration{position:absolute;inset:12% 12% 7%;display:grid;width:76%;height:81%;z-index:1;margin:0;flex:none;color:#91a4bd}
+.trade-pokemon-stage .trade-pokemon-illustration>img{filter:drop-shadow(0 5px 5px #14273c40)}
+.trade-pokemon-stage .trade-shiny-mark{top:5%;right:0;filter:drop-shadow(0 1px 2px #fff)}
+.trade-pokemon-preview .trade-preview-text{box-sizing:border-box;width:100%;padding:12px;background:#fff;flex:1}
+.trade-pokemon-stage .trade-stage-note{position:absolute;bottom:8px;left:8px;right:8px;padding:5px 6px;text-align:center;border-radius:5px;background:#ffffffed;color:var(--trade-muted);font-size:10px;line-height:1.7;z-index:2}
+.trade-pair .trade-pokemon-preview{padding:0;gap:0}.trade-pair .trade-preview-text{padding:10px 8px}
+.trade-background-thumbnail{display:flex;align-items:center;gap:12px;margin:12px 0 0;padding:9px;background:#fff;border:1px solid var(--trade-line);border-radius:8px;min-width:0}
+.trade-background-thumbnail>img{display:block;flex:none;width:84px;height:84px;object-fit:cover;border-radius:5px}
+.trade-background-thumbnail>figcaption{min-width:0;font-size:11px;line-height:1.8;color:var(--trade-muted);overflow-wrap:anywhere}.trade-background-thumbnail strong{display:block;font-size:11px;color:var(--trade-ink);margin-bottom:4px}
+.trade-background-unavailable{display:flex;align-items:center;gap:6px;margin:12px 0 0;padding:10px;background:#f3f5f9;color:var(--trade-muted);border-radius:7px;font-size:11px;line-height:1.8}
+@media(max-width:600px){.trade-pair .trade-preview-text{padding:10px 7px}.trade-form-pair>section>.trade-pokemon-preview{min-height:0}.trade-background-thumbnail>img{width:76px;height:76px}.trade-background-thumbnail>figcaption{font-size:11px}}
+
+.trade-gps-badge{display:inline-flex;margin-top:12px;padding:5px 8px;background:#f0f4fa;border-radius:5px;font-size:10px;line-height:1.7;color:var(--trade-muted)}.trade-gps-filter{max-width:240px;margin-top:15px}.trade-address-note{padding:11px 13px;margin:12px 0;background:#edf3ff;color:var(--trade-blue);border-radius:7px;font-size:12px;line-height:1.9}.trade-card-author>span[data-i18n-preserve]{color:var(--trade-ink);font-size:11px}
+
+.trade-catalog-note{margin:18px 0 0;font-size:11px;line-height:1.8;color:var(--trade-muted)}.trade-catalog-note a{color:var(--trade-blue);text-underline-offset:3px}
+
+.trade-background-thumb-image{position:relative;overflow:hidden;flex:none;width:84px;height:84px;border-radius:5px}.trade-background-thumb-image>img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}@media(max-width:600px){.trade-background-thumb-image{width:76px;height:76px}}
+.trade-pokemon-background,.trade-background-thumb-image>img{max-width:none;max-height:none}

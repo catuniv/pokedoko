@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 
 import { useEffect, useRef, useState } from "react";
 import { Check, Copy } from "lucide-react";
@@ -50,7 +51,7 @@ export default function CoordinateCopyButton({
     }
   }
 
-  return (
+  return <LanguageScope>{(
     <div className="coordinate-copy">
       <button
         type="button"
@@ -84,5 +85,5 @@ export default function CoordinateCopyButton({
         </label>
       )}
     </div>
-  );
+  )}</LanguageScope>;
 }

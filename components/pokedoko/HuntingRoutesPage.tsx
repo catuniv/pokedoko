@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope, useLanguage } from "@/components/pokedoko/LanguageProvider";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ArrowUpRight, Check, ChevronRight, FileUp, LocateFixed, MapPin, RefreshCw, Route, Search } from "lucide-react";
@@ -35,10 +36,11 @@ function EditorWithShare({ route, settings, onChange }: { route: LoadedRoute; se
     try { await navigator.clipboard.writeText(value); if (alive.current && id === request.current) setStatus("copied"); }
     catch { if (alive.current && id === request.current) setStatus("fallback"); }
   }
-  return <><HuntingRouteEditor points={route.points} name={route.name} settings={settings} onChange={onChange} source={route.source} onShare={route.kind === "import" ? undefined : (effective) => void copy(effective)} /><div className="hunt-settings-link" role="status">{status === "copied" && <span><Check size={14} />설정 링크를 복사했어요.</span>}{status === "fallback" && <label>링크를 직접 복사하세요<input ref={input} readOnly value={url} aria-label="복사할 자동사냥 경로 설정 링크" onFocus={(event) => event.currentTarget.select()} /></label>}</div></>;
+  return <LanguageScope>{<><HuntingRouteEditor points={route.points} name={route.name} settings={settings} onChange={onChange} source={route.source} onShare={route.kind === "import" ? undefined : (effective) => void copy(effective)} /><div className="hunt-settings-link" role="status">{status === "copied" && <span><Check size={14} />설정 링크를 복사했어요.</span>}{status === "fallback" && <label>링크를 직접 복사하세요<input ref={input} readOnly value={url} aria-label="복사할 자동사냥 경로 설정 링크" onFocus={(event) => event.currentTarget.select()} /></label>}</div></>}</LanguageScope>;
 }
 
 export default function HuntingRoutesPage() {
+  const { t } = useLanguage();
   const [settings, setSettings] = useState<HuntingSettings>({ ...DEFAULT_HUNTING_SETTINGS });
   const [hydrated, setHydrated] = useState(false);
   const restoring = useRef(false);
@@ -146,7 +148,7 @@ export default function HuntingRoutesPage() {
     } catch (failure) { setImportError(errorText(failure, "경로를 읽지 못했어요.")); }
   }
   const countries = [...new Map(HUNTING_CATALOG.map((item) => [item.countryCode, item.countryName])).entries()];
-  const catalog = HUNTING_CATALOG.filter((route) => (catalogCountry === "all" || route.countryCode === catalogCountry) && `${route.name} ${route.cityName} ${route.countryName}`.toLowerCase().includes(catalogQuery.trim().toLowerCase()));
+  const catalog = HUNTING_CATALOG.filter((route) => (catalogCountry === "all" || route.countryCode === catalogCountry) && `${route.name} ${route.cityName} ${route.countryName} ${t(route.cityName)} ${t(route.countryName)}`.toLowerCase().includes(catalogQuery.trim().toLowerCase()));
   const renderEditor = () => loaded && <EditorWithShare route={loaded} settings={settings} onChange={(patch) => setSettings((current) => ({ ...current, ...patch }))} />;
   const chooseRoute = (route: HuntingCatalogRoute) => {
     if (settings.routeId === route.id) setCatalogAttempt((attempt) => attempt + 1);
@@ -154,7 +156,7 @@ export default function HuntingRoutesPage() {
     requestAnimationFrame(() => document.getElementById(`hunt-catalog-${route.id}`)?.scrollIntoView({ block: "start", behavior: "smooth" }));
   };
 
-  return <div className="hunting-page">
+  return <LanguageScope>{<div className="hunting-page">
     <header className="hunting-header"><a href="/live" className="hunting-brand">poke<strong>doko</strong></a><nav aria-label="주요 메뉴"><a href="/live">실시간 레이드</a><a href="/raids">레이드아워</a><a href="/calendar">일정</a><a href="/gpx" aria-current="page">GPX 자동사냥</a><a href="/routes">셀 루트</a></nav></header>
     <main className="hunting-main">
       <section className="hunting-heading"><span className="hunting-eyebrow"><Route size={15} /> GPX ROUTES</span><h1>자동사냥 GPX 경로</h1><p>포켓스톱 순환 경로와 공개 GPX를 골라 이동 속도를 설정하세요.</p><div className="hunting-tags"><span>걷기 9.3km/h</span><span>순회 15km/h</span><span>빠른 순회 20km/h</span></div></section>
@@ -165,7 +167,7 @@ export default function HuntingRoutesPage() {
         <ul className="hunting-catalog">{catalog.map((route) => {
           const selected = settings.routeId === route.id;
           return <li key={route.id} id={`hunt-catalog-${route.id}`} data-selected={selected}>
-            <article><div className="hunting-card-head"><span>{countryFlag(route.countryCode)} {route.cityName}</span><span>{route.closed ? "원본 순환" : "원본 편도"}</span></div><h3>{route.name}</h3><p>{route.description}</p><div className="hunting-card-metrics"><strong>{route.distanceKm.toFixed(2)}<small>km</small></strong><span>원본 좌표 {route.pointCount.toLocaleString()}개</span></div><div className="hunting-card-actions"><button type="button" onClick={() => chooseRoute(route)} disabled={selected && loading}>{selected && loading ? <RefreshCw size={15} className="spinning" /> : <Route size={15} />}{selected && loading ? "원본 불러오는 중" : selected && loaded ? "선택한 경로" : "이 경로 사용"}<ChevronRight size={15} /></button><a href={route.sourceUrl} target="_blank" rel="noreferrer">원본 <ArrowUpRight size={13} /></a>{route.communityUrl && <a href={route.communityUrl} target="_blank" rel="noreferrer">사용자 글 <ArrowUpRight size={13} /></a>}</div>
+            <article><div className="hunting-card-head"><span>{countryFlag(route.countryCode)} {route.cityName}</span><span>{route.closed ? "원본 순환" : "원본 편도"}</span></div><h3><span data-i18n-preserve>{route.name}</span></h3><p>{route.description}</p><div className="hunting-card-metrics"><strong>{route.distanceKm.toFixed(2)}<small>km</small></strong><span>원본 좌표 {route.pointCount.toLocaleString()}개</span></div><div className="hunting-card-actions"><button type="button" onClick={() => chooseRoute(route)} disabled={selected && loading}>{selected && loading ? <RefreshCw size={15} className="spinning" /> : <Route size={15} />}{selected && loading ? "원본 불러오는 중" : selected && loaded ? "선택한 경로" : "이 경로 사용"}<ChevronRight size={15} /></button><a href={route.sourceUrl} target="_blank" rel="noreferrer">원본 <ArrowUpRight size={13} /></a>{route.communityUrl && <a href={route.communityUrl} target="_blank" rel="noreferrer">사용자 글 <ArrowUpRight size={13} /></a>}</div>
             {selected && <div className="hunting-selected" aria-busy={loading}>{loadError && <p className="hunting-error" role="alert">{loadError}</p>}{loading && <p className="hunting-load" role="status">원본 GPX를 확인하고 있어요.</p>}{loaded?.kind === "catalog" && renderEditor()}</div>}</article>
           </li>;
         })}</ul>
@@ -186,5 +188,5 @@ export default function HuntingRoutesPage() {
       </section>}
       <footer className="hunting-footer"><p>이동·포획은 앱에서 실행합니다. GPX는 경로와 선택한 예정 시간만 담아요.</p><a href="/routes">지가르데 셀 루트 계획 <ChevronRight size={13} /></a><a href="/privacy">데이터 보관 안내</a></footer>
     </main>
-  </div>;
+  </div>}</LanguageScope>;
 }

@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope, useLanguage } from "@/components/pokedoko/LanguageProvider";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowDownUp,
@@ -109,6 +110,7 @@ export default function Pokedoko({
 }: {
   initialView?: View;
 }) {
+  const { language, intlLocale, t } = useLanguage();
   const [view, setView] = useState<View>(initialView),
     [now, setNow] = useState<Date | null>(null),
     [feed, setFeed] = useState<Feed>(FALLBACK_FEED),
@@ -212,7 +214,7 @@ export default function Pokedoko({
   // IANA databases can differ between the server and a browser. Calculate the
   // moving world clock after hydration so both initial renders stay identical.
   if (!now)
-    return (
+    return <LanguageScope>{(
       <div className="pokedoko-shell">
         <aside className="sidebar">
           <a className="brand" href="/live">
@@ -234,7 +236,7 @@ export default function Pokedoko({
           </main>
         </div>
       </div>
-    );
+    )}</LanguageScope>;
   function navigate(v: View) {
     setView(v);
     const destination = new URL(`/${v}`, location.origin);
@@ -274,7 +276,7 @@ export default function Pokedoko({
         (region === "all" || r.city.region === region) &&
         (status === "all" || r.state === status) &&
         (!favoriteOnly || favorites.includes(r.city.id)) &&
-        `${r.city.name} ${r.city.nameEn} ${r.city.country}`
+        `${r.city.name} ${r.city.nameEn} ${r.city.country} ${t(r.city.name)} ${t(r.city.country)}`
           .toLowerCase()
           .includes(query.toLowerCase()),
     )
@@ -287,7 +289,7 @@ export default function Pokedoko({
             (b.window?.start.getTime() ?? Infinity),
     );
   const rounds = getCityWindows(city, raidEvents, clock).slice(0, 3);
-  return (
+  return <LanguageScope>{(
     <div className="pokedoko-shell">
       <aside className="sidebar">
         <a
@@ -408,7 +410,7 @@ export default function Pokedoko({
                 {now ? formatLocal(now, "Asia/Seoul") : "--:--:--"}
               </strong>
               <span>
-                {new Intl.DateTimeFormat("ko-KR", {
+                {new Intl.DateTimeFormat(intlLocale, {
                   timeZone: "Asia/Seoul",
                   month: "long",
                   day: "numeric",
@@ -454,7 +456,7 @@ export default function Pokedoko({
                 </div>
                 <div>
                   <span>선택한 공식 일정</span>
-                  <h2>{event?.nameKo ?? "확인된 레이드 일정 없음"}</h2>
+                  <h2>{event ? (language === "ko" ? event.nameKo || event.name : event.name) : "확인된 레이드 일정 없음"}</h2>
                   <p>
                     {!event ? "진행 중이거나 예정된 확정 일정이 없습니다. 새 공지를 확인하면 자동으로 표시합니다." : event.start.kind === "local"
                       ? "각 도시의 현지 시각에 진행 · 한국시간으로 변환"
@@ -470,7 +472,7 @@ export default function Pokedoko({
                   {!available.length && <option value="">확정 일정 없음</option>}
                   {available.map((e) => (
                     <option value={e.id} key={e.id}>
-                      {e.nameKo}
+                      {language === "ko" ? e.nameKo || e.name : e.name}
                     </option>
                   ))}
                 </select>
@@ -913,7 +915,7 @@ export default function Pokedoko({
                           {i + 1}
                         </span>
                         <div>
-                          <strong>{r.event.nameKo}</strong>
+                          <strong>{language === "ko" ? r.event.nameKo || r.event.name : r.event.name}</strong>
                           <p>
                             {formatKst(r.start)} ~ {formatKst(r.end, false)} KST
                           </p>
@@ -1081,7 +1083,7 @@ export default function Pokedoko({
         </Modal>
       )}
     </div>
-  );
+  )}</LanguageScope>;
 }
 function Modal({
   title,
@@ -1106,7 +1108,7 @@ function Modal({
       if (trigger?.isConnected) trigger.focus();
     };
   }, []);
-  return (
+  return <LanguageScope>{(
     <dialog
       className="modal"
       ref={ref}
@@ -1126,7 +1128,7 @@ function Modal({
       </div>
       {children}
     </dialog>
-  );
+  )}</LanguageScope>;
 }
 function GymForm({
   city,
@@ -1142,7 +1144,7 @@ function GymForm({
     [ends, setEnds] = useState(""),
     [pokemon, setPokemon] = useState(""),
     [error, setError] = useState("");
-  return (
+  return <LanguageScope>{(
     <Modal title={`${city.name} 체육관 시간 등록`} onClose={onClose}>
       <form
         className="gym-form"
@@ -1236,5 +1238,5 @@ function GymForm({
         </div>
       </form>
     </Modal>
-  );
+  )}</LanguageScope>;
 }

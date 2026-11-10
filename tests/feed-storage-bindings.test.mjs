@@ -65,6 +65,7 @@ const moduleUrl = source => `data:text/javascript;base64,${Buffer.from(compile(s
 const storeUrl = moduleUrl(await readFile(new URL('../lib/feed-store.ts', import.meta.url), 'utf8'));
 const bindingUrl = moduleUrl(await readFile(new URL('../lib/feed-storage-bindings.ts', import.meta.url), 'utf8'));
 const commonRewrite = source => source
+  .replace(/import \{ getTradeBackgroundCatalog \} from [^;]+;/, 'const getTradeBackgroundCatalog = async () => ({ stale: false, storage: "ready", fetchedAt: new Date().toISOString(), sourceUpdatedAt: "2026-08-31", presets: [] });')
   .replace(/import \{ createGrowthRetentionScheduler, pruneGrowthData \} from [^;]+;/, 'const pruneGrowthData = async () => ({ enabled: false, deleted: {} }); const createGrowthRetentionScheduler = () => () => false;')
   .replace(/import \{ FALLBACK_FEED, loadFeed \} from [^;]+;/, `const FALLBACK_FEED = ${JSON.stringify(fixture)}; const loadFeed = async () => FALLBACK_FEED;`)
   .replace(/import \{ createFeedStore \} from [^;]+;/, `import { createFeedStore } from '${storeUrl}';`)

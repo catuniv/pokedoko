@@ -12,6 +12,13 @@ pokedoko는 [https://pokedoko.catuniv.workers.dev](https://pokedoko.catuniv.work
 - 이 프로젝트는 Pokémon 명칭·이미지에 대한 소유권이나 별도 사용 허락을 부여하지 않습니다. Pokémon과 관련 명칭·이미지의 권리는 해당 권리자에게 있습니다.
 - `public/pokemon/`에 저장한 원본 PNG 14개의 목록과 정확한 폼별 출처는 [docs/pokemon-artwork.md](docs/pokemon-artwork.md)에 보존합니다. 원격으로 불러오는 이미지에도 같은 권리 구분이 적용됩니다.
 
+## Pokémon GO 배경 이미지와 교환 검색 명칭
+
+- 게임 배경 원본: [PokeMiners/pogo_assets](https://github.com/PokeMiners/pogo_assets), `Images/LocationCards`. 원본 저장소는 교육 목적 자료이며 콘텐츠 권리는 Pokémon Company·Niantic 등 각 권리자에게 있음을 안내한다. 공개 원본 접근을 이미지의 자유 재배포 라이선스로 해석하지 않는다. 출처·원본 커밋·바이트 해시는 `lib/trade-background-image-manifest.json`과 [배경 출처 문서](docs/trade-background-sources.md)에 보존한다.
+- 2026 와일드에리어 안내 이미지: [LeekDuck](https://leekduck.com/pokemon-go-wild-area/special-backgrounds/). 정지 미리보기의 원본 출처와 표시 범위를 구분한다.
+- 자동 갱신 배경 카탈로그·온디맨드 이미지: [psoren/pogo-bg](https://github.com/psoren/pogo-bg). 이 카탈로그는 커뮤니티 자료이며 Pokémon 배경·상표의 권리는 원래 권리자에게 있다. 코드·회원 글·연락처는 가져오지 않는다.
+- 일본어·중국어 검색용 포켓몬 명칭은 위 PokeAPI의 공개 `pokemon_species_names.csv`에서 읽어 `lib/pokemon-localized-names.json`에 저장했다. 영어 교환 식별 이름을 유지하면서 해당 언어 이름으로 검색할 수 있다.
+
 ## 이벤트와 레이드 보스 데이터
 
 - 출처: [LeekDuck](https://leekduck.com), [ScrapedDuck](https://github.com/bigfoott/ScrapedDuck).

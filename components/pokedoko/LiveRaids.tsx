@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope, useLanguage } from "@/components/pokedoko/LanguageProvider";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -97,6 +98,7 @@ export default function LiveRaids({
   onDelete,
   onSchedule,
 }: Props) {
+  const { t } = useLanguage();
   const [feed, setFeed] = useState<LiveRaidFeed | null>(null);
   const [loading, setLoading] = useState(false);
   const [refreshError, setRefreshError] = useState<string | null>(null);
@@ -232,7 +234,7 @@ export default function LiveRaids({
       return (
         (cityFilter === "all" || r.cityId === cityFilter) &&
         (stateFilter === "all" || state === stateFilter) &&
-        `${r.gymName} ${r.bossName ?? ""} ${c?.name} ${c?.nameEn} ${c?.country}`
+        `${r.gymName} ${r.bossName ?? ""} ${c?.name} ${c?.nameEn} ${c?.country} ${t(r.bossName ?? "")} ${t(c?.name ?? "")} ${t(c?.country ?? "")}`
           .toLowerCase()
           .includes(query.trim().toLowerCase())
       );
@@ -261,7 +263,7 @@ export default function LiveRaids({
     onCityChange(id);
   }
 
-  return (
+  return <LanguageScope>{(
     <div className="live-raid-page">
       <section
         className="live-data-status"
@@ -846,5 +848,5 @@ export default function LiveRaids({
         )}
       </section>
     </div>
-  );
+  )}</LanguageScope>;
 }

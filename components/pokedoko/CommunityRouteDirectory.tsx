@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ArrowDownToLine, ArrowUpRight, Check, ChevronDown, ChevronUp, FileUp, LoaderCircle, MapPin, Plus, RefreshCw, Route, Send, X } from "lucide-react";
@@ -134,8 +135,8 @@ function PublicRouteCard({ route, onImport }: { route: CommunityRouteSummary; on
     finally { clearTimeout(timer); setDownloading(false); }
   }
   const displayed = detail ?? route;
-  return <article className="community-route-card">
-    <div className="community-route-card-top"><div><span className={`community-route-status community-route-status-${displayed.geometryType}`}>{displayed.geometryType === "none" ? "전체 경로 미확보" : communityGeometryLabel(displayed.geometryType)}</span><h3>{route.name}</h3></div><strong className="community-route-distance">{distance(route.reportedDistanceMeters)}</strong></div>
+  return <LanguageScope>{<article className="community-route-card">
+    <div className="community-route-card-top"><div><span className={`community-route-status community-route-status-${displayed.geometryType}`}>{displayed.geometryType === "none" ? "전체 경로 미확보" : communityGeometryLabel(displayed.geometryType)}</span><h3><span data-i18n-preserve>{route.name}</span></h3></div><strong className="community-route-distance">{distance(route.reportedDistanceMeters)}</strong></div>
     <p className="community-route-start"><MapPin size={14} /><span>시작 · {route.startName}</span></p>
     <div className="community-route-card-meta"><span>{route.gpxAvailable ? "GPX 제공" : "GPX 없음"}</span><span>{route.verificationStatus === "reviewed" ? "운영자 확인" : "검증 필요"}</span><span>게임 확인일 {route.lastCheckedAt}</span><span>역방향 {yesNo(displayed.reversible, "가능", "불가")}</span>{typeof displayed.estimatedMinutes === "number" && <span>약 {displayed.estimatedMinutes}분</span>}{displayed.isLoop === true && <span>순환 루트</span>}</div>
     <div className="community-route-actions"><button type="button" className="community-secondary-button" onClick={toggle} aria-expanded={open}>{open ? <ChevronUp size={15} /> : <ChevronDown size={15} />}{open ? "접기" : "지도 보기"}</button>{route.gpxAvailable && <button type="button" className="community-download-button" onClick={() => void download()} disabled={downloading}>{downloading ? <LoaderCircle size={15} className="community-spin" /> : <ArrowDownToLine size={15} />}{downloading ? "파일 받는 중" : "GPX 다운로드"}</button>}</div>
@@ -145,16 +146,16 @@ function PublicRouteCard({ route, onImport }: { route: CommunityRouteSummary; on
       {error && <div className="cell-form-error" role="alert"><p>{error}</p><button type="button" className="community-inline-button" onClick={() => void loadDetail()}>다시 조회</button></div>}
       {detail && <>
         <RouteGeometryMap name={detail.name} points={detail.points} start={detail.startPoint} end={detail.endPoint} kindLabel={communityGeometryLabel(detail.geometryType)} />
-        <dl className="community-route-facts"><div><dt>시작 위치</dt><dd>{detail.startName}<button type="button" className="community-coordinate-button" onClick={() => void coordinateCopy.copy(coordinates(detail.startPoint))}>{coordinateCopy.copied === coordinates(detail.startPoint) ? <Check size={12} /> : null}{coordinateCopy.copied === coordinates(detail.startPoint) ? "복사됨" : coordinates(detail.startPoint)}</button></dd></div><div><dt>종료 위치</dt><dd>{detail.endName || "미확인"}{detail.endPoint && <button type="button" className="community-coordinate-button" onClick={() => void coordinateCopy.copy(coordinates(detail.endPoint!))}>{coordinateCopy.copied === coordinates(detail.endPoint) ? "복사됨" : coordinates(detail.endPoint)}</button>}</dd></div><div><dt>역방향</dt><dd>{yesNo(detail.reversible, "진행 가능", "진행 불가")}</dd></div><div><dt>예상 시간</dt><dd>{typeof detail.estimatedMinutes === "number" ? `${detail.estimatedMinutes}분 · 게임 표시 기준` : "미확인"}</dd></div><div><dt>순환 루트</dt><dd>{yesNo(detail.isLoop, "시작 위치로 돌아오는 루트", "시작과 끝이 다른 루트")}</dd></div><div><dt>경로 데이터</dt><dd>{detail.geometryType === "none" ? "전체 경로 미확보" : `${communityGeometryLabel(detail.geometryType)} · ${detail.pointCount.toLocaleString()}점`}{typeof detail.computedDistanceMeters === "number" && <small>좌표 계산 거리 {distance(detail.computedDistanceMeters)}</small>}</dd></div><div><dt>제작자</dt><dd>{detail.creatorName}</dd></div><div><dt>이용 근거</dt><dd>{detail.rightsDetails}</dd></div></dl>
+        <dl className="community-route-facts"><div><dt>시작 위치</dt><dd><span data-i18n-preserve>{detail.startName}</span><button type="button" className="community-coordinate-button" onClick={() => void coordinateCopy.copy(coordinates(detail.startPoint))}>{coordinateCopy.copied === coordinates(detail.startPoint) ? <Check size={12} /> : null}{coordinateCopy.copied === coordinates(detail.startPoint) ? "복사됨" : coordinates(detail.startPoint)}</button></dd></div><div><dt>종료 위치</dt><dd>{detail.endName ? <span data-i18n-preserve>{detail.endName}</span> : "미확인"}{detail.endPoint && <button type="button" className="community-coordinate-button" onClick={() => void coordinateCopy.copy(coordinates(detail.endPoint!))}>{coordinateCopy.copied === coordinates(detail.endPoint) ? "복사됨" : coordinates(detail.endPoint)}</button>}</dd></div><div><dt>역방향</dt><dd>{yesNo(detail.reversible, "진행 가능", "진행 불가")}</dd></div><div><dt>예상 시간</dt><dd>{typeof detail.estimatedMinutes === "number" ? `${detail.estimatedMinutes}분 · 게임 표시 기준` : "미확인"}</dd></div><div><dt>순환 루트</dt><dd>{yesNo(detail.isLoop, "시작 위치로 돌아오는 루트", "시작과 끝이 다른 루트")}</dd></div><div><dt>경로 데이터</dt><dd>{detail.geometryType === "none" ? "전체 경로 미확보" : `${communityGeometryLabel(detail.geometryType)} · ${detail.pointCount.toLocaleString()}점`}{typeof detail.computedDistanceMeters === "number" && <small>좌표 계산 거리 {distance(detail.computedDistanceMeters)}</small>}</dd></div><div><dt>제작자</dt><dd><span data-i18n-preserve>{detail.creatorName}</span></dd></div><div><dt>이용 근거</dt><dd><span data-i18n-preserve>{detail.rightsDetails}</span></dd></div></dl>
         {coordinateCopy.fallback && <label className="community-copy-fallback">자동 복사가 막혔어요. 좌표를 직접 복사해 주세요.<div><input readOnly value={coordinateCopy.fallback} onFocus={(event) => event.currentTarget.select()} aria-label="직접 복사할 루트 좌표" /><button type="button" onClick={coordinateCopy.close} aria-label="좌표 복사 안내 닫기"><X size={14} /></button></div></label>}
         {detail.sourceUrl && <a href={detail.sourceUrl} className="community-source-link" target="_blank" rel="noreferrer">제작자·원문 확인 <ArrowUpRight size={13} /></a>}
-        {detail.notes && <p className="community-route-notes">{detail.notes}</p>}
+        {detail.notes && <p className="community-route-notes"><span data-i18n-preserve>{detail.notes}</span></p>}
         <p className="community-route-verification-note">{detail.geometryType === "estimated" ? "시작·종료 등 확인된 자료를 바탕으로 만든 추정 경로예요. 실제 게임 경로와 다를 수 있어요." : detail.geometryType === "reconstructed" ? "지도 이미지 등에서 복원한 경로예요. 실제 게임 경로와 다를 수 있어요." : detail.geometryType === "none" ? "시작·종료 위치만 표시해요. 두 위치를 연결해 GPX를 만들지 않습니다." : "제보된 원본 경로 좌표예요. 운영자 확인은 게임 서버의 공식 인증을 뜻하지 않습니다."} 게임에서 현재 루트와 방향을 확인해 주세요.</p>
         {detail.geometryType === "original" && detail.gpxAvailable && detail.points && detail.points.length >= 2 && <button type="button" className="community-secondary-button" onClick={() => { const failure = onImport(detail); setImportError(failure ?? ""); setImportNotice(failure ? "" : "이 기기의 방문 계획에 추가했어요."); }}><Plus size={15} />내 방문 계획에 추가</button>}
         {importError && <p className="cell-form-error" role="alert">{importError}</p>}{importNotice && <p className="cell-form-notice" role="status">{importNotice}</p>}
       </>}
     </div>}
-  </article>;
+  </article>}</LanguageScope>;
 }
 
 type SubmissionForm = { name: string; cityId: string; startName: string; endName: string; startCoordinates: string; endCoordinates: string; distance: string; reversible: "" | "true" | "false"; isLoop: "" | "true" | "false"; estimatedMinutes: string; sourceUrl: string; creatorName: string; rightsBasis: "creator" | "permission" | "license"; rightsDetails: string; lastCheckedAt: string; geometryType: Exclude<CommunityGeometryType, "none">; notes: string; inGameConfirmed: boolean; allowRedistribution: boolean; website: string };
@@ -244,7 +245,7 @@ function RouteSubmissionForm({ cityId }: { cityId: string }) {
     finally { clearTimeout(timer); setSending(false); }
   }
   const pending = sending || fileReading;
-  return <form className="community-submission-form" onSubmit={(event) => void submit(event)}>
+  return <LanguageScope>{<form className="community-submission-form" onSubmit={(event) => void submit(event)}>
     <p className="community-submission-intro">게임에서 직접 확인한 Pokémon GO 루트를 제보해 주세요. GPX가 없어도 시작 위치와 루트 정보를 받을 수 있어요. 제보는 검토 후 공개됩니다.</p>
     {success && <div className="community-submission-success" role="status"><Check size={18} /><div><strong>{success.duplicate ? "이미 접수된 제보예요" : "제보를 접수했어요"}</strong><p>검토 대기 중입니다. 아직 공개 목록에는 표시되지 않아요.</p><small>접수 번호 {success.id}</small></div></div>}
     <fieldset disabled={sending}>
@@ -276,7 +277,7 @@ function RouteSubmissionForm({ cityId }: { cityId: string }) {
     {error && <p className="cell-form-error" role="alert">{error}</p>}
     <button type="submit" className="community-submit-button" disabled={pending}>{sending ? <LoaderCircle size={17} className="community-spin" /> : <Send size={16} />}{sending ? "제보 저장 중" : "루트 제보하기"}</button>
     <p className="community-submission-footer">공개된 파일도 재배포 허락은 별도로 확인해야 해요. GPX 제출이나 운영자 확인만으로 현재 게임 이용 가능 여부와 셀 획득을 보장하지 않습니다.</p>
-  </form>;
+  </form>}</LanguageScope>;
 }
 
 export default function CommunityRouteDirectory({ cityId, onCityChange, onImport }: {
@@ -322,7 +323,7 @@ export default function CommunityRouteDirectory({ cityId, onCityChange, onImport
     } catch (failure) { if (request === generation.current) setError(failure instanceof Error && failure.name !== "AbortError" ? failure.message : "목록 조회 시간이 초과됐어요. 다시 시도해 주세요."); }
     finally { clearTimeout(timer); if (request === generation.current) setLoadingMore(false); }
   }
-  return <section className="cell-route-panel community-route-directory" aria-labelledby="community-directory-heading">
+  return <LanguageScope>{<section className="cell-route-panel community-route-directory" aria-labelledby="community-directory-heading">
     <div className="community-directory-heading"><div><span className="community-eyebrow">COMMUNITY ROUTES</span><h2 id="community-directory-heading">지역별 게임 루트</h2><p>사용자가 제보하고 운영자가 확인한 루트를 모아요.</p></div><button type="button" className="community-submit-shortcut" onClick={openSubmission}><Plus size={16} />루트 제보</button></div>
     <div className="community-directory-toolbar"><label>도시<select aria-label="공개 루트 도시" value={cityId} onChange={(event) => onCityChange(event.target.value)}>{CITIES.map((item) => <option key={item.id} value={item.id}>{item.name} · {item.country}</option>)}</select></label><div><span>{loading ? "조회 중" : error && !routes.length ? "조회 실패" : `${city.name} · ${total.toLocaleString()}개 공개`}</span><button type="button" onClick={() => setRefresh((value) => value + 1)} disabled={loading} aria-label="공개 루트 목록 새로고침"><RefreshCw size={15} /></button></div></div>
     {loading && <div className="community-directory-loading" role="status"><LoaderCircle size={21} className="community-spin" /><p>공개 루트를 불러오고 있어요.</p></div>}
@@ -332,5 +333,5 @@ export default function CommunityRouteDirectory({ cityId, onCityChange, onImport
     {!loading && hasMore && <button type="button" className="community-load-more" onClick={() => void loadMore()} disabled={loadingMore}>{loadingMore ? <LoaderCircle size={15} className="community-spin" /> : <ChevronDown size={15} />}{loadingMore ? "더 불러오는 중" : "루트 더 보기"}</button>}
     <p className="community-directory-note">운영자 확인은 게임 서버의 공식 인증이 아닙니다. 경로 종류와 마지막 게임 확인일을 함께 확인해 주세요.</p>
     <details className="community-submit-details" ref={submissionDetails} open={formOpen} onToggle={(event) => setFormOpen(event.currentTarget.open)}><summary><span><FileUp size={17} />게임 루트 제보하기</span><span>{formOpen ? "접기" : "열기"}</span></summary>{(formOpen || formWasOpened) && <RouteSubmissionForm cityId={cityId} />}</details>
-  </section>;
+  </section>}</LanguageScope>;
 }

@@ -1,0 +1,190 @@
+[
+  {
+    "presetId": "go-fest-wormhole-2024",
+    "file": "sb_GoFest2024_wormhole.4f5af985350a.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/sb_GoFest2024_wormhole.png",
+    "sha256": "4f5af985350ae308cff67702834a38430e6c5c696429876df8868b4aa0d1f112",
+    "width": 512,
+    "height": 512,
+    "bytes": 242520,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "go-fest-global-2025",
+    "file": "sb_GoFest2025.d71d9f552f78.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/sb_GoFest2025.png",
+    "sha256": "d71d9f552f788b66803c45a43c5a0491177941eab4a45295519438bbe83f2c57",
+    "width": 512,
+    "height": 512,
+    "bytes": 344705,
+    "imageType": "static-base-texture"
+  },
+  {
+    "presetId": "road-to-unova-black-2025",
+    "file": "sb_GoTour2025_black.8916560e1e7a.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/sb_GoTour2025_black.png",
+    "sha256": "8916560e1e7ab3f98c09a3d96ad08ef3c0014f3e7e6e96c92e1a9f4a1d027be9",
+    "width": 512,
+    "height": 512,
+    "bytes": 92409,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "road-to-unova-white-2025",
+    "file": "sb_GoTour2025_white.effac33d5e8b.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/sb_GoTour2025_white.png",
+    "sha256": "effac33d5e8be6f387159893bd77f6ac2d9a54a01614d302d57abfdb16fa67b3",
+    "width": 512,
+    "height": 512,
+    "bytes": 115227,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "into-the-wild-2025",
+    "file": "sb_GOWA2025_Global.86f8600a6254.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/sb_GOWA2025_Global.png",
+    "sha256": "86f8600a625414ab07ddd4e31dd30a05fce33121449229295e2e6c3b9ba44c86",
+    "width": 512,
+    "height": 512,
+    "bytes": 209790,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "road-trip-manchester-2025",
+    "file": "lc_roadtrip2025_manchester.b73c9e9b7fbc.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_roadtrip2025_manchester.png",
+    "sha256": "b73c9e9b7fbc426d87d5dfce9c799333f2b0a302c94898fa0265fad9b7f236cc",
+    "width": 512,
+    "height": 512,
+    "bytes": 530177,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "road-trip-london-2025",
+    "file": "lc_roadtrip2025_london.1ba4145442a6.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_roadtrip2025_london.png",
+    "sha256": "1ba4145442a6a7729fc5ac07c69ccabc038c2ad2b44ee028c72a6774ba5bd6c3",
+    "width": 512,
+    "height": 512,
+    "bytes": 512877,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "road-trip-paris-2025",
+    "file": "lc_roadtrip2025_paris.9c032387fee5.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_roadtrip2025_paris.png",
+    "sha256": "9c032387fee5b75858b208ab8bd4041f3f8fe73ef37c1069fc76e3024698b3b0",
+    "width": 512,
+    "height": 512,
+    "bytes": 460036,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "road-trip-valencia-2025",
+    "file": "lc_roadtrip2025_valencia.0028a0466719.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_roadtrip2025_valencia.png",
+    "sha256": "0028a0466719142d46b077c4ef7d00ab1b5986fe48e34a26a4d8dd2dc508d157",
+    "width": 512,
+    "height": 512,
+    "bytes": 461571,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "road-trip-berlin-2025",
+    "file": "lc_roadtrip2025_berlin.bc0b986028fe.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_roadtrip2025_berlin.png",
+    "sha256": "bc0b986028fef9a8bef1d67512fa98cf5482f982b005a07ca37e7d5dfbac2fe3",
+    "width": 512,
+    "height": 512,
+    "bytes": 450639,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "road-trip-den-haag-2025",
+    "file": "lc_roadtrip2025_hague.efbfca133ca8.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_roadtrip2025_hague.png",
+    "sha256": "efbfca133ca89a3bedbbfb4443ed4bcf0409f87d119599c3c71d75b730ecf523",
+    "width": 512,
+    "height": 512,
+    "bytes": 386183,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "road-trip-cologne-2025",
+    "file": "lc_roadtrip2025_cologne.bbcd4b760149.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_roadtrip2025_cologne.png",
+    "sha256": "bbcd4b760149ea0299e4596abb6f5f82fecc4a5a455ab2aaa3bd2a4b30f1e2af",
+    "width": 512,
+    "height": 512,
+    "bytes": 450196,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "wild-area-sendai-2026",
+    "file": "lc_2026_gowa_sendai.010d6912f3db.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_2026_gowa_sendai.png",
+    "sha256": "010d6912f3db2b7264c7669fcf70705ea96e857464bd230d7379373c78bdc7ba",
+    "width": 512,
+    "height": 512,
+    "bytes": 619006,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "wild-area-mexico-city-2026",
+    "file": "lc_2026_gowa_mexicocity.772c5d214249.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_2026_gowa_mexicocity.png",
+    "sha256": "772c5d2142499ea0f01ff523f35b722c3f315e393c1a2d2947ac76b587265aec",
+    "width": 512,
+    "height": 512,
+    "bytes": 562469,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "go-tour-los-angeles-2026",
+    "file": "lc_GoTour2026_losAngeles.dc84f16e842e.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/lc_GoTour2026_losAngeles.png",
+    "sha256": "dc84f16e842ec86cb6e913b982c14058100cc0bf24665da68dee7c671153b1fd",
+    "width": 512,
+    "height": 512,
+    "bytes": 386007,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "patterns-of-the-wild-2026",
+    "file": "sb_PatternWild.21240aa05831.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/sb_PatternWild.png",
+    "sha256": "21240aa05831ccb3a398615c02a39856fed23b69f932b41c6cdccf6d32c68df8",
+    "width": 512,
+    "height": 512,
+    "bytes": 7487,
+    "imageType": "original-static-background"
+  },
+  {
+    "presetId": "road-of-legends-2026",
+    "file": "sb_GoFest2026_global.04ea89a3620e.png",
+    "originalUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/LocationCards/sb_GoFest2026_global.png",
+    "sha256": "04ea89a3620e35f6606ff6c956aa26fd0b2302866db3ab5ab076e9f630d37d77",
+    "width": 512,
+    "height": 512,
+    "bytes": 515075,
+    "imageType": "static-base-texture"
+  },
+  {
+    "presetId": "wild-area-global-2026",
+    "file": "wild-area-2026-reference.9366abab8082.webp",
+    "originalUrl": "https://cdn.leekduck.com/assets/img/events/article-images/2026/2026-11-09-into-the-wild-2026/into-the-wild-special-background.webp",
+    "sha256": "9366abab80825bc33f2ea8c890ea447a5b9aa7a42a6676458453853ffaeb9835",
+    "width": 1024,
+    "height": 512,
+    "bytes": 84396,
+    "imageType": "published-background-reference-panel",
+    "objectPosition": "right center",
+    "crop": {
+      "x": 650,
+      "y": 150,
+      "size": 200,
+      "sourceWidth": 1024,
+      "sourceHeight": 512
+    }
+  }
+]

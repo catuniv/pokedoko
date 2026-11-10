@@ -4,8 +4,10 @@ import { readFile } from 'node:fs/promises';
 import ts from 'typescript';
 
 const names = JSON.parse(await readFile(new URL('../lib/pokemon-names.json', import.meta.url), 'utf8'));
+const localizedNames = JSON.parse(await readFile(new URL('../lib/pokemon-localized-names.json', import.meta.url), 'utf8'));
 const source = (await readFile(new URL('../lib/trade-pokemon-search.ts', import.meta.url), 'utf8'))
-  .replace('import names from "./pokemon-names.json";', `const names = ${JSON.stringify(names)};`);
+  .replace('import names from "./pokemon-names.json";', `const names = ${JSON.stringify(names)};`)
+  .replace('import localizedNames from "./pokemon-localized-names.json";', `const localizedNames = ${JSON.stringify(localizedNames)};`);
 const runtime = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
 const { searchTradeSpecies, tradeSpeciesName } = await import(`data:text/javascript;base64,${Buffer.from(runtime).toString('base64')}`);
 
@@ -27,4 +29,11 @@ test('searches stay bounded without changing names used elsewhere in the Korean 
   assert.equal(searchTradeSpecies('', 0).length, 0);
   assert.equal(names['1'].ko, '이상해씨');
   assert.equal(tradeSpeciesName(999999), '#999999');
+});
+
+test('Japanese, Simplified and Traditional Chinese searches keep English trade identities', () => {
+  for (const query of ['フシギダネ', '妙蛙种子', '妙蛙種子']) {
+    assert.equal(searchTradeSpecies(query)[0].id, 1);
+    assert.equal(searchTradeSpecies(query)[0].en, 'Bulbasaur');
+  }
 });

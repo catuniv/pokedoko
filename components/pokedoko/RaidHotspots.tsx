@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, ChevronRight, LocateFixed, MapPin, RefreshCw, X } from "lucide-react";
@@ -127,7 +128,7 @@ export default function RaidHotspots({ raids, now, selected, onSelect }: Props) 
   const spots = ready && raids.length ? result.spots : [];
   const byId = new Map(raids.map((r) => [r.id, r]));
 
-  return (
+  return <LanguageScope>{(
     <section className="raid-hotspots" aria-labelledby="raid-hotspots-title" aria-busy={!ready && !!raids.length}>
       <div className="raid-hotspots-heading">
         <div>
@@ -217,7 +218,7 @@ export default function RaidHotspots({ raids, now, selected, onSelect }: Props) 
       )}
       <p className="raid-hotspots-coverage">연결된 도시의 수집 자료 내 비교 · 조회 상한에 따른 일부 결과일 수 있어요. 실제 참여 인원 수는 제공되지 않습니다.</p>
     </section>
-  );
+  )}</LanguageScope>;
 }
 
 export function RaidRegionSummary({ region, raids, now, onClear }: {
@@ -227,7 +228,7 @@ export function RaidRegionSummary({ region, raids, now, onClear }: {
   onClear: () => void;
 }) {
   const rad = Math.PI / 180;
-  return (
+  return <LanguageScope>{(
     <div className="raid-region-summary">
       <div className="raid-radius-diagram">
         <svg viewBox="0 0 260 260" role="img" aria-label={`선택한 중심 반경 ${region.radiusKm}km 안 체육관 ${raids.length}개의 위치 분포`}>
@@ -258,5 +259,5 @@ export function RaidRegionSummary({ region, raids, now, onClear }: {
         </div>
       </div>
     </div>
-  );
+  )}</LanguageScope>;
 }

@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 
 import { useEffect, useRef, useState } from "react";
 import { Check, Share2, X } from "lucide-react";
@@ -76,7 +77,7 @@ export default function ShareButton({ view, city, state = {} }: { view: ShareVie
       timer.current = setTimeout(() => setStatus((current) => current === "fallback" ? current : "idle"), 3000);
     }
   }
-  return <div className="page-share">
+  return <LanguageScope>{<div className="page-share">
     <button ref={trigger} type="button" className="page-share-button" disabled={busy} onClick={() => void share()}>
       {status === "copied" || status === "shared" ? <Check size={15} /> : <Share2 size={15} />}
       {status === "copied" ? "링크 복사됨" : status === "shared" ? "공유 완료" : "현재 화면 공유"}
@@ -86,5 +87,5 @@ export default function ShareButton({ view, city, state = {} }: { view: ShareVie
       <label><span>링크를 선택해 복사하세요</span><input ref={input} readOnly value={link} aria-label="현재 화면 공유 링크" onFocus={(e) => e.currentTarget.select()} onClick={(e) => e.currentTarget.select()} /></label>
       <button type="button" aria-label="공유 링크 닫기" onClick={() => { setStatus("idle"); trigger.current?.focus(); }}><X size={16} /></button>
     </div>}
-  </div>;
+  </div>}</LanguageScope>;
 }

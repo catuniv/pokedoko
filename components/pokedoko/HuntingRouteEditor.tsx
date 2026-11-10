@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 
 import { useEffect, useId, useMemo, useState } from "react";
 import { Clock3, Footprints, Gauge, RefreshCw, Repeat2, Route, Share2 } from "lucide-react";
@@ -51,7 +52,7 @@ function HuntingDiagram({ plan }: { plan: HuntingRoutePlan }) {
   }, [plan.points]);
   const start = projection[0], end = projection[projection.length - 1];
   const closed = start.x === end.x && start.y === end.y;
-  return <figure className="hunting-diagram">
+  return <LanguageScope>{<figure className="hunting-diagram">
     <svg viewBox="0 0 560 272" role="img" aria-label={`${plan.sourcePointCount.toLocaleString("ko-KR")}개 원본 좌표를 연결한 경로 미리보기`}>
       <defs><pattern id={`${id}-grid`} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="currentColor" strokeWidth="0.6" /></pattern></defs>
       <rect width="560" height="272" rx="16" fill={`url(#${id}-grid)`} className="hunting-diagram-grid" />
@@ -60,7 +61,7 @@ function HuntingDiagram({ plan }: { plan: HuntingRoutePlan }) {
       <g transform={`translate(${start.x},${start.y})`}><circle r="12" className="hunting-diagram-start" /><text textAnchor="middle" dominantBaseline="central">출</text><title>{closed ? "출발·도착 좌표" : "출발 좌표"}</title></g>
     </svg>
     <figcaption>출: 출발{closed ? "·도착" : " / 끝: 마지막 좌표"} · 도로 지도가 아닌 좌표 연결도입니다.{plan.points.length > 900 && " 미리보기만 최대 900개 점으로 표시하며 내보내기는 모든 좌표를 유지합니다."}</figcaption>
-  </figure>;
+  </figure>}</LanguageScope>;
 }
 
 export default function HuntingRouteEditor({ points, name, settings, onChange, source, onShare }: Props) {
@@ -118,8 +119,8 @@ export default function HuntingRouteEditor({ points, name, settings, onChange, s
     onChange({ speedKmh: currentSpeed, speedUnit: unit });
   }
 
-  return <section className="hunting-editor" aria-labelledby={`${id}-title`}>
-    <div className="hunting-editor-heading"><div><span className="mini-label"><Route size={14} aria-hidden="true" /> GPX 설정</span><h2 id={`${id}-title`}>{name || "사냥 경로"}</h2></div><span className="hunting-editor-count">경로 {points.length.toLocaleString("ko-KR")}개 좌표</span></div>
+  return <LanguageScope>{<section className="hunting-editor" aria-labelledby={`${id}-title`}>
+    <div className="hunting-editor-heading"><div><span className="mini-label"><Route size={14} aria-hidden="true" /> GPX 설정</span><h2 id={`${id}-title`}>{name ? <span data-i18n-preserve>{name}</span> : "사냥 경로"}</h2></div><span className="hunting-editor-count">경로 {points.length.toLocaleString("ko-KR")}개 좌표</span></div>
     <fieldset className="hunting-speed"><legend><Gauge size={16} aria-hidden="true" />이동 속도</legend>
       <div className="hunting-speed-presets">
         {[{ value: 9.3, label: "걷기" }, { value: 15, label: "순회" }, { value: 20, label: "빠른 순회" }].map(presetValue => <button key={presetValue.value} type="button" aria-pressed={currentSpeed !== null && Math.abs(currentSpeed - presetValue.value) < 1e-8} onClick={() => preset(presetValue.value)}><span>{presetValue.label}</span><strong>{presetValue.value}<small> km/h</small></strong></button>)}
@@ -154,5 +155,5 @@ export default function HuntingRouteEditor({ points, name, settings, onChange, s
     {onShare && <button type="button" className="hunting-share-button" disabled={!valid || currentSpeed === null} onClick={() => { if (!valid || currentSpeed === null) return; commitSpeed(); onShare({ ...settings, speedKmh: currentSpeed }); }}><Share2 size={15} aria-hidden="true" />이 설정으로 링크 공유</button>}
     <p className="hunting-app-speed-note">PolygonX에서도 같은 이동 속도를 설정하세요. GPX 시간 정보를 읽지 않는 앱은 앱의 속도 설정을 따라요.</p>
     <p className="hunting-editor-hint">거리와 시간은 좌표 연결 기준이며 실제 도로와 앱의 정차 시간은 반영하지 않아요.</p>
-  </section>;
+  </section>}</LanguageScope>;
 }

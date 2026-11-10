@@ -1,3 +1,4 @@
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPage() {
-  return <main className="growth-privacy-page">
+  return <LanguageScope>{<main className="growth-privacy-page">
     <a href="/">← pokedoko로 돌아가기</a>
     <h1>이용 통계와 제보 안내</h1>
     <p>pokedoko는 로그인 없이 이용하는 비공식 Pokémon GO 팬 도구입니다. 이 안내는 사이트가 직접 기록하는 이용 통계와 제보를 설명합니다.</p>
@@ -38,5 +39,5 @@ export default function PrivacyPage() {
     <p>모집 기간은 1·3·7일이며 만료되거나 마감된 글의 연락 방법은 공개 조회에서 숨깁니다. 만료 후 30일이 지난 글은 정리 기준에 따라 삭제하고, 작성자가 삭제하면 데이터베이스에서 해당 글을 삭제합니다. 정리 작업이 지연되면 실제 삭제까지 시간이 더 걸릴 수 있습니다. 이미 다른 이용자가 확인하거나 복사한 연락 정보를 회수하는 기능은 아닙니다.</p>
     <p>Cloudflare의 네트워크 처리·운영 로그는 서비스가 직접 보관하는 위 통계와 별개이며 해당 제공자의 정책이 적용됩니다. 제보 관련 요청은 ‘의견 보내기’로 남겨주세요.</p>
     <p>최종 수정: 2026년 11월 10일</p>
-  </main>;
+  </main>}</LanguageScope>;
 }

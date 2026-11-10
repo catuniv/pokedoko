@@ -386,3 +386,75 @@ test('invalid background choices are rejected before SQL and malformed stored me
   assert.equal((await handleTradesGet(listRequest(),db,at(FIXED))).status,503);
   assert.equal((await handleTradeGet(posted.id,db,at(FIXED))).status,503);
 });
+
+test('manual GPS availability preserves true, false and unspecified through owner recovery and public views', async () => {
+  const db = database();
+  for (const gpsCapable of [true, false, undefined]) {
+    const submitted = await submit(db, { visitorId: crypto.randomUUID(), ...(gpsCapable === undefined ? {} : { gpsCapable }) });
+    const stored = rows(db).find(row => row.id === submitted.id);
+    assert.equal(stored.gps_capable, gpsCapable === undefined ? null : Number(gpsCapable));
+    for (const response of [
+      await handleTradeManage(submitted.id, manageRequest(submitted.input.ownerKey, 'status'), db, at(FIXED)),
+      await handleTradeRecovery(request({ ownerKey: submitted.input.ownerKey }, '/api/trades/recover'), db, at(FIXED)),
+    ]) {
+      const owned = (await response.json()).post;
+      assert.equal(owned.gpsCapable, gpsCapable); assert.equal(Object.hasOwn(owned, 'gpsCapable'), gpsCapable !== undefined);
+      assert.equal(Object.hasOwn(owned, 'ownerKey'), false);
+    }
+    approve(db, submitted.id);
+    const detail = (await (await handleTradeGet(submitted.id, db, at(FIXED))).json()).post;
+    assert.equal(detail.gpsCapable, gpsCapable);
+  }
+  const listing = (await (await handleTradesGet(listRequest(), db, at(FIXED))).json()).posts;
+  for (const post of listing) for (const field of ['ownerKey', 'owner_key_hash', 'visitor_hash', 'visitorId', 'contactValue']) assert.equal(Object.hasOwn(post, field), false);
+  assert.equal(listing.filter(post => post.gpsCapable === true).length, 1);
+  assert.equal(listing.filter(post => post.gpsCapable === false).length, 1);
+  assert.equal(listing.filter(post => !Object.hasOwn(post, 'gpsCapable')).length, 1);
+});
+
+test('GPS filters apply before pagination, totals and combined city/variant/species filters', async () => {
+  const db = database();
+  for (let index = 0; index < 22; index++) {
+    const posted = await submit(db, { visitorId: crypto.randomUUID(), gpsCapable: true }); approve(db, posted.id);
+  }
+  for (const patch of [{ gpsCapable: false }, {}, { gpsCapable: true, cityId: 'tokyo' }]) {
+    const posted = await submit(db, { visitorId: crypto.randomUUID(), ...patch }); approve(db, posted.id);
+  }
+  await submit(db, { visitorId: crypto.randomUUID(), gpsCapable: true, trainerName: '미공개 GPS 작성자' });
+  const query = async value => (await (await handleTradesGet(listRequest(value), db, at(FIXED))).json());
+  const yes = await query('gps=yes&city=seoul&variant=shiny&speciesId=1');
+  assert.equal(yes.total, 22); assert.equal(yes.posts.length, 20); assert.equal(yes.hasMore, true);
+  const page2 = await query('gps=yes&city=seoul&variant=shiny&speciesId=1&page=2');
+  assert.equal(page2.total, 22); assert.equal(page2.posts.length, 2); assert.equal(page2.hasMore, false);
+  assert.equal((await query('gps=no')).total, 1);
+  assert.equal((await query('gps=unspecified')).total, 1);
+  assert.equal((await query('gps=all')).total, 25);
+  for (const invalid of ['gps=true', 'gps=1', 'gps=unexpected', 'gps=yes OR 1=1']) assert.equal((await handleTradesGet(listRequest(invalid), db, at(FIXED))).status, 400);
+});
+
+test('additive GPS migration retains approved background records and their owner keys without guessing availability', async () => {
+  const index = migrationFiles.findIndex(name => name.startsWith('0004_'));
+  assert.ok(index > 0); assert.equal(migrations[index].includes('DROP TABLE'), false);
+  const db = database(index), id = crypto.randomUUID(), seconds = Math.floor(FIXED / 1000);
+  const ownerHash = Buffer.from(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`pokedoko-trade-owner-v1:${OWNER}`))).toString('hex');
+  db.sql.prepare(`INSERT INTO trade_posts (id,owner_key_hash,visitor_hash,trainer_name,city_id,mode,
+    offer_species_id,offer_shiny,offer_form,want_species_id,want_shiny,want_form,contact_kind,contact_value,contact_public_consent,
+    notes,status,created_at,expires_at,hour_bucket,day_bucket,review_note,reviewed_at,published_at,offer_background_kind,offer_background_name)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(id,ownerHash,'1'.repeat(64),'기존 배경 작성자','seoul','local',25,0,'',1,1,'','friend_code','123456789012',1,'기존 GPS 미지정 글','approved',seconds,seconds+86400,seconds,seconds,'기존 검토 근거를 보존합니다.',seconds,seconds,'special','Ultra Wormhole');
+  const before = rows(db)[0]; for (const migration of migrations.slice(index)) db.sql.exec(migration);
+  const after = rows(db)[0]; for (const [key, value] of Object.entries(before)) assert.equal(after[key], value, key);
+  assert.equal(after.gps_capable, null);
+  const listed = (await (await handleTradesGet(listRequest('gps=unspecified'), db, at(FIXED))).json()).posts[0];
+  assert.equal(listed.id, id); assert.equal(Object.hasOwn(listed, 'gpsCapable'), false); assert.equal(listed.offer.background.name, 'Ultra Wormhole');
+  const managed = await handleTradeManage(id, manageRequest(OWNER, 'status'), db, at(FIXED)); assert.equal(managed.status, 200);
+});
+
+test('invalid GPS input is rejected before SQL and invalid stored availability is never presented as false', async () => {
+  const db = database();
+  for (const gpsCapable of [null, 1, 'true', {}, []]) assert.equal((await handleTradeSubmission(request(body({ gpsCapable })), db, at(FIXED))).status, 400);
+  assert.equal(db.calls.length, 0);
+  const posted = await submit(db); approve(db, posted.id);
+  db.sql.prepare('UPDATE trade_posts SET gps_capable = 2 WHERE id = ?').run(posted.id);
+  assert.equal((await handleTradesGet(listRequest(), db, at(FIXED))).status, 503);
+  assert.equal((await handleTradeGet(posted.id, db, at(FIXED))).status, 503);
+});

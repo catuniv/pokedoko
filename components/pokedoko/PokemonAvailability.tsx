@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope, useLanguage } from "@/components/pokedoko/LanguageProvider";
 
 import { useMemo, useState } from "react";
 import { ArrowUpRight, ChevronDown, Search, Sparkles, X } from "lucide-react";
@@ -42,6 +43,7 @@ const TYPE_KO: Record<string, string> = {
 };
 
 export default function PokemonAvailability({ feed, now, city }: Props) {
+  const { language, t } = useLanguage();
   const [tab, setTab] = useState<Tab>("all");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
@@ -81,7 +83,7 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
       if (!window || window.end <= now) return;
       const availability = window.start > now ? "upcoming" : "current";
       event.pokemon.forEach((pokemon) => add(pokemon, {
-        name: event.nameKo || event.name, url: event.url, start: window.start, until: window.end,
+        name: language === "ko" ? event.nameKo || event.name : event.name, url: event.url, start: window.start, until: window.end,
       }, availability, event.kind === "raid-hour" || event.kind === "raid-day", true));
     });
     for (const entry of merged.values())
@@ -90,7 +92,7 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
       const start = (entry: Entry) => Math.min(...entry.sources.map((source) => source.start?.getTime() ?? Infinity));
       return start(a) - start(b) || a.pokemon.name.localeCompare(b.pokemon.name);
     });
-  }, [feed.bosses, feed.events, feed.sourceUrl, city, now]);
+  }, [feed.bosses, feed.events, feed.sourceUrl, city, now, language]);
   const currentEntries = entries.filter(([, item]) => item.availability === "current");
   const upcomingEntries = entries.filter(([, item]) => item.availability === "upcoming");
   const unknownEntries = entries.filter(([, item]) => item.availability === "unknown");
@@ -111,6 +113,7 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
         [
           item.pokemon.name,
           item.pokemon.nameKo,
+          t(item.pokemon.nameKo || item.pokemon.name),
           String(item.pokemon.id ?? ""),
         ].some((value) =>
           value.toLowerCase().replace(/\s/g, "").includes(normalizedQuery),
@@ -122,7 +125,7 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
     return `${p.month}월 ${p.day}일 ${String(p.hour).padStart(2, "0")}:${String(p.minute).padStart(2, "0")}`;
   };
 
-  return (
+  return <LanguageScope>{(
     <section className="pokemon-availability" aria-label="등장 포켓몬">
       <div className="pokemon-heading">
         <div>
@@ -380,5 +383,5 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
         기준으로 제공합니다.
       </p>
     </section>
-  );
+  )}</LanguageScope>;
 }

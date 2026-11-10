@@ -59,3 +59,15 @@ test('operator approval validates stored background fields without silently rewr
     assert.ok(rejected.errorMessage);assert.equal(rejected.calls.filter(sql=>sql.startsWith('UPDATE ')).length,0);
   }
 });
+
+test('operator approval preserves a boolean-like stored GPS declaration and rejects invalid storage values', async () => {
+  for (const gps_capable of [null, 0, 1]) {
+    const approved = await approveWithContact('123456789012', { gps_capable });
+    assert.equal(approved.errorMessage, undefined); assert.equal(approved.calls.filter(sql => sql.startsWith('UPDATE ')).length, 1);
+    assert.ok(approved.calls[0].includes('gps_capable'));
+  }
+  for (const gps_capable of [2, -1, '1', 'true']) {
+    const rejected = await approveWithContact('123456789012', { gps_capable });
+    assert.match(rejected.errorMessage ?? '', /GPS/); assert.equal(rejected.calls.filter(sql => sql.startsWith('UPDATE ')).length, 0);
+  }
+});

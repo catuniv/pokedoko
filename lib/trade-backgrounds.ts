@@ -4,6 +4,7 @@
  * Names identify the event/location; they are not claimed to be in-game asset IDs.
  */
 export const TRADE_BACKGROUND_PRESETS = [
+  { id: "wild-area-global-2026", kind: "special", name: "GO Wild Area 2026: Global", label: "와일드에리어 2026 · 글로벌", sourceUrl: "https://pokemongo.com/en/news/get-ready-for-gowildarea-2026" },
   { id: "go-fest-wormhole-2024", kind: "special", name: "Ultra Wormhole — GO Fest 2024", label: "울트라홀 · GO Fest 2024", sourceUrl: "https://pokemongo.com/news/special-backgrounds?hl=en" },
   { id: "go-fest-global-2025", kind: "special", name: "GO Fest 2025: Global", label: "GO Fest 2025 · 글로벌", sourceUrl: "https://pokemongo.com/news/go-fest-2025-ultra-unlock-challenges" },
   { id: "wild-area-sendai-2026", kind: "location", name: "Sendai — GO Wild Area 2026", label: "센다이 · GO Wild Area 2026", sourceUrl: "https://pokemongo.com/en/news/get-ready-for-gowildarea-2026" },

@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope, useLanguage } from "@/components/pokedoko/LanguageProvider";
 
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -44,15 +45,15 @@ const dayKey = (date: Date) =>
     day: "2-digit",
   }).format(date);
 const dateForKey = (key: string) => new Date(`${key}T00:00:00+09:00`);
-const labelForDay = (key: string) =>
-  new Intl.DateTimeFormat("ko-KR", {
+const labelForDay = (key: string, locale = "ko-KR") =>
+  new Intl.DateTimeFormat(locale, {
     timeZone: "Asia/Seoul",
     month: "long",
     day: "numeric",
     weekday: "long",
   }).format(dateForKey(key));
-const localLabel = (date: Date, zone: string) =>
-  new Intl.DateTimeFormat("ko-KR", {
+const localLabel = (date: Date, zone: string, locale = "ko-KR") =>
+  new Intl.DateTimeFormat(locale, {
     timeZone: zone,
     year: "numeric",
     month: "numeric",
@@ -69,6 +70,7 @@ const intersects = (item: CalendarEvent, key: string) => {
 };
 
 export default function EventCalendar({ events, now, city }: Props) {
+  const { language, intlLocale } = useLanguage();
   const today = dayKey(now);
   const [month, setMonth] = useState(() => today.slice(0, 7));
   const [selectedDay, setSelectedDay] = useState(today);
@@ -159,7 +161,7 @@ export default function EventCalendar({ events, now, city }: Props) {
     setDetailId(null);
   }
 
-  return (
+  return <LanguageScope>{(
     <section className="event-calendar" aria-label="포켓몬 GO 일정 달력">
       <div className="event-calendar-toolbar">
         <div>
@@ -193,7 +195,7 @@ export default function EventCalendar({ events, now, city }: Props) {
           <div className="event-calendar-monthbar">
             <div className="event-calendar-month-title">
               <h3 data-testid="calendar-month">
-                {year}년 {monthNumber}월
+                {new Intl.DateTimeFormat(intlLocale, { timeZone: "Asia/Seoul", year: "numeric", month: "long" }).format(dateForKey(`${month}-01`))}
               </h3>
               <span>{monthEventCount}개의 일정</span>
             </div>
@@ -236,7 +238,7 @@ export default function EventCalendar({ events, now, city }: Props) {
                 key={key}
                 data-calendar-day={key}
                 onClick={() => selectDay(key)}
-                aria-label={`${labelForDay(key)}${key === today ? ", 오늘" : ""}, 일정 ${items.length}개`}
+                aria-label={`${labelForDay(key, intlLocale)}${key === today ? ", 오늘" : ""}, 일정 ${items.length}개`}
                 aria-pressed={selectedDay === key}
                 className={`event-calendar-day ${current ? "" : "is-outside"} ${key === today ? "is-today" : ""} ${selectedDay === key ? "is-selected" : ""}`}
               >
@@ -247,7 +249,7 @@ export default function EventCalendar({ events, now, city }: Props) {
                       key={event.id}
                       className={`event-calendar-marker event-color-${event.kind}`}
                     >
-                      <i /> <span>{event.nameKo || event.name}</span>
+                      <i /> <span>{(language === "ko" ? event.nameKo || event.name : event.name)}</span>
                     </span>
                   ))}
                   {items.length > 2 && (
@@ -283,7 +285,7 @@ export default function EventCalendar({ events, now, city }: Props) {
         <aside className="event-calendar-agenda" aria-live="polite">
           <div className="event-calendar-agenda-heading">
             <span className="event-calendar-eyebrow">SELECTED DATE</span>
-            <h3>{labelForDay(selectedDay)}</h3>
+            <h3>{labelForDay(selectedDay, intlLocale)}</h3>
             <span>
               일정 {selectedEvents.length}개
             </span>
@@ -338,7 +340,7 @@ export default function EventCalendar({ events, now, city }: Props) {
                       {active && (
                         <span className="event-calendar-live">진행 중</span>
                       )}
-                      <strong>{item.event.nameKo || item.event.name}</strong>
+                      <strong>{(language === "ko" ? item.event.nameKo || item.event.name : item.event.name)}</strong>
                       <span className="event-calendar-event-time">
                         <Clock3 size={13} />
                         {formatKst(item.start, true)} –{" "}
@@ -360,7 +362,7 @@ export default function EventCalendar({ events, now, city }: Props) {
                         <h4>이벤트 정보</h4>
                         <button
                           type="button"
-                          aria-label={`${item.event.nameKo || item.event.name} 상세 정보 닫기`}
+                          aria-label={`${(language === "ko" ? item.event.nameKo || item.event.name : item.event.name)} 상세 정보 닫기`}
                           onClick={() => {
                             setDetailId(null);
                             document.getElementById(toggleId)?.focus();
@@ -377,15 +379,15 @@ export default function EventCalendar({ events, now, city }: Props) {
                             <br />(KST)
                           </dt>
                           <dd>
-                            {localLabel(item.start, "Asia/Seoul")}
-                            <br />~ {localLabel(item.end, "Asia/Seoul")}
+                            {localLabel(item.start, "Asia/Seoul", intlLocale)}
+                            <br />~ {localLabel(item.end, "Asia/Seoul", intlLocale)}
                           </dd>
                         </div>
                         <div>
                           <dt>{city.name} 현지</dt>
                           <dd>
-                            {localLabel(item.start, city.zone)}
-                            <br />~ {localLabel(item.end, city.zone)}
+                            {localLabel(item.start, city.zone, intlLocale)}
+                            <br />~ {localLabel(item.end, city.zone, intlLocale)}
                             <span className="event-calendar-detail-zone">
                               {city.zone}
                             </span>
@@ -417,5 +419,5 @@ export default function EventCalendar({ events, now, city }: Props) {
         </aside>
       </div>
     </section>
-  );
+  )}</LanguageScope>;
 }

@@ -180,6 +180,7 @@ test('retention runs even when the scheduled public source refresh fails, withou
     .replace('import { createFeedStore } from "../lib/feed-store";', 'const createFeedStore = () => async () => { throw new Error("source outage"); };')
     .replace('import { getFeedStorageBinding } from "../lib/feed-storage-bindings";', 'const getFeedStorageBinding = () => null;')
     .replace('import { createGrowthRetentionScheduler, pruneGrowthData } from "../lib/growth-server";', `import { createGrowthRetentionScheduler, pruneGrowthData } from '${moduleUrl(source)}';`)
+    .replace('import { getTradeBackgroundCatalog } from "../lib/trade-background-catalog-server";', 'const getTradeBackgroundCatalog = async () => ({ stale: false, storage: "ready", fetchedAt: new Date().toISOString(), sourceUpdatedAt: "2026-08-31", presets: [] });')
     .replace('import.meta.env.DEV', 'false');
   const { default: worker } = await import(moduleUrl(workerSource));
   const db = database();
@@ -227,6 +228,7 @@ test('feed fetch schedules bounded cleanup without awaiting it and SQL failures 
     .replace('import { createFeedStore } from "../lib/feed-store";', 'const createFeedStore = () => async () => ({});')
     .replace('import { getFeedStorageBinding } from "../lib/feed-storage-bindings";', 'const getFeedStorageBinding = () => null;')
     .replace('import { createGrowthRetentionScheduler, pruneGrowthData } from "../lib/growth-server";', `import { createGrowthRetentionScheduler, pruneGrowthData } from '${moduleUrl(source)}';`)
+    .replace('import { getTradeBackgroundCatalog } from "../lib/trade-background-catalog-server";', 'const getTradeBackgroundCatalog = async () => ({ stale: false, storage: "ready", fetchedAt: new Date().toISOString(), sourceUpdatedAt: "2026-08-31", presets: [] });')
     .replace('import.meta.env.DEV', 'false');
   const { default: worker } = await import(moduleUrl(workerSource));
   const pending = [], context = { waitUntil(promise) { pending.push(promise); } };

@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { Check, Crosshair, LoaderCircle, LocateFixed, MapPin, Minus, Plus, RefreshCw, Search } from "lucide-react";
@@ -146,7 +147,7 @@ export default function RouteLocationPicker({ cityId, start, end, points = [], g
   const startScreen = start ? screen(start) : undefined, endScreen = end ? screen(end) : undefined;
   const sameEndpoint = !!startScreen && !!endScreen && Math.hypot(startScreen.x - endScreen.x, startScreen.y - endScreen.y) < 18;
   function pickPlace(place: RoutePickerPlace) { onPick(selection, { ...place.point }, place.name); updateView({ center: project(place.point), zoom: Math.max(16, viewRef.current.zoom) }); }
-  return <section className="route-location-picker" aria-label="지도에서 루트 시작·종료 위치 선택">
+  return <LanguageScope>{<section className="route-location-picker" aria-label="지도에서 루트 시작·종료 위치 선택">
     <div className="route-picker-heading"><div><strong>지도에서 위치 선택</strong><p>등록된 위치를 누르거나 지도를 눌러 {targetLabel}을 선택하세요.</p></div><MapPin size={21} aria-hidden="true" /></div>
     <div className="route-picker-selection" role="group" aria-label="지도에서 고를 위치"><button type="button" aria-pressed={selection === "start"} disabled={disabled} onClick={() => onSelectionChange("start")}><span className="route-picker-dot route-picker-dot-start" />시작점 선택{start && <Check size={14} />}</button><button type="button" aria-pressed={selection === "end"} disabled={disabled} onClick={() => onSelectionChange("end")}><span className="route-picker-dot route-picker-dot-end" />종료점 선택{end && <Check size={14} />}</button></div>
     <div className={`route-picker-canvas${dragging ? " is-dragging" : ""}`} ref={canvas} tabIndex={disabled ? -1 : 0} role="group" aria-label={`${city.name} 위치 선택 지도. 방향키로 이동하고 Enter로 ${targetLabel} 선택`} aria-disabled={disabled} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={event => pointerEnd(event)} onPointerCancel={event => pointerEnd(event, true)} onKeyDown={keyboard}>
@@ -173,5 +174,5 @@ export default function RouteLocationPicker({ cityId, start, end, points = [], g
       {!loading && !error && places.length === 0 && <p className="route-picker-message">아직 등록된 위치가 없어요. 지도에서 위치를 선택한 뒤 포켓스톱 이름을 직접 입력해 주세요.</p>}
       {places.length > 0 && <><label className="route-picker-search"><Search size={15} /><span className="route-picker-sr-only">등록된 포켓스톱 이름 검색</span><input type="search" value={query} disabled={disabled} maxLength={120} placeholder="포켓스톱·위치 이름 검색" onChange={event => setQuery(event.target.value)} /></label><div className="route-picker-place-list">{matchedPlaces.slice(0, 12).map(place => <button type="button" disabled={disabled} key={place.id} onClick={() => pickPlace(place)}><MapPin size={14} /><span>{place.name}</span><small>{targetLabel}으로 선택</small></button>)}{matchedPlaces.length === 0 && <p className="route-picker-message">검색한 이름이 없어요. 지도에서 위치를 직접 선택할 수 있어요.</p>}{matchedPlaces.length > 12 && <p className="route-picker-list-note">이름 검색으로 더 좁혀 주세요. 지도에는 검색 결과 위치를 함께 표시합니다.</p>}</div></>}
     </div>
-  </section>;
+  </section>}</LanguageScope>;
 }

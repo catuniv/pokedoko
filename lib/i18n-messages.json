@@ -1,0 +1,1907 @@
+{
+  "개": [
+    " items",
+    "个",
+    "個"
+  ],
+  "선택": [
+    "Select",
+    "选择",
+    "選択"
+  ],
+  "도시": [
+    "City",
+    "城市",
+    "都市"
+  ],
+  "곳": [
+    " locations",
+    "处",
+    "か所"
+  ],
+  "전체": [
+    "All",
+    "全部",
+    "すべて"
+  ],
+  "종료": [
+    "Ended",
+    "已结束",
+    "終了"
+  ],
+  "미확인": [
+    "Unknown",
+    "未确认",
+    "未確認"
+  ],
+  "시작 대기": [
+    "Waiting to start",
+    "等待开始",
+    "開始待ち"
+  ],
+  "실시간 레이드": [
+    "Live raids",
+    "实时团体战",
+    "リアルタイムレイド"
+  ],
+  "진행 중": [
+    "In progress",
+    "进行中",
+    "開催中"
+  ],
+  "다시 조회": [
+    "Try again",
+    "重新查询",
+    "再取得"
+  ],
+  "대면 교환": [
+    "In-person trade",
+    "当面交换",
+    "対面交換"
+  ],
+  "등장 포켓몬": [
+    "Available Pokémon",
+    "出现的宝可梦",
+    "出現ポケモン"
+  ],
+  "리모트 교환 준비": [
+    "Remote trade preparation",
+    "远程交换准备",
+    "リモート交換の準備"
+  ],
+  "복사됨": [
+    "Copied",
+    "已复制",
+    "コピー済み"
+  ],
+  "일정 진행": [
+    "Event in progress",
+    "活动进行中",
+    "イベント開催中"
+  ],
+  "조회 중": [
+    "Loading",
+    "查询中",
+    "取得中"
+  ],
+  "GPX 자동사냥": [
+    "Farming GPX",
+    "自动捕捉GPX",
+    "周回GPX"
+  ],
+  "모습·의상": [
+    "Forms & costumes",
+    "形态与装扮",
+    "すがた・衣装"
+  ],
+  "반경": [
+    "Radius",
+    "半径",
+    "半径"
+  ],
+  "불러오는 중": [
+    "Loading",
+    "加载中",
+    "読み込み中"
+  ],
+  "시작 예정": [
+    "Upcoming",
+    "即将开始",
+    "開始予定"
+  ],
+  "시작 좌표": [
+    "Start coordinates",
+    "起点坐标",
+    "開始座標"
+  ],
+  "시작까지": [
+    "Starts in",
+    "距开始",
+    "開始まで"
+  ],
+  "역방향": [
+    "Reverse direction",
+    "反向",
+    "逆方向"
+  ],
+  "원하는 포켓몬": [
+    "Wanted Pokémon",
+    "想要的宝可梦",
+    "欲しいポケモン"
+  ],
+  "의견 보내기": [
+    "Send feedback",
+    "发送反馈",
+    "意見を送る"
+  ],
+  "이벤트": [
+    "Events",
+    "活动",
+    "イベント"
+  ],
+  "전체 경로 미확보": [
+    "Full path unavailable",
+    "尚无完整路径",
+    "全経路未取得"
+  ],
+  "접기": [
+    "Collapse",
+    "收起",
+    "閉じる"
+  ],
+  "종료 좌표": [
+    "End coordinates",
+    "终点坐标",
+    "終了座標"
+  ],
+  "주요 메뉴": [
+    "Main menu",
+    "主菜单",
+    "メインメニュー"
+  ],
+  "줄 포켓몬": [
+    "Offered Pokémon",
+    "提供的宝可梦",
+    "出せるポケモン"
+  ],
+  "진행": [
+    "Active",
+    "进行",
+    "進行"
+  ],
+  "추천 스팟": [
+    "Recommended spots",
+    "推荐地点",
+    "おすすめスポット"
+  ],
+  "한국시간": [
+    "Korea time",
+    "韩国时间",
+    "韓国時間"
+  ],
+  "· 대기": [
+    "· Waiting",
+    "· 等待",
+    "・待機"
+  ],
+  "· 좌표": [
+    "· Coordinates",
+    "· 坐标",
+    "・座標"
+  ],
+  "Discord 사용자명": [
+    "Discord username",
+    "Discord用户名",
+    "Discordユーザー名"
+  ],
+  "GPX 내용": [
+    "GPX content",
+    "GPX内容",
+    "GPXの内容"
+  ],
+  "GPX 다운로드": [
+    "Download GPX",
+    "下载GPX",
+    "GPXをダウンロード"
+  ],
+  "경로 이름": [
+    "Route name",
+    "路线名称",
+    "ルート名"
+  ],
+  "교환 모집 글 올리기": [
+    "Post a trade listing",
+    "发布交换招募",
+    "交換募集を投稿"
+  ],
+  "교환 방법": [
+    "Trade method",
+    "交换方式",
+    "交換方法"
+  ],
+  "기간 미확인": [
+    "Dates unconfirmed",
+    "时间未确认",
+    "期間未確認"
+  ],
+  "기기 기록 지우기": [
+    "Remove device record",
+    "删除本机记录",
+    "端末の記録を消す"
+  ],
+  "기기에 경로 20개까지 등록할 수 있어요. 기존 경로를 지운 뒤 추가해 주세요.": [
+    "This device can store up to 20 routes. Remove an existing route before adding another.",
+    "本机最多可保存20条路线，请先删除已有路线再添加。",
+    "この端末には20件まで保存できます。既存のルートを削除してから追加してください。"
+  ],
+  "까지": [
+    "until",
+    "为止",
+    "まで"
+  ],
+  "다음 시작까지": [
+    "Next start in",
+    "距下次开始",
+    "次の開始まで"
+  ],
+  "닫기": [
+    "Close",
+    "关闭",
+    "閉じる"
+  ],
+  "도시 또는 국가 검색": [
+    "Search city or country",
+    "搜索城市或国家",
+    "都市・国を検索"
+  ],
+  "레이드 데이": [
+    "Raid Day",
+    "团体战日",
+    "レイドデイ"
+  ],
+  "레이드 아워": [
+    "Raid Hour",
+    "团体战时间",
+    "レイドアワー"
+  ],
+  "레이드아워": [
+    "Raid Hour",
+    "团体战时间",
+    "レイドアワー"
+  ],
+  "레이드아워 시간표": [
+    "Raid Hour timetable",
+    "团体战时间表",
+    "レイドアワー時間表"
+  ],
+  "모집 마감": [
+    "Close recruitment",
+    "结束招募",
+    "募集を締め切る"
+  ],
+  "목록 조회 시간이 초과됐어요. 다시 시도해 주세요.": [
+    "The listing request timed out. Please try again.",
+    "列表查询超时，请重试。",
+    "一覧の取得がタイムアウトしました。もう一度お試しください。"
+  ],
+  "분": [
+    "min",
+    "分",
+    "分"
+  ],
+  "삭제": [
+    "Delete",
+    "删除",
+    "削除"
+  ],
+  "상세 접기": [
+    "Hide details",
+    "收起详情",
+    "詳細を閉じる"
+  ],
+  "새로고침": [
+    "Refresh",
+    "刷新",
+    "更新"
+  ],
+  "색이 다른 모습 등장 가능": [
+    "Shiny may be available",
+    "可能出现异色",
+    "色違いの可能性あり"
+  ],
+  "색이 다른 포켓몬": [
+    "Shiny Pokémon",
+    "异色宝可梦",
+    "色違いポケモン"
+  ],
+  "선택한 지역": [
+    "Selected area",
+    "所选区域",
+    "選択したエリア"
+  ],
+  "순환 루트": [
+    "Loop route",
+    "环形路线",
+    "周回ルート"
+  ],
+  "스포트라이트": [
+    "Spotlight Hour",
+    "聚焦时刻",
+    "スポットライトアワー"
+  ],
+  "시작": [
+    "Start",
+    "开始",
+    "開始"
+  ],
+  "시작과 끝이 다른 루트": [
+    "Route with different start and end points",
+    "起终点不同的路线",
+    "始点と終点が異なるルート"
+  ],
+  "열기": [
+    "Open",
+    "展开",
+    "開く"
+  ],
+  "요청이 많아요. 잠시 후 다시 시도해 주세요.": [
+    "Too many requests. Please try again shortly.",
+    "请求过多，请稍后重试。",
+    "リクエストが多すぎます。しばらくしてからお試しください。"
+  ],
+  "원문 응답": [
+    "Source response",
+    "原始响应",
+    "配信元の応答"
+  ],
+  "원문 지도": [
+    "Source map",
+    "来源地图",
+    "配信元の地図"
+  ],
+  "월": [
+    "Mon",
+    "一",
+    "月"
+  ],
+  "위도,경도 · 한 줄에 하나씩": [
+    "latitude,longitude · one pair per line",
+    "纬度,经度 · 每行一组",
+    "緯度,経度・1行に1組"
+  ],
+  "으로 선택": [
+    "Select as",
+    "选为",
+    "として選択"
+  ],
+  "이 경로 사용": [
+    "Use this route",
+    "使用此路线",
+    "このルートを使用"
+  ],
+  "이벤트 달력": [
+    "Event calendar",
+    "活动日历",
+    "イベントカレンダー"
+  ],
+  "이벤트 캘린더": [
+    "Event calendar",
+    "活动日历",
+    "イベントカレンダー"
+  ],
+  "일정": [
+    "Schedule",
+    "日程",
+    "予定"
+  ],
+  "자동사냥 GPX 경로": [
+    "Farming GPX routes",
+    "自动捕捉GPX路线",
+    "周回GPXルート"
+  ],
+  "자료 미확인": [
+    "Data unconfirmed",
+    "资料未确认",
+    "データ未確認"
+  ],
+  "접수 중": [
+    "Submitting",
+    "提交中",
+    "送信中"
+  ],
+  "조회 실패": [
+    "Request failed",
+    "查询失败",
+    "取得失敗"
+  ],
+  "종료까지": [
+    "Ends in",
+    "距结束",
+    "終了まで"
+  ],
+  "좌표 목록": [
+    "Coordinate list",
+    "坐标列表",
+    "座標一覧"
+  ],
+  "주변": [
+    "Nearby",
+    "附近",
+    "周辺"
+  ],
+  "중심": [
+    "Center",
+    "中心",
+    "中心"
+  ],
+  "지가르데 셀 루트": [
+    "Zygarde Cell routes",
+    "基格尔德细胞路线",
+    "ジガルデ・セルルート"
+  ],
+  "참고 사항": [
+    "Notes",
+    "备注",
+    "補足"
+  ],
+  "체육관 등록": [
+    "Add gym",
+    "添加道馆",
+    "ジムを登録"
+  ],
+  "추천 근거": [
+    "Recommendation sources",
+    "推荐依据",
+    "おすすめの根拠"
+  ],
+  "친구 코드": [
+    "Friend code",
+    "训练家代码",
+    "フレンドコード"
+  ],
+  "카카오 오픈채팅": [
+    "Kakao Open Chat",
+    "Kakao开放聊天",
+    "カカオオープンチャット"
+  ],
+  "커뮤니티 데이": [
+    "Community Day",
+    "社群日",
+    "コミュニティ・デイ"
+  ],
+  "트랙 (trk)": [
+    "Track (trk)",
+    "轨迹（trk）",
+    "トラック（trk）"
+  ],
+  "파일을 읽지 못했어요.": [
+    "Unable to read the file.",
+    "无法读取文件。",
+    "ファイルを読み込めませんでした。"
+  ],
+  "포켓몬 교환": [
+    "Pokémon trades",
+    "宝可梦交换",
+    "ポケモン交換"
+  ],
+  "필터 초기화": [
+    "Reset filters",
+    "重置筛选",
+    "絞り込みをリセット"
+  ],
+  "현지": [
+    "Local",
+    "当地",
+    "現地"
+  ],
+  "현지 시각": [
+    "Local time",
+    "当地时间",
+    "現地時刻"
+  ],
+  "확인된 레이드 없음": [
+    "No confirmed raids",
+    "没有已确认的团体战",
+    "確認できたレイドなし"
+  ],
+  "회": [
+    "times",
+    "次",
+    "回"
+  ],
+  ", 오늘": [
+    ", today",
+    "，今天",
+    "、今日"
+  ],
+  "· 1분마다 갱신": [
+    "· Updates every minute",
+    "· 每分钟更新",
+    "・1分ごとに更新"
+  ],
+  "· 도로 지도가 아닌 좌표 연결도입니다.": [
+    "· Lines connect coordinates; this is not a road map.",
+    "· 此图仅连接坐标，并非道路地图。",
+    "・座標を結んだ図です。道路地図ではありません。"
+  ],
+  "· 상한 도달": [
+    "· Result limit reached",
+    "· 已达查询上限",
+    "・上限に到達"
+  ],
+  "· 일부 표시": [
+    "· Partial results",
+    "· 部分结果",
+    "・一部表示"
+  ],
+  "· 줄 포켓몬과 원하는 포켓몬에서 검색": [
+    "· Searches offered and wanted Pokémon",
+    "· 搜索提供和想要的宝可梦",
+    "・出せるポケモンと欲しいポケモンから検索"
+  ],
+  "·도착": [
+    "· Arrival",
+    "· 到达",
+    "・到着"
+  ],
+  "/ 끝: 마지막 좌표": [
+    "/ End: last coordinate",
+    "/ 终点：最后一个坐标",
+    "/ 終点：最後の座標"
+  ],
+  "/ 지도 Natural Earth": [
+    "/ Map: Natural Earth",
+    "/ 地图：Natural Earth",
+    "/ 地図：Natural Earth"
+  ],
+  "/20개 · 기기 저장": [
+    "/20 · stored on device",
+    "/20条 · 保存在本机",
+    "/20件・端末に保存"
+  ],
+  "1MiB · 좌표 2,000개 이하": [
+    "1 MiB · up to 2,000 coordinates",
+    "1MiB · 最多2,000个坐标",
+    "1MiB・座標2,000点まで"
+  ],
+  "1성": [
+    "Tier 1",
+    "1星",
+    "1つ星"
+  ],
+  "1일": [
+    "1 day",
+    "1天",
+    "1日"
+  ],
+  "2MiB · 원본 좌표 최대 20,000개 · 연결된 경로 1개": [
+    "2 MiB · up to 20,000 original coordinates · one continuous path",
+    "2MiB · 原始坐标最多20,000个 · 一条连续路径",
+    "2MiB・元の座標は20,000点まで・連続した1経路"
+  ],
+  "3개": [
+    "3",
+    "3个",
+    "3件"
+  ],
+  "3성": [
+    "Tier 3",
+    "3星",
+    "3つ星"
+  ],
+  "3일": [
+    "3 days",
+    "3天",
+    "3日"
+  ],
+  "4성": [
+    "Tier 4",
+    "4星",
+    "4つ星"
+  ],
+  "5개": [
+    "5",
+    "5个",
+    "5件"
+  ],
+  "5성": [
+    "Tier 5",
+    "5星",
+    "5つ星"
+  ],
+  "7일": [
+    "7 days",
+    "7天",
+    "7日"
+  ],
+  "Campfire에서 확인": [
+    "View in Campfire",
+    "在Campfire查看",
+    "Campfireで確認"
+  ],
+  "Discord 닉네임": [
+    "Discord handle",
+    "Discord用户名",
+    "Discordユーザー名"
+  ],
+  "Discord 사용자명은 영문·숫자·밑줄·마침표 2~32자로 입력해 주세요.": [
+    "Enter a Discord username with 2–32 letters, numbers, underscores or dots.",
+    "Discord用户名须为2至32个英文字母、数字、下划线或点。",
+    "Discordユーザー名を英数字・アンダースコア・ピリオドの2～32文字で入力してください。"
+  ],
+  "GPX XML을 붙여넣거나 위에서 파일을 선택하세요.": [
+    "Paste GPX XML or choose a file above.",
+    "粘贴GPX XML或在上方选择文件。",
+    "GPX XMLを貼り付けるか、上でファイルを選択してください。"
+  ],
+  "GPX XML을 붙여넣거나 파일을 선택하세요.": [
+    "Paste GPX XML or choose a file.",
+    "粘贴GPX XML或选择文件。",
+    "GPX XMLを貼り付けるか、ファイルを選択してください。"
+  ],
+  "GPX 구조": [
+    "GPX structure",
+    "GPX结构",
+    "GPXの構造"
+  ],
+  "GPX 다운로드 시간이 초과됐어요. 다시 시도해 주세요.": [
+    "The GPX download timed out. Please try again.",
+    "GPX下载超时，请重试。",
+    "GPXのダウンロードがタイムアウトしました。もう一度お試しください。"
+  ],
+  "GPX 복사": [
+    "Copy GPX",
+    "复制GPX",
+    "GPXをコピー"
+  ],
+  "GPX 설정": [
+    "GPX settings",
+    "GPX设置",
+    "GPX設定"
+  ],
+  "GPX 없음": [
+    "No GPX",
+    "无GPX",
+    "GPXなし"
+  ],
+  "GPX 오류를 해결하거나 파일을 제거해 주세요.": [
+    "Fix the GPX errors or remove the file.",
+    "请修正GPX错误或移除文件。",
+    "GPXのエラーを修正するか、ファイルを外してください。"
+  ],
+  "GPX 제공": [
+    "GPX available",
+    "提供GPX",
+    "GPXあり"
+  ],
+  "GPX 파일 다운로드를 요청했습니다.": [
+    "GPX file download requested.",
+    "已请求下载GPX文件。",
+    "GPXファイルのダウンロードを要求しました。"
+  ],
+  "GPX 파일 불러오기": [
+    "Import GPX file",
+    "导入GPX文件",
+    "GPXファイルを読み込む"
+  ],
+  "GPX 파일 선택": [
+    "Choose GPX file",
+    "选择GPX文件",
+    "GPXファイルを選択"
+  ],
+  "GPX 파일 크기를 확인하지 못했어요.": [
+    "Unable to determine the GPX file size.",
+    "无法确认GPX文件大小。",
+    "GPXファイルのサイズを確認できませんでした。"
+  ],
+  "GPX 파일·내용": [
+    "GPX file / content",
+    "GPX文件／内容",
+    "GPXファイル・内容"
+  ],
+  "GPX 파일·붙여넣기": [
+    "GPX file / paste",
+    "GPX文件／粘贴",
+    "GPXファイル・貼り付け"
+  ],
+  "GPX 파일만으로 게임 루트를 시작하거나 셀을 받을 수는 없어요. Pokémon GO에서 승인된 루트를 고르고 시작점에서 ‘따라가기’를 시작하세요. 파일의 이름·방향·경로가 같은지 확인해 주세요.": [
+    "A GPX file alone cannot start an in-game Route or award Cells. Select an approved Route in Pokémon GO and start following at its start point. Check that the name, direction and path match.",
+    "仅有GPX文件无法开始游戏路线或获得细胞。请在Pokémon GO中选择已获批准的路线，并在起点开始跟随。请确认名称、方向和路径一致。",
+    "GPXファイルだけではゲーム内ルートを開始したりセルを獲得したりできません。Pokémon GOで承認済みルートを選び、始点で「ルートをたどる」を開始してください。名前・方向・経路の一致を確認してください。"
+  ],
+  "GPX 형식": [
+    "GPX format",
+    "GPX格式",
+    "GPX形式"
+  ],
+  "GPX는 1MiB 이하만 제출할 수 있어요.": [
+    "GPX submissions must be 1 MiB or smaller.",
+    "提交的GPX须不超过1MiB。",
+    "提出するGPXは1MiB以下にしてください。"
+  ],
+  "GPX를 내려받지 못했어요. 다시 시도해 주세요.": [
+    "Unable to download GPX. Please try again.",
+    "无法下载GPX，请重试。",
+    "GPXをダウンロードできませんでした。もう一度お試しください。"
+  ],
+  "GPX를 만들지 못했습니다.": [
+    "Unable to create GPX.",
+    "无法生成GPX。",
+    "GPXを作成できませんでした。"
+  ],
+  "GPX를 복사하는 중입니다.": [
+    "Copying GPX.",
+    "正在复制GPX。",
+    "GPXをコピーしています。"
+  ],
+  "GPX를 복사했습니다.": [
+    "GPX copied.",
+    "GPX已复制。",
+    "GPXをコピーしました。"
+  ],
+  "GPX를 읽지 못했어요.": [
+    "Unable to read GPX.",
+    "无法读取GPX。",
+    "GPXを読み込めませんでした。"
+  ],
+  "GPX에 계획 시각 넣기": [
+    "Include planned timestamps in GPX",
+    "在GPX中包含计划时间",
+    "GPXに予定時刻を含める"
+  ],
+  "km · 현재 조건에 맞는 레이드": [
+    "km · raids matching current filters",
+    "km · 符合当前条件的团体战",
+    "km・現在の条件に合うレイド"
+  ],
+  "KST로 보는 포켓몬 GO": [
+    "Pokémon GO in KST",
+    "以韩国时间查看Pokémon GO",
+    "韓国時間で見るPokémon GO"
+  ],
+  "pokedoko · 포켓몬 GO 일정": [
+    "pokedoko · Pokémon GO schedule",
+    "pokedoko · Pokémon GO日程",
+    "pokedoko・Pokémon GO予定"
+  ],
+  "Pokémon GO 공식 공지": [
+    "Official Pokémon GO news",
+    "Pokémon GO官方公告",
+    "Pokémon GO公式お知らせ"
+  ],
+  "PolygonX에서도 같은 이동 속도를 설정하세요. GPX 시간 정보를 읽지 않는 앱은 앱의 속도 설정을 따라요.": [
+    "Set the same movement speed in PolygonX. Apps that do not read GPX timestamps use their own speed setting.",
+    "请在PolygonX中设置相同的移动速度。不读取GPX时间的应用会使用应用自身的速度设置。",
+    "PolygonXでも同じ移動速度に設定してください。GPXの時刻を読み取らないアプリは、アプリ側の速度設定に従います。"
+  ],
+  "S 시작 · E 종료 ·": [
+    "S Start · E End ·",
+    "S 起点 · E 终点 ·",
+    "S 始点・E 終点・"
+  ],
+  "가능": [
+    "Yes",
+    "可以",
+    "可能"
+  ],
+  "각 도시 중심 반경 15km에서 최대 800개를 조회하고, 아래 5개 지역 지도 자료도 함께 확인해요. 전 세계 모든 체육관을 수집하는 것은 아닙니다.": [
+    "Queries up to 800 gyms within 15 km of each city center, together with the five regional maps below. This does not cover every gym worldwide.",
+    "查询各城市中心15公里范围内最多800个道馆，并结合下方5个区域地图的数据，并非覆盖全球所有道馆。",
+    "各都市の中心から半径15km以内を最大800件まで取得し、下記5地域の地図も併せて確認します。世界中の全ジムを収集しているわけではありません。"
+  ],
+  "각 도시의 현지 시각에 진행 · 한국시간으로 변환": [
+    "Runs at local city time · converted to Korea time",
+    "按各城市当地时间举办 · 换算为韩国时间",
+    "各都市の現地時刻で開催・韓国時間に換算"
+  ],
+  "각 루트의 좌표 순서는 유지하고, 경로 거리와 구간 사이 직선거리의 합을 줄이는 순서를 비교해요. 역방향은 직접 허용한 루트만 사용합니다.": [
+    "Keeps each route's coordinate order and compares visit orders to reduce route distance plus straight-line transfers. Only explicitly reversible routes are reversed.",
+    "保留各路线的坐标顺序，比较路线距离与区间直线距离之和更短的访问顺序。仅对明确允许反向的路线进行反向。",
+    "各ルートの座標順を維持し、ルート距離と区間の直線距離の合計が短くなる順番を比較します。逆方向を許可したルートだけ反転します。"
+  ],
+  "강철": [
+    "Steel",
+    "钢",
+    "はがね"
+  ],
+  "같은 이름과 좌표의 경로가 이미 등록되어 있어요.": [
+    "A route with the same name and coordinates already exists.",
+    "已存在名称和坐标相同的路线。",
+    "同じ名前と座標のルートが登録済みです。"
+  ],
+  "같은 체육관이 겹치는 지역은 한 번만 추천하며 최대 5곳을 표시해요. 종료까지 5분 이상인 자료만 포함합니다.": [
+    "Areas sharing the same gyms are recommended only once, up to five areas. Only raids with at least five minutes remaining are included.",
+    "重叠道馆的区域仅推荐一次，最多显示5处。仅包含距离结束至少还有5分钟的团体战。",
+    "同じジムが重複するエリアは一度だけ、最大5か所表示します。終了まで5分以上あるレイドのみ含みます。"
+  ],
+  "개 ·": [
+    "items ·",
+    "个 ·",
+    "件・"
+  ],
+  "개 · 직접 기록한 셀": [
+    "items · manually recorded Cells",
+    "个 · 手动记录的细胞",
+    "個・手動で記録したセル"
+  ],
+  "개 경로": [
+    "routes",
+    "条路线",
+    "件のルート"
+  ],
+  "개 도시 조회": [
+    "cities checked",
+    "个城市已查询",
+    "都市を取得"
+  ],
+  "개 좌표": [
+    "coordinates",
+    "个坐标",
+    "点の座標"
+  ],
+  "개 좌표를 표시합니다. 지도 선택으로 원본 경로선은 바뀌지 않아요.": [
+    "coordinates displayed. Selecting map points does not change the original path.",
+    "个坐标已显示。在地图上选择位置不会改变原始路径。",
+    "点の座標を表示しています。地図で位置を選んでも元の経路線は変わりません。"
+  ],
+  "개 직접 기록": [
+    "manually recorded",
+    "个手动记录",
+    "個を手動で記録"
+  ],
+  "개 표시": [
+    "shown",
+    "个已显示",
+    "件表示"
+  ],
+  "개의 일정": [
+    "events",
+    "个日程",
+    "件の予定"
+  ],
+  "개인 GPX 등록": [
+    "Add a personal GPX",
+    "添加个人GPX",
+    "個人用GPXを登録"
+  ],
+  "개인 등록 경로와 완료 기록은 현재 브라우저에만 저장됩니다. 공개 루트 제보는 서버에 보관하며 검토 후 공개합니다. 다른 기기로 개인 경로를 옮길 때는 각 루트 카드에서 개별 GPX로 내보내세요. 방문 계획 파일은 여러 구간이 들어 있어 나눠 등록해야 합니다. 셀 획득 횟수·확률을 예측하거나 보장하지 않습니다.": [
+    "Personal routes and completion records are stored only in this browser. Public Route submissions are stored on the server and published after review. Export individual GPX files from route cards to move personal routes to another device. Multi-section visit plans must be split before importing. Cell counts and drop rates are not predicted or guaranteed.",
+    "个人路线和完成记录仅保存在当前浏览器。公开路线投稿保存在服务器并经审核后发布。若要转移到其他设备，请从各路线卡导出单独的GPX文件。含多个区段的访问计划需要拆分后再导入。不预测或保证细胞数量及获得概率。",
+    "個人用ルートと完了記録は現在のブラウザーだけに保存されます。公開ルートの投稿はサーバーに保存し、確認後に公開します。他の端末に移す際は各カードから個別GPXで書き出してください。複数区間の訪問計画は分割して登録してください。セル数や入手率の予測・保証はしません。"
+  ],
+  "갱신에 실패했습니다. 마지막 확인 자료를 표시합니다.": [
+    "Update failed. Showing the last confirmed data.",
+    "更新失败，正在显示上次确认的数据。",
+    "更新に失敗しました。最後に確認できたデータを表示しています。"
+  ],
+  "거리와 시간은 좌표 연결 기준이며 실제 도로와 앱의 정차 시간은 반영하지 않아요.": [
+    "Distance and time are based on connected coordinates; actual roads and app stop times are not included.",
+    "距离和时间按坐标连接计算，未计入实际道路及应用停留时间。",
+    "距離と時間は座標を結んだ基準です。実際の道路やアプリの停止時間は含みません。"
+  ],
+  "걷기": [
+    "Walking",
+    "步行",
+    "歩行"
+  ],
+  "걷기 9.3km/h": [
+    "Walk 9.3 km/h",
+    "步行9.3km/h",
+    "歩行9.3km/h"
+  ],
+  "검색": [
+    "Search",
+    "搜索",
+    "検索"
+  ],
+  "검색 결과 없음": [
+    "No results",
+    "无搜索结果",
+    "検索結果なし"
+  ],
+  "검색 결과가 없어요.": [
+    "No results found.",
+    "没有搜索结果。",
+    "検索結果がありません。"
+  ],
+  "검색 조건에 맞는 공개 GPX가 없어요. 다른 국가를 고르거나 검색어를 바꿔보세요.": [
+    "No public GPX matches your filters. Choose another country or change the search.",
+    "没有符合条件的公开GPX，请选择其他国家或更改搜索词。",
+    "条件に合う公開GPXがありません。別の国を選ぶか、検索語を変更してください。"
+  ],
+  "검색 지우기": [
+    "Clear search",
+    "清除搜索",
+    "検索をクリア"
+  ],
+  "검색 초기화": [
+    "Reset search",
+    "重置搜索",
+    "検索をリセット"
+  ],
+  "검색어 지우기": [
+    "Clear query",
+    "清除搜索词",
+    "検索語を消す"
+  ],
+  "검색어나 지역, 즐겨찾기 필터를 바꿔보세요.": [
+    "Try changing the search, region or favorites filter.",
+    "请尝试更改搜索词、区域或收藏筛选。",
+    "検索語・地域・お気に入り条件を変更してみてください。"
+  ],
+  "검색한 이름이 없어요. 지도에서 위치를 직접 선택할 수 있어요.": [
+    "No matching name. You can select a location directly on the map.",
+    "未找到该名称，可以直接在地图上选择位置。",
+    "該当する名前がありません。地図上で直接位置を選べます。"
+  ],
+  "검증 필요": [
+    "Needs verification",
+    "需要验证",
+    "検証が必要"
+  ],
+  "검토 대기": [
+    "Awaiting review",
+    "等待审核",
+    "確認待ち"
+  ],
+  "검토 대기 중입니다. 아직 공개 목록에는 표시되지 않아요.": [
+    "Awaiting review. This is not yet visible in the public list.",
+    "正在等待审核，尚未显示在公开列表中。",
+    "確認待ちです。まだ公開一覧には表示されません。"
+  ],
+  "검토가 끝나면 공개돼요. ‘내가 올린 글’에서 상태를 확인하고 마감·삭제할 수 있어요.": [
+    "It will be published after review. Check its status, close or delete it under My listings.",
+    "审核后将公开，可在“我的发布”中查看状态、结束招募或删除。",
+    "確認後に公開されます。「自分の投稿」で状態を確認し、締め切り・削除ができます。"
+  ],
+  "검토가 끝난 모집 글부터 여기에 표시돼요.": [
+    "Reviewed listings will appear here.",
+    "通过审核的招募将在此显示。",
+    "確認が終わった募集から表示されます。"
+  ],
+  "게임 교환 안내": [
+    "Trading guide",
+    "游戏交换说明",
+    "ゲームの交換ガイド"
+  ],
+  "게임 루트 미검증": [
+    "In-game Route unverified",
+    "游戏路线未验证",
+    "ゲーム内ルート未確認"
+  ],
+  "게임 루트 제보하기": [
+    "Submit an in-game Route",
+    "投稿游戏路线",
+    "ゲーム内ルートを投稿"
+  ],
+  "게임 루트 확인과 공개 허락에 동의해 주세요.": [
+    "Confirm the in-game Route and consent to publication.",
+    "请确认游戏路线并同意公开。",
+    "ゲーム内ルートの確認と公開に同意してください。"
+  ],
+  "게임 표시 거리 (m)": [
+    "In-game distance (m)",
+    "游戏显示距离（米）",
+    "ゲーム内表示距離（m）"
+  ],
+  "게임 확인일": [
+    "Date checked in game",
+    "游戏确认日期",
+    "ゲーム内確認日"
+  ],
+  "게임에 표시된 거리를 m 단위로 입력해 주세요.": [
+    "Enter the in-game distance in meters.",
+    "请输入游戏显示的距离，单位为米。",
+    "ゲームに表示された距離をm単位で入力してください。"
+  ],
+  "게임에 표시된 루트 이름": [
+    "In-game Route name",
+    "游戏显示的路线名称",
+    "ゲーム内のルート名"
+  ],
+  "게임에 표시된 배경·이벤트 이름": [
+    "Background or event name shown in game",
+    "游戏显示的背景或活动名称",
+    "ゲームに表示された背景・イベント名"
+  ],
+  "게임에 표시된 시간": [
+    "Time shown in game",
+    "游戏显示时间",
+    "ゲームに表示された時間"
+  ],
+  "게임에서 역방향도 허용한 루트예요": [
+    "This Route also allows reverse direction in game",
+    "此路线在游戏中也允许反向",
+    "ゲーム内でも逆方向を許可しているルート"
+  ],
+  "게임에서 직접 확인한 Pokémon GO 루트를 제보해 주세요. GPX가 없어도 시작 위치와 루트 정보를 받을 수 있어요. 제보는 검토 후 공개됩니다.": [
+    "Submit a Pokémon GO Route you checked in game. You can submit start-point and Route details without GPX. Submissions are reviewed before publication.",
+    "请投稿在游戏中亲自确认的Pokémon GO路线。即使没有GPX，也可提交起点和路线信息。投稿经审核后公开。",
+    "ゲーム内で確認したPokémon GOルートを投稿してください。GPXがなくても始点と情報を受け付けます。確認後に公開します。"
+  ],
+  "게임에서 현재 루트와 방향을 확인해 주세요.": [
+    "Check the current Route and direction in game.",
+    "请在游戏中确认当前路线及方向。",
+    "現在のルートと方向をゲーム内で確認してください。"
+  ],
+  "게임에서 확인한 루트를 제보해 주세요.": [
+    "Submit a Route you confirmed in game.",
+    "请投稿在游戏中确认过的路线。",
+    "ゲーム内で確認したルートを投稿してください。"
+  ],
+  "게임에서 확인한 이름": [
+    "Name confirmed in game",
+    "游戏中确认的名称",
+    "ゲーム内で確認した名前"
+  ],
+  "격투": [
+    "Fighting",
+    "格斗",
+    "かくとう"
+  ],
+  "경로": [
+    "Route",
+    "路线",
+    "ルート"
+  ],
+  "경로 (rte)": [
+    "Route (rte)",
+    "路线（rte）",
+    "ルート（rte）"
+  ],
+  "경로 데이터": [
+    "Path data",
+    "路径数据",
+    "経路データ"
+  ],
+  "경로 방식": [
+    "Route mode",
+    "路线方式",
+    "ルート方式"
+  ],
+  "경로 사이 직선거리": [
+    "Straight-line transfers",
+    "路线间直线距离",
+    "ルート間の直線距離"
+  ],
+  "경로 이름과 도시를 확인해 주세요.": [
+    "Check the route name and city.",
+    "请检查路线名称和城市。",
+    "ルート名と都市を確認してください。"
+  ],
+  "경로 이름을 100자 이내로 입력하세요.": [
+    "Enter a route name within 100 characters.",
+    "路线名称请不超过100个字符。",
+    "ルート名は100文字以内で入力してください。"
+  ],
+  "경로 입력 형식": [
+    "Route input format",
+    "路线输入格式",
+    "ルート入力形式"
+  ],
+  "경로 최대 포켓스톱": [
+    "Maximum PokéStops",
+    "最多宝可补给站",
+    "最大ポケストップ数"
+  ],
+  "경로 파일과 좌표 내보내기": [
+    "Export path and coordinates",
+    "导出路径和坐标",
+    "経路と座標を書き出す"
+  ],
+  "경로를 등록하지 못했어요.": [
+    "Unable to save the route.",
+    "无法保存路线。",
+    "ルートを登録できませんでした。"
+  ],
+  "경로를 만들지 못했습니다. 좌표와 설정을 확인하세요.": [
+    "Unable to generate the route. Check the coordinates and settings.",
+    "无法生成路线，请检查坐标和设置。",
+    "ルートを作成できませんでした。座標と設定を確認してください。"
+  ],
+  "경로를 얻은 방법": [
+    "How the route was obtained",
+    "路线获取方式",
+    "経路の入手方法"
+  ],
+  "경로를 이 기기에 등록했어요. 게임 내 루트 여부는 직접 확인해 주세요.": [
+    "Route saved on this device. Verify its in-game Route status yourself.",
+    "路线已保存在本机，请自行确认是否为游戏内路线。",
+    "この端末に登録しました。ゲーム内ルートかどうかは直接確認してください。"
+  ],
+  "경로를 읽지 못했어요.": [
+    "Unable to read the route.",
+    "无法读取路线。",
+    "ルートを読み込めませんでした。"
+  ],
+  "계획에 넣을 경로가 없어요": [
+    "No routes to add to the plan",
+    "没有可加入计划的路线",
+    "計画に追加できるルートがありません"
+  ],
+  "고스트": [
+    "Ghost",
+    "幽灵",
+    "ゴースト"
+  ],
+  "공개 GPX": [
+    "Public GPX",
+    "公开GPX",
+    "公開GPX"
+  ],
+  "공개 GPX 지역 검색": [
+    "Search public GPX locations",
+    "搜索公开GPX地区",
+    "公開GPXの地域を検索"
+  ],
+  "공개 닉네임": [
+    "Public nickname",
+    "公开昵称",
+    "公開ニックネーム"
+  ],
+  "공개 루트 도시": [
+    "Public Route city",
+    "公开路线城市",
+    "公開ルートの都市"
+  ],
+  "공개 루트 목록 새로고침": [
+    "Refresh public Routes",
+    "刷新公开路线列表",
+    "公開ルート一覧を更新"
+  ],
+  "공개 루트 목록을 불러오지 못했어요.": [
+    "Unable to load public Routes.",
+    "无法加载公开路线列表。",
+    "公開ルート一覧を読み込めませんでした。"
+  ],
+  "공개 루트를 불러오고 있어요.": [
+    "Loading public Routes.",
+    "正在加载公开路线。",
+    "公開ルートを読み込んでいます。"
+  ],
+  "공개 및 이용 허락": [
+    "Publication & use permission",
+    "公开与使用许可",
+    "公開・利用許可"
+  ],
+  "공개 보류": [
+    "Publication on hold",
+    "暂缓公开",
+    "公開保留"
+  ],
+  "공개 재배포 라이선스가 있어요": [
+    "A public redistribution license exists",
+    "有公开再分发许可",
+    "公開の再配布ライセンスあり"
+  ],
+  "공개 지도에 퀘스트가 등록된 포켓스톱 좌표를 연결해요.": [
+    "Connects coordinates of PokéStops with quests on public maps.",
+    "连接公开地图中已登记任务的宝可补给站坐标。",
+    "公開地図にタスクが登録されたポケストップの座標を結びます。"
+  ],
+  "공개된 예정 포켓몬": [
+    "Announced upcoming Pokémon",
+    "已公布的即将登场宝可梦",
+    "発表済みの登場予定ポケモン"
+  ],
+  "공개된 파일도 재배포 허락은 별도로 확인해야 해요. GPX 제출이나 운영자 확인만으로 현재 게임 이용 가능 여부와 셀 획득을 보장하지 않습니다.": [
+    "A public file still requires redistribution permission. GPX submission or operator review does not guarantee current in-game availability or Cell rewards.",
+    "公开文件仍需确认再分发许可。提交GPX或经过管理员审核，不保证目前在游戏中可用或能获得细胞。",
+    "公開ファイルでも再配布の許可は別途確認が必要です。GPXの提出や運営の確認だけで、現在のゲーム内利用やセル獲得を保証するものではありません。"
+  ],
+  "공개된 포켓몬 GO 경로 모음의 원본을 직접 불러와요.": [
+    "Loads original files from public Pokémon GO route collections.",
+    "直接加载公开Pokémon GO路线集合的原始文件。",
+    "公開されているPokémon GOルート集から元ファイルを直接読み込みます。"
+  ],
+  "공개할 제작자·제보자 닉네임": [
+    "Public creator / submitter nickname",
+    "公开的制作者／投稿者昵称",
+    "公開する作成者・投稿者のニックネーム"
+  ],
+  "공급원 관측 범위 기준": [
+    "Within provider coverage",
+    "以来源观测范围为准",
+    "配信元の観測範囲に基づく"
+  ],
+  "공급원의 진행 상황을 확인할 수 없습니다. 잠시 후 다시 조회하세요.": [
+    "Unable to check provider status. Try again shortly.",
+    "无法确认数据来源状态，请稍后重试。",
+    "配信元の状態を確認できません。しばらくしてから再取得してください。"
+  ],
+  "공식 FAQ": [
+    "Official FAQ",
+    "官方常见问题",
+    "公式FAQ"
+  ],
+  "공식 공지로 확인한 회차와 사용자가 기록한 부화·종료 시각만 표시합니다.": [
+    "Shows only officially announced sessions and hatch/end times recorded by users.",
+    "仅显示官方公布的轮次，以及用户记录的孵化和结束时间。",
+    "公式発表で確認できた回と、利用者が記録した孵化・終了時刻だけを表示します。"
+  ],
+  "공식 레이드아워 일정은 별도 시간표에서 확인하세요.": [
+    "See the separate timetable for official Raid Hour schedules.",
+    "官方团体战时间请查看单独的时间表。",
+    "公式レイドアワーの日程は別の時間表で確認してください。"
+  ],
+  "공식 루트 안내": [
+    "Official Routes guide",
+    "官方路线说明",
+    "公式ルートガイド"
+  ],
+  "공식 일정 시간대 기준 · 체육관별 실황은 실시간 레이드에서 확인": [
+    "Based on official event times · use Live raids for actual gym activity",
+    "按官方活动时间判断 · 道馆实况请查看实时团体战",
+    "公式イベントの時間帯に基づく・ジムの実際の状況はリアルタイムレイドで確認"
+  ],
+  "공식 조건": [
+    "Official requirements",
+    "官方条件",
+    "公式の条件"
+  ],
+  "공식 조건 보기": [
+    "View official requirements",
+    "查看官方条件",
+    "公式の条件を見る"
+  ],
+  "공유 링크 닫기": [
+    "Close shared link",
+    "关闭分享链接",
+    "共有リンクを閉じる"
+  ],
+  "공유 완료": [
+    "Shared",
+    "已分享",
+    "共有しました"
+  ],
+  "공유 허락과 게임 루트 정보를 확인한 제보를 모아요. 파밍용 GPX는 게임 루트 목록에 등록하지 않습니다.": [
+    "Collects Route submissions with confirmed sharing permission and in-game details. Farming GPX is not listed as an in-game Route.",
+    "仅收录已确认分享许可和游戏路线信息的投稿。自动捕捉用GPX不会列为游戏路线。",
+    "共有許可とゲーム内情報を確認した投稿を集めています。周回用GPXはゲーム内ルート一覧に登録しません。"
+  ],
+  "과거에 공유된 원본 경로는 현재 포켓스톱·출입 경로와 다를 수 있어요.": [
+    "Older shared routes may differ from today's PokéStops and accessible paths.",
+    "过去分享的路线可能与当前宝可补给站和可通行道路不同。",
+    "過去に共有された経路は、現在のポケストップや通行経路と異なる場合があります。"
+  ],
+  "관리 정보를 불러오고 있어요.": [
+    "Loading management records.",
+    "正在加载管理记录。",
+    "管理情報を読み込んでいます。"
+  ],
+  "관측": [
+    "Observed",
+    "观测",
+    "観測"
+  ],
+  "관측 자료 갱신 필요": [
+    "Observation data needs updating",
+    "观测数据需要更新",
+    "観測データの更新が必要"
+  ],
+  "관측 자료 없음": [
+    "No observation data",
+    "无观测数据",
+    "観測データなし"
+  ],
+  "관측 자료가 있는 도시별 레이드 지도": [
+    "Raid maps for cities with observation data",
+    "有观测数据城市的团体战地图",
+    "観測データがある都市のレイド地図"
+  ],
+  "교환 게시판에 연결하지 못했어요. 잠시 후 다시 시도해 주세요.": [
+    "Unable to connect to the trade board. Try again shortly.",
+    "无法连接交换看板，请稍后重试。",
+    "交換掲示板に接続できません。しばらくしてからお試しください。"
+  ],
+  "교환 모집 글": [
+    "Trade listings",
+    "交换招募",
+    "交換募集"
+  ],
+  "교환 모집 새로고침": [
+    "Refresh trade listings",
+    "刷新交换招募",
+    "交換募集を更新"
+  ],
+  "교환 상대 찾기": [
+    "Find trade partners",
+    "寻找交换伙伴",
+    "交換相手を探す"
+  ],
+  "교환 희망": [
+    "Wanted in exchange",
+    "交换意向",
+    "交換希望"
+  ],
+  "교환할 포켓몬": [
+    "Pokémon to trade",
+    "要交换的宝可梦",
+    "交換するポケモン"
+  ],
+  "국가": [
+    "Country",
+    "国家",
+    "国"
+  ],
+  "국가마다 시간대가 다를 수 있어 대표 도시를 기준으로 계산해요. 서머타임은 자동 반영돼요.": [
+    "Countries may have multiple time zones, so calculations use representative cities. Daylight saving time is applied automatically.",
+    "一个国家可能有多个时区，因此按代表城市计算，并自动考虑夏令时。",
+    "国によって複数の時間帯があるため、代表都市を基準に計算します。夏時間は自動で反映します。"
+  ],
+  "그림자 1성": [
+    "Shadow Tier 1",
+    "暗影1星",
+    "シャドウ1つ星"
+  ],
+  "그림자 3성": [
+    "Shadow Tier 3",
+    "暗影3星",
+    "シャドウ3つ星"
+  ],
+  "그림자 5성": [
+    "Shadow Tier 5",
+    "暗影5星",
+    "シャドウ5つ星"
+  ],
+  "근처 포켓스톱 순환 경로": [
+    "Nearby PokéStop loop",
+    "附近宝可补给站环线",
+    "近くのポケストップ周回ルート"
+  ],
+  "글 관리 정보는 이 브라우저에만 보관해요. 브라우저 데이터를 지우거나 다른 기기로 접속하면 내 글 관리 기능을 쓰지 못할 수 있어요.": [
+    "Management records are saved only in this browser. Clearing browser data or using another device may remove access to manage your posts.",
+    "管理记录仅保存在此浏览器中。清除浏览器数据或使用其他设备后，可能无法管理自己的发布。",
+    "管理情報はこのブラウザーだけに保存されます。データの削除や別端末での利用により、自分の投稿を管理できなくなる場合があります。"
+  ],
+  "글 상세 응답을 확인하지 못했어요.": [
+    "Unable to verify the listing detail response.",
+    "无法确认发布详情响应。",
+    "投稿の詳細応答を確認できませんでした。"
+  ],
+  "글과 연락 방법을 삭제할까요? 이 기기의 관리 목록에서도 지워져요.": [
+    "Delete this listing and its contact details? It will also be removed from this device's management list.",
+    "删除此发布及联系方式吗？本机管理列表中也会移除。",
+    "投稿と連絡方法を削除しますか？この端末の管理一覧からも削除されます。"
+  ],
+  "글은 접수됐지만 접수 상태를 기기에 저장하지 못했어요. 이 기기의 작성 기록을 지우지 말고 접수 상태를 다시 확인해 주세요.": [
+    "The post was received, but its status could not be saved on this device. Keep this browser's records and check the submission status again.",
+    "发布已接收，但无法将状态保存到本机。请勿清除此浏览器的记录，并再次确认提交状态。",
+    "投稿は受け付けましたが、状態を端末に保存できませんでした。この端末の記録を消さずに受付状態を再確認してください。"
+  ],
+  "글을 관리하지 못했어요.": [
+    "Unable to manage this listing.",
+    "无法管理此发布。",
+    "投稿を管理できませんでした。"
+  ],
+  "글을 찾지 못했어요. 삭제·마감되었거나 관리 정보가 다를 수 있어요.": [
+    "Listing not found. It may be deleted, closed, or have different management credentials.",
+    "未找到此发布，可能已删除、已结束，或管理信息不匹配。",
+    "投稿が見つかりません。削除・締め切り済みか、管理情報が異なる可能性があります。"
+  ],
+  "금": [
+    "Fri",
+    "五",
+    "金"
+  ],
+  "기간 미확인 보스가 없습니다.": [
+    "No bosses with unconfirmed dates.",
+    "没有日期未确认的首领。",
+    "期間未確認のボスはありません。"
+  ],
+  "기간 종료": [
+    "Expired",
+    "已到期",
+    "期間終了"
+  ],
+  "기기 저장본을 읽는 중이에요. 잠시 후 다시 눌러 주세요.": [
+    "Reading the device save. Please try again shortly.",
+    "正在读取本机保存的数据，请稍后重试。",
+    "端末の保存データを読み込んでいます。しばらくしてからもう一度押してください。"
+  ],
+  "기기 저장본을 읽지 못했어요. 기존 경로를 GPX로 보관한 뒤 저장본을 다시 읽어 주세요.": [
+    "Unable to read the device save. Export existing routes as GPX before loading again.",
+    "无法读取本机数据，请先将现有路线导出为GPX，再重新读取。",
+    "端末の保存データを読み込めませんでした。既存のルートをGPXで保管してから再読み込みしてください。"
+  ],
+  "기기의 저장본을 읽지 못해 기존 내용은 바꾸지 않았어요. 현재 탭에서 등록한 경로는 각 루트 카드에서 개별 GPX로 보관해 주세요.": [
+    "The device save could not be read, so existing data was left unchanged. Export routes added in this tab from their individual route cards.",
+    "无法读取本机数据，未更改已有内容。请将当前标签页添加的路线从各自卡片单独导出。",
+    "端末の保存データを読み込めなかったため、既存の内容は変更していません。このタブで追加したルートは各カードから個別に書き出してください。"
+  ],
+  "기능 제안": [
+    "Suggest a feature",
+    "功能建议",
+    "機能の提案"
+  ],
+  "기록 저장": [
+    "Save record",
+    "保存记录",
+    "記録を保存"
+  ],
+  "기록과 보관 기간 안내": [
+    "Records & retention",
+    "记录及保留期限",
+    "記録と保存期間"
+  ],
+  "기록할 도시": [
+    "City to record",
+    "记录城市",
+    "記録する都市"
+  ],
+  "기록할 셀 수는 0~999 사이 정수로 넣어주세요.": [
+    "Enter a whole number of Cells from 0 to 999.",
+    "细胞数量请输入0至999之间的整数。",
+    "記録するセル数は0～999の整数で入力してください。"
+  ],
+  "기타 이벤트": [
+    "Other events",
+    "其他活动",
+    "その他のイベント"
+  ],
+  "끝": [
+    "End",
+    "终点",
+    "終点"
+  ],
+  "나의 부화 대기": [
+    "My pending hatches",
+    "我的待孵化记录",
+    "自分の孵化待ち"
+  ],
+  "나의 플래너": [
+    "My planner",
+    "我的计划",
+    "マイプランナー"
+  ],
+  "날짜 확인 중": [
+    "Checking dates",
+    "正在确认日期",
+    "日付を確認中"
+  ],
+  "날짜별 이벤트 일정과 등장 포켓몬을 확인하세요.": [
+    "Check daily events and available Pokémon.",
+    "查看每日活动及出现的宝可梦。",
+    "日別のイベント予定と出現ポケモンを確認できます。"
+  ],
+  "날짜와 시간을 확인해주세요.": [
+    "Check the date and time.",
+    "请确认日期和时间。",
+    "日付と時刻を確認してください。"
+  ],
+  "내 GPX": [
+    "My GPX",
+    "我的GPX",
+    "自分のGPX"
+  ],
+  "내 GPX 가져오기": [
+    "Import my GPX",
+    "导入我的GPX",
+    "自分のGPXを読み込む"
+  ],
+  "내 방문 계획에 추가": [
+    "Add to my visit plan",
+    "加入我的访问计划",
+    "訪問計画に追加"
+  ],
+  "내가 올린 글": [
+    "My listings",
+    "我的发布",
+    "自分の投稿"
+  ],
+  "내보낼 좌표 ·": [
+    "Coordinates to export ·",
+    "要导出的坐标 ·",
+    "書き出す座標・"
+  ],
+  "내용": [
+    "Message",
+    "内容",
+    "内容"
+  ],
+  "서울": [
+    "Seoul",
+    "首尔",
+    "ソウル"
+  ],
+  "도쿄": [
+    "Tokyo",
+    "东京",
+    "東京"
+  ],
+  "타이베이": [
+    "Taipei",
+    "台北",
+    "台北"
+  ],
+  "홍콩": [
+    "Hong Kong",
+    "香港",
+    "香港"
+  ],
+  "싱가포르": [
+    "Singapore",
+    "新加坡",
+    "シンガポール"
+  ],
+  "방콕": [
+    "Bangkok",
+    "曼谷",
+    "バンコク"
+  ],
+  "두바이": [
+    "Dubai",
+    "迪拜",
+    "ドバイ"
+  ],
+  "시드니": [
+    "Sydney",
+    "悉尼",
+    "シドニー"
+  ],
+  "퍼스": [
+    "Perth",
+    "珀斯",
+    "パース"
+  ],
+  "오클랜드": [
+    "Auckland",
+    "奥克兰",
+    "オークランド"
+  ],
+  "키리티마티": [
+    "Kiritimati",
+    "基里蒂马蒂",
+    "キリティマティ"
+  ],
+  "이스탄불": [
+    "Istanbul",
+    "伊斯坦布尔",
+    "イスタンブール"
+  ],
+  "런던": [
+    "London",
+    "伦敦",
+    "ロンドン"
+  ],
+  "파리": [
+    "Paris",
+    "巴黎",
+    "パリ"
+  ],
+  "마드리드": [
+    "Madrid",
+    "马德里",
+    "マドリード"
+  ],
+  "뉴욕": [
+    "New York",
+    "纽约",
+    "ニューヨーク"
+  ],
+  "시카고": [
+    "Chicago",
+    "芝加哥",
+    "シカゴ"
+  ],
+  "로스앤젤레스": [
+    "Los Angeles",
+    "洛杉矶",
+    "ロサンゼルス"
+  ],
+  "호놀룰루": [
+    "Honolulu",
+    "檀香山",
+    "ホノルル"
+  ],
+  "밴쿠버": [
+    "Vancouver",
+    "温哥华",
+    "バンクーバー"
+  ],
+  "멕시코시티": [
+    "Mexico City",
+    "墨西哥城",
+    "メキシコシティ"
+  ],
+  "상파울루": [
+    "São Paulo",
+    "圣保罗",
+    "サンパウロ"
+  ],
+  "케이프타운": [
+    "Cape Town",
+    "开普敦",
+    "ケープタウン"
+  ],
+  "나이로비": [
+    "Nairobi",
+    "内罗毕",
+    "ナイロビ"
+  ],
+  "대한민국": [
+    "South Korea",
+    "韩国",
+    "韓国"
+  ],
+  "일본": [
+    "Japan",
+    "日本",
+    "日本"
+  ],
+  "대만": [
+    "Taiwan",
+    "台湾",
+    "台湾"
+  ],
+  "태국": [
+    "Thailand",
+    "泰国",
+    "タイ"
+  ],
+  "아랍에미리트": [
+    "United Arab Emirates",
+    "阿拉伯联合酋长国",
+    "アラブ首長国連邦"
+  ],
+  "호주": [
+    "Australia",
+    "澳大利亚",
+    "オーストラリア"
+  ],
+  "뉴질랜드": [
+    "New Zealand",
+    "新西兰",
+    "ニュージーランド"
+  ],
+  "키리바시": [
+    "Kiribati",
+    "基里巴斯",
+    "キリバス"
+  ],
+  "튀르키예": [
+    "Türkiye",
+    "土耳其",
+    "トルコ"
+  ],
+  "영국": [
+    "United Kingdom",
+    "英国",
+    "イギリス"
+  ],
+  "프랑스": [
+    "France",
+    "法国",
+    "フランス"
+  ],
+  "스페인": [
+    "Spain",
+    "西班牙",
+    "スペイン"
+  ],
+  "미국": [
+    "United States",
+    "美国",
+    "アメリカ"
+  ],
+  "캐나다": [
+    "Canada",
+    "加拿大",
+    "カナダ"
+  ],
+  "멕시코": [
+    "Mexico",
+    "墨西哥",
+    "メキシコ"
+  ],
+  "브라질": [
+    "Brazil",
+    "巴西",
+    "ブラジル"
+  ],
+  "남아프리카공화국": [
+    "South Africa",
+    "南非",
+    "南アフリカ"
+  ],
+  "케냐": [
+    "Kenya",
+    "肯尼亚",
+    "ケニア"
+  ],
+  "GPS 위치 변경": [
+    "GPS spoofing",
+    "GPS虚拟定位",
+    "GPS位置偽装"
+  ],
+  "GPS 가능 여부": [
+    "GPS spoofing availability",
+    "GPS虚拟定位可用情况",
+    "GPS位置偽装の可否"
+  ],
+  "불가능": [
+    "No",
+    "不可以",
+    "不可"
+  ],
+  "미지정": [
+    "Not specified",
+    "未指定",
+    "未指定"
+  ],
+  "작성자가 선택한 정보예요.": [
+    "Self-reported by the author.",
+    "由发布者自行选择的信息。",
+    "投稿者が自己申告した情報です。"
+  ],
+  "상세 주소는 개인 연락처를 교환한 뒤 따로 정해 주세요.": [
+    "Agree on the exact address privately after exchanging contact details.",
+    "请在交换个人联系方式后，私下商定详细地址。",
+    "詳しい住所は連絡先を交換した後、個別に相談してください。"
+  ],
+  "위치 조작 가능 여부를 직접 선택해 주세요.": [
+    "Select whether you can use GPS spoofing.",
+    "请选择是否可以使用GPS虚拟定位。",
+    "GPS位置偽装が可能か選んでください。"
+  ],
+  "배경 갱신 중": [
+    "Updating backgrounds",
+    "背景更新中",
+    "背景を更新中"
+  ],
+  "배경 목록을 자동으로 갱신해요.": [
+    "The background catalog updates automatically.",
+    "背景列表会自动更新。",
+    "背景一覧を自動で更新します。"
+  ],
+  "선택한 배경": [
+    "Selected background",
+    "所选背景",
+    "選択した背景"
+  ],
+  "배경 이미지 미등록": [
+    "Background image unavailable",
+    "暂无背景图片",
+    "背景画像未登録"
+  ],
+  "배경 이미지를 불러오지 못했어요.": [
+    "Unable to load the background image.",
+    "无法加载背景图片。",
+    "背景画像を読み込めませんでした。"
+  ],
+  "이 배경의 이미지는 아직 없어요.": [
+    "No image is available for this background yet.",
+    "此背景暂无图片。",
+    "この背景の画像はまだありません。"
+  ],
+  "로케이션 배경": [
+    "Location background",
+    "地点背景",
+    "ロケーション背景"
+  ],
+  "스페셜 배경": [
+    "Special background",
+    "特殊背景",
+    "スペシャル背景"
+  ],
+  "배경 미지정": [
+    "Background not specified",
+    "未指定背景",
+    "背景未指定"
+  ],
+  "배경 없음": [
+    "No background",
+    "无背景",
+    "背景なし"
+  ],
+  "배경 종류 무관 · 배경 있는 포켓몬": [
+    "Any background · Pokémon with a background",
+    "任意背景 · 有背景的宝可梦",
+    "種類不問・背景付きポケモン"
+  ],
+  "폼 이미지 미등록": [
+    "Form image unavailable",
+    "暂无形态图片",
+    "すがたの画像未登録"
+  ],
+  "이미지 미등록": [
+    "Image unavailable",
+    "暂无图片",
+    "画像未登録"
+  ],
+  "한국 표준시": [
+    "Korea Standard Time",
+    "韩国标准时间",
+    "韓国標準時"
+  ],
+  "주 메뉴": [
+    "Main menu",
+    "主菜单",
+    "メインメニュー"
+  ],
+  "플래너": [
+    "Planner",
+    "计划",
+    "プランナー"
+  ],
+  "월요일": [
+    "Monday",
+    "星期一",
+    "月曜日"
+  ],
+  "화요일": [
+    "Tuesday",
+    "星期二",
+    "火曜日"
+  ],
+  "수요일": [
+    "Wednesday",
+    "星期三",
+    "水曜日"
+  ],
+  "목요일": [
+    "Thursday",
+    "星期四",
+    "木曜日"
+  ],
+  "금요일": [
+    "Friday",
+    "星期五",
+    "金曜日"
+  ],
+  "토요일": [
+    "Saturday",
+    "星期六",
+    "土曜日"
+  ],
+  "일요일": [
+    "Sunday",
+    "星期日",
+    "日曜日"
+  ],
+  "배경 목록을 갱신하지 못해 기본 목록을 표시해요.": [
+    "Unable to update backgrounds. Showing the built-in catalog.",
+    "无法更新背景列表，正在显示内置列表。",
+    "背景一覧を更新できないため、内蔵一覧を表示しています。"
+  ],
+  "배경 목록을 갱신하지 못해 마지막 확인 목록을 표시해요.": [
+    "Unable to update backgrounds. Showing the last confirmed catalog.",
+    "无法更新背景列表，正在显示上次确认的列表。",
+    "背景一覧を更新できないため、最後に確認できた一覧を表示しています。"
+  ],
+  "배경 목록을 갱신하지 못했어요.": [
+    "Unable to update the background catalog.",
+    "无法更新背景列表。",
+    "背景一覧を更新できませんでした。"
+  ],
+  "배경 자료 출처": [
+    "Background data source",
+    "背景资料来源",
+    "背景データの出典"
+  ],
+  "원본 갱신일": [
+    "Source updated",
+    "来源更新日期",
+    "配信元の更新日"
+  ],
+  "자료 확인 시각": [
+    "Last checked",
+    "资料确认时间",
+    "データ確認時刻"
+  ],
+  "이름": [
+    "Name",
+    "名称",
+    "名前"
+  ],
+  "배경": [
+    "Background",
+    "背景",
+    "背景"
+  ],
+  "이 기기": [
+    "This device",
+    "本机",
+    "この端末"
+  ]
+}

@@ -1,0 +1,1 @@
+ALTER TABLE `trade_posts` ADD `gps_capable` integer;

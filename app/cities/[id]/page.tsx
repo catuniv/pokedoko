@@ -1,3 +1,4 @@
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CITIES } from "@/lib/cities";
@@ -30,7 +31,7 @@ export default async function CityPage({ params }: Props) {
   }).sort((a, b) => a.window.start.getTime() - b.window.start.getTime()).slice(0, 8);
   const localNow = new Intl.DateTimeFormat("ko-KR", { timeZone: city.zone, dateStyle: "full", timeStyle: "short" }).format(now);
 
-  return <div className="seo-page">
+  return <LanguageScope>{<div className="seo-page">
     <header className="seo-top"><div className="seo-top-inner"><a className="seo-brand" href="/">poke<span>doko</span></a><nav className="seo-nav" aria-label="주요 메뉴"><a href="/live">실시간 레이드</a><a href="/raids">레이드 시간표</a><a href="/calendar">이벤트 캘린더</a></nav></div></header>
     <main className="seo-content">
       <nav className="seo-breadcrumb" aria-label="현재 위치"><a href="/">홈</a><span>/</span><span>도시별 안내</span><span>/</span><span>{city.name}</span></nav>
@@ -45,5 +46,5 @@ export default async function CityPage({ params }: Props) {
         <section className="seo-card"><h2>다른 도시</h2><div className="seo-city-grid">{CITIES.filter(item => item.id !== city.id).map(item => <a key={item.id} href={cityPath(item.id)}>{item.name}</a>)}</div></section>
       </aside></div>
     </main>
-  </div>;
+  </div>}</LanguageScope>;
 }

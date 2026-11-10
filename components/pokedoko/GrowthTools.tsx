@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { CheckCircle2, MessageSquare, Send, X } from "lucide-react";
@@ -85,7 +86,7 @@ export default function GrowthTools() {
     } finally { clearTimeout(timer); if (alive.current) setSending(false); }
   }
 
-  return <>
+  return <LanguageScope>{<>
     <button className="growth-launcher" type="button" onClick={() => { setSent(false); setError(""); dialog.current?.showModal(); }}>
       <MessageSquare size={17} /> 의견 보내기
     </button>
@@ -117,5 +118,5 @@ export default function GrowthTools() {
         <a href="/privacy">기록과 보관 기간 안내</a>
       </div>
     </dialog>
-  </>;
+  </>}</LanguageScope>;
 }

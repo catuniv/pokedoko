@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Copy, Download, X } from "lucide-react";
@@ -129,7 +130,7 @@ function ExportSession({ gpx, coordinates, filename, disabled = false }: Props) 
   }
 
   const fallbackLabel = fallback?.kind === "gpx" ? "복사할 GPX" : "복사할 좌표 목록";
-  return (
+  return <LanguageScope>{(
     <div className="route-export-actions" role="group" aria-label="경로 파일과 좌표 내보내기" aria-busy={pending !== null}>
       <div className="route-export-buttons">
         <button type="button" disabled={blocked || !gpx.trim()} onClick={event => void copy("gpx", event.currentTarget)}><Copy size={15} aria-hidden="true" />GPX 복사</button>
@@ -150,12 +151,12 @@ function ExportSession({ gpx, coordinates, filename, disabled = false }: Props) 
         </div>
       )}
     </div>
-  );
+  )}</LanguageScope>;
 }
 
 export default function RouteExportActions(props: Props) {
   // A new payload/disabled state starts a fresh session, closing old fallbacks
   // and preventing late Clipboard completions from updating the new route UI.
   const session = useMemo(() => JSON.stringify([props.gpx, props.coordinates, props.filename, Boolean(props.disabled)]), [props.gpx, props.coordinates, props.filename, props.disabled]);
-  return <ExportSession key={session} {...props} />;
+  return <LanguageScope>{<ExportSession key={session} {...props} />}</LanguageScope>;
 }

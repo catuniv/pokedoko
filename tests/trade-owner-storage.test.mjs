@@ -209,3 +209,26 @@ test('malformed background summaries cannot replace saved data or remove a manag
   completeTradeOwnerJournal(legacyStorage, migrated.entryId, migrated.ownerKey, originalPost);
   assert.equal(readTradeOwnerEntries(legacyStorage).entries[0].post.id, originalPost.id);
 });
+
+test('optional GPS declarations survive journal completion and reload without changing old records', () => {
+  const storage = new MemoryStorage();
+  for (const gpsCapable of [true, false, undefined]) {
+    const saved = draft(0); createTradeOwnerJournal(storage, saved);
+    completeTradeOwnerJournal(storage, saved.entryId, saved.ownerKey, post(undefined, gpsCapable === undefined ? {} : { gpsCapable }));
+    const reloaded = readTradeOwnerEntries(new MemoryStorage(storage.values)).entries.find(item => item.entryId === saved.entryId);
+    assert.equal(reloaded.post.gpsCapable, gpsCapable); assert.equal(Object.hasOwn(reloaded.post, 'gpsCapable'), gpsCapable !== undefined);
+    assert.equal(reloaded.ownerKey, saved.ownerKey);
+  }
+  assert.equal(readTradeOwnerEntries(storage).entries.length, 3);
+});
+
+test('invalid cached GPS metadata preserves the owner capability for server recovery', () => {
+  for (const gpsCapable of [null, 'true', 1, []]) {
+    const storage = new MemoryStorage(), saved = draft(0); createTradeOwnerJournal(storage, saved);
+    storage.setItem(TRADE_OWNER_ENTRY_PREFIX + saved.entryId, JSON.stringify({ ...saved, version: 2, post: post(undefined, { gpsCapable }) }));
+    const restored = readTradeOwnerEntries(storage).entries[0];
+    assert.equal(restored.ownerKey, saved.ownerKey); assert.equal(restored.post, undefined); assert.equal(restored.entryId, saved.entryId);
+    completeTradeOwnerJournal(storage, saved.entryId, saved.ownerKey, post(undefined, { gpsCapable: false }));
+    assert.equal(readTradeOwnerEntries(storage).entries[0].post.gpsCapable, false);
+  }
+});

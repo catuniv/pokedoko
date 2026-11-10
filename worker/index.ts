@@ -5,6 +5,7 @@ import { FALLBACK_FEED, loadFeed } from "../lib/feed";
 import { createFeedStore } from "../lib/feed-store";
 import { getFeedStorageBinding } from "../lib/feed-storage-bindings";
 import { createGrowthRetentionScheduler, pruneGrowthData } from "../lib/growth-server";
+import { getTradeBackgroundCatalog } from "../lib/trade-background-catalog-server";
 
 const scheduledFeed = createFeedStore({ load: loadFeed, fallback: FALLBACK_FEED });
 const queueGrowthRetention = createGrowthRetentionScheduler();
@@ -38,6 +39,17 @@ const worker = {
   /** Cron configuration lives in the standalone deployment, not the Sites manifest. */
   async scheduled(controller: ScheduledController, env: Cloudflare.Env, _ctx: ExecutionContext) {
     const binding = getFeedStorageBinding(env);
+    // Background metadata refreshes independently of the schedule source.
+    const backgrounds = getTradeBackgroundCatalog(env, { force: true }).then(result => {
+      if (result.stale || result.storage !== "ready" || !result.fetchedAt) throw new Error("Background catalog could not be persisted");
+      console.info("[pokedoko] trade background refresh complete", {
+        cron: controller.cron, count: result.presets.length, fetchedAt: result.fetchedAt, sourceUpdatedAt: result.sourceUpdatedAt,
+      });
+      return true;
+    }).catch(() => {
+      console.error("[pokedoko] trade background refresh failed");
+      return false;
+    });
     // Maintenance starts independently so an upstream schedule outage cannot
     // indefinitely preserve private feedback or anonymous visitor history.
     const retention = pruneGrowthData(env.DB).then(result => {
@@ -57,11 +69,13 @@ const worker = {
       });
     } catch {
       console.error("[pokedoko] scheduled feed refresh failed", { cron: controller.cron, storageKind: binding?.kind ?? "none" });
-      await retention;
+      await Promise.all([retention, backgrounds]);
       // Rejection makes this invocation visibly fail in Cloudflare Cron history.
       throw new Error("Scheduled public feed refresh failed; last successful snapshot was retained");
     }
-    if (!await retention) throw new Error("Growth retention failed");
+    const [retentionOk, backgroundsOk] = await Promise.all([retention, backgrounds]);
+    if (!retentionOk) throw new Error("Growth retention failed");
+    if (!backgroundsOk) throw new Error("Trade background catalog refresh failed; last successful snapshot was retained");
   },
 };
 

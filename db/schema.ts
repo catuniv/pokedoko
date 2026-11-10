@@ -140,7 +140,7 @@ export const communityRouteRateLimits = sqliteTable("community_route_rate_limits
 /** Recruitment posts, never a game inventory or trade execution service. */
 export const tradePosts = sqliteTable("trade_posts", {
   id: text("id").primaryKey(), ownerKeyHash: text("owner_key_hash").notNull(), visitorHash: text("visitor_hash").notNull(),
-  trainerName: text("trainer_name").notNull(), cityId: text("city_id").notNull(), mode: text("mode").notNull(),
+  trainerName: text("trainer_name").notNull(), cityId: text("city_id").notNull(), mode: text("mode").notNull(), gpsCapable: integer("gps_capable"),
   offerSpeciesId: integer("offer_species_id").notNull(), offerShiny: integer("offer_shiny").notNull().default(0), offerForm: text("offer_form").notNull().default(""),
   offerBackgroundKind: text("offer_background_kind"), offerBackgroundName: text("offer_background_name").notNull().default(""),
   wantSpeciesId: integer("want_species_id").notNull(), wantShiny: integer("want_shiny").notNull().default(0), wantForm: text("want_form").notNull().default(""),

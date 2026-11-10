@@ -114,3 +114,9 @@ test('background validation rejects ambiguous offers, undeclared fields and malf
   }
   assert.equal(validateTradeSubmission(body({ offer: { ...body().offer, background: { kind: 'location', name: '가'.repeat(80) } } })).offer.background.name.length, 80);
 });
+
+test('GPS location-change availability is optional and accepts only explicit booleans', () => {
+  assert.equal(Object.hasOwn(validateTradeSubmission(body()), 'gpsCapable'), false);
+  for (const gpsCapable of [true, false]) assert.equal(validateTradeSubmission(body({ gpsCapable })).gpsCapable, gpsCapable);
+  for (const gpsCapable of [null, 0, 1, 'true', 'false', 'yes', [], {}, ['true']]) invalid(() => validateTradeSubmission(body({ gpsCapable })));
+});

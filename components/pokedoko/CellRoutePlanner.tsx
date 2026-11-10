@@ -1,4 +1,5 @@
 "use client";
+import { LanguageScope } from "@/components/pokedoko/LanguageProvider";
 
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { ArrowUpRight, Check, ChevronRight, FileUp, MapPin, Plus, Route, Trash2 } from "lucide-react";
@@ -25,7 +26,7 @@ function RouteDiagram({ plan }: { plan: CellRoutePlan }) {
   const fit = Math.min(maxX > minX ? 610 / (maxX - minX) : Infinity, maxY > minY ? 240 / (maxY - minY) : Infinity);
   const scale = Number.isFinite(fit) ? fit : 1;
   const point = (p: CellPoint) => { const v = projected(p); return { x: 330 + (v.x - (minX + maxX) / 2) * scale, y: 144 + (v.y - (minY + maxY) / 2) * scale }; };
-  return <figure className="cell-route-diagram">
+  return <LanguageScope>{<figure className="cell-route-diagram">
     <svg viewBox="0 0 660 290" role="img" aria-label={`등록한 경로 ${plan.steps.length}개의 방문 순서도. 점선은 경로 사이 이동입니다.`}>
       {plan.steps.map((step, index) => {
         const start = point(step.points[0]), previous = index ? point(plan.steps[index - 1].points.at(-1)!) : null;
@@ -37,7 +38,7 @@ function RouteDiagram({ plan }: { plan: CellRoutePlan }) {
       })}
     </svg>
     <figcaption>실선: 등록한 경로 · 점선: 경로 사이 직선거리 · 실제 도로 안내가 아닙니다</figcaption>
-  </figure>;
+  </figure>}</LanguageScope>;
 }
 
 function IndividualRouteBackup({ route }: { route: CellRoute }) {
@@ -48,7 +49,7 @@ function IndividualRouteBackup({ route }: { route: CellRoute }) {
     const plan: CellRoutePlan = { steps: [{ route, points: route.points, reversed: false, walkKm, transferKm: 0 }], walkKm, transferKm: 0, totalKm: walkKm, estimatedMinutes: walkKm / 4.5 * 60 };
     return { gpx: cellPlanGpx(plan), coordinates: cellPlanCoordinates(plan) };
   }, [open, route]);
-  return <details className="cell-single-export" onToggle={(event) => setOpen(event.currentTarget.open)}><summary>이 루트 개별 GPX 보관</summary><p>원래 좌표 순서의 경로 1개입니다. 다른 기기에서 파일을 불러와 이름과 도시를 지정하세요.</p>{payload && <RouteExportActions gpx={payload.gpx} coordinates={payload.coordinates} filename={`pokedoko-${route.cityId}-${route.name}`} />}</details>;
+  return <LanguageScope>{<details className="cell-single-export" onToggle={(event) => setOpen(event.currentTarget.open)}><summary>이 루트 개별 GPX 보관</summary><p>원래 좌표 순서의 경로 1개입니다. 다른 기기에서 파일을 불러와 이름과 도시를 지정하세요.</p>{payload && <RouteExportActions gpx={payload.gpx} coordinates={payload.coordinates} filename={`pokedoko-${route.cityId}-${route.name}`} />}</details>}</LanguageScope>;
 }
 
 export default function CellRoutePlanner() {
@@ -163,7 +164,7 @@ export default function CellRoutePlanner() {
     setRoutes((items) => items.filter((item) => item.id !== route.id));
     setCompletions((records) => records.filter((record) => record.routeId !== route.id));
   }
-  return <div className="cell-routes-page">
+  return <LanguageScope>{<div className="cell-routes-page">
     <header className="cell-routes-top"><a href="/live" className="cell-routes-brand">poke<strong>doko</strong></a><nav aria-label="주요 메뉴"><a href="/live">실시간 레이드</a><a href="/calendar">이벤트 달력</a><a href="/gpx">GPX 자동사냥</a><a href="/routes" aria-current="page">셀 루트 목록</a><a href="/trades">포켓몬 교환</a></nav></header>
     <main className="cell-routes-main">
       <section className="cell-routes-heading"><span className="cell-eyebrow"><Route size={15} /> POKÉMON GO ROUTES</span><h1>지가르데 셀 루트 목록</h1><p>지역별 게임 루트를 확인하고, 전체 경로가 있는 루트는 GPX로 내려받으세요.</p><div className="cell-route-source-status"><span>사용자 제보 · 검토 후 공개</span><p>공유 허락과 게임 루트 정보를 확인한 제보를 모아요. 파밍용 GPX는 게임 루트 목록에 등록하지 않습니다.</p></div></section>
@@ -189,17 +190,17 @@ export default function CellRoutePlanner() {
           <div className="cell-plan-summary"><div><span>등록 경로 거리</span><strong>{km(plan.walkKm)}</strong></div><div><span>경로 사이 직선거리</span><strong>{km(plan.transferKm)}</strong></div><div><span>이동 시간 추정</span><strong>{Math.ceil(plan.estimatedMinutes)}분</strong></div></div>
           <p className="cell-estimate-note">시속 4.5km 기준이며 대기·게임 플레이 시간은 포함하지 않아요. 경로 사이 거리는 실제 도보 길이가 아닙니다.</p>
           <RouteDiagram plan={plan} />
-          <ol className="cell-plan-list">{plan.steps.map((step, index) => <li key={step.route.id}><span>{index + 1}</span><div><strong>{step.route.name}</strong><small>{step.reversed ? "역방향" : "정방향"} · {km(step.walkKm)} · 좌표 {step.points.length.toLocaleString()}개</small>{index > 0 && <small>이전 루트 끝에서 직선 {km(step.transferKm)}</small>}</div><ChevronRight size={16} /></li>)}</ol>
+          <ol className="cell-plan-list">{plan.steps.map((step, index) => <li key={step.route.id}><span>{index + 1}</span><div><strong><span data-i18n-preserve>{step.route.name}</span></strong><small>{step.reversed ? "역방향" : "정방향"} · {km(step.walkKm)} · 좌표 {step.points.length.toLocaleString()}개</small>{index > 0 && <small>이전 루트 끝에서 직선 {km(step.transferKm)}</small>}</div><ChevronRight size={16} /></li>)}</ol>
           <div className="cell-export-heading"><label>GPX 구조<select aria-label="셀 루트 GPX 구조" value={gpxFormat} onChange={(event) => setGpxFormat(event.target.value as "trk" | "rte")}><option value="trk">트랙 (trk)</option><option value="rte">루트 (rte)</option></select></label><p>방문 계획은 여러 루트가 들어 있는 파일입니다. 다시 등록할 보관본은 아래 각 루트 카드에서 개별 GPX로 내보내세요. 루트 사이 이동선은 추가하지 않아요.</p></div>
           <RouteExportActions gpx={gpx} coordinates={cellPlanCoordinates(plan)} filename={`pokedoko-${city.id}-my-routes`} disabled={!plan.steps.length} />
         </> : <div className="cell-plan-empty"><Route size={27} /><h3>{localRoutes.length ? "계획에 넣을 경로가 없어요" : "아직 등록한 경로가 없어요"}</h3><p>{localRoutes.length ? "오늘 완료 제외를 해제하거나 다른 루트를 등록해 주세요." : "위에서 게임에서 확인한 루트의 GPX 또는 좌표를 등록하세요. 예시 경로를 게임 루트로 표시하지 않습니다."}</p></div>}
       </section>
       <section className="cell-route-panel" aria-labelledby="cell-saved-heading"><div className="cell-panel-title"><h2 id="cell-saved-heading">{city.name}에 등록한 루트</h2><span>{localRoutes.length}개</span></div><p className="cell-today-summary">{day || "날짜 확인 중"} · {city.name} 현지 기준 · 완료 기록 {todayRecords.length}개 · 직접 기록한 셀 {todayRecords.reduce((sum, record) => sum + record.cells, 0)}개</p><p className="cell-estimate-note">아래 기록은 게임과 연동되지 않습니다. 실제로 완료한 뒤 받은 셀 수를 직접 적어주세요.</p>
         {completionError && <p className="cell-form-error" role="alert">{completionError}</p>}
-        <div className="cell-saved-list">{localRoutes.map((route) => { const done = todayRecords.find((record) => record.routeId === route.id); return <article key={route.id} className="cell-saved-route"><div className="cell-saved-heading"><h3>{route.name}</h3><span className="cell-unverified">게임 루트 미검증</span></div><p>{km(cellPathKm(route.points))} · 좌표 {route.points.length.toLocaleString()}개 · {route.reversible ? "역방향 허용 (직접 확인)" : "정방향만"}</p>{route.sourceUrl && <a className="cell-route-source-link" href={route.sourceUrl} target="_blank" rel="noreferrer">등록한 원문 확인 <ArrowUpRight size={13} /></a>}<div className="cell-completion-row"><label>받은 셀 수<input type="number" inputMode="numeric" min={0} max={999} step={1} value={cellInputs[route.id] ?? String(done?.cells ?? 0)} onChange={(event) => setCellInputs((values) => ({ ...values, [route.id]: event.target.value }))} aria-label={`${route.name} 받은 셀 수`} /></label><button type="button" onClick={() => markComplete(route)}><Check size={14} />{done ? "오늘 기록 수정" : "오늘 완료 기록"}</button>{done && <button type="button" onClick={() => undoComplete(route)}>오늘 기록 취소</button>}<button type="button" className="cell-delete-button" onClick={() => remove(route)} aria-label={`${route.name} 경로 삭제`}><Trash2 size={14} />삭제</button></div>{done && <small className="cell-completed-badge">오늘 완료 · 셀 {done.cells}개 직접 기록</small>}<IndividualRouteBackup route={route} /></article>; })}</div>
+        <div className="cell-saved-list">{localRoutes.map((route) => { const done = todayRecords.find((record) => record.routeId === route.id); return <article key={route.id} className="cell-saved-route"><div className="cell-saved-heading"><h3><span data-i18n-preserve>{route.name}</span></h3><span className="cell-unverified">게임 루트 미검증</span></div><p>{km(cellPathKm(route.points))} · 좌표 {route.points.length.toLocaleString()}개 · {route.reversible ? "역방향 허용 (직접 확인)" : "정방향만"}</p>{route.sourceUrl && <a className="cell-route-source-link" href={route.sourceUrl} target="_blank" rel="noreferrer">등록한 원문 확인 <ArrowUpRight size={13} /></a>}<div className="cell-completion-row"><label>받은 셀 수<input type="number" inputMode="numeric" min={0} max={999} step={1} value={cellInputs[route.id] ?? String(done?.cells ?? 0)} onChange={(event) => setCellInputs((values) => ({ ...values, [route.id]: event.target.value }))} aria-label={`${route.name} 받은 셀 수`} /></label><button type="button" onClick={() => markComplete(route)}><Check size={14} />{done ? "오늘 기록 수정" : "오늘 완료 기록"}</button>{done && <button type="button" onClick={() => undoComplete(route)}>오늘 기록 취소</button>}<button type="button" className="cell-delete-button" onClick={() => remove(route)} aria-label={`${route.name} 경로 삭제`}><Trash2 size={14} />삭제</button></div>{done && <small className="cell-completed-badge">오늘 완료 · 셀 {done.cells}개 직접 기록</small>}<IndividualRouteBackup route={route} /></article>; })}</div>
         {!localRoutes.length && <p className="cell-estimate-note">이 도시에 저장된 경로가 없습니다.</p>}
       </section>
       <p className="cell-routes-footer">개인 등록 경로와 완료 기록은 현재 브라우저에만 저장됩니다. 공개 루트 제보는 서버에 보관하며 검토 후 공개합니다. 다른 기기로 개인 경로를 옮길 때는 각 루트 카드에서 개별 GPX로 내보내세요. 방문 계획 파일은 여러 구간이 들어 있어 나눠 등록해야 합니다. 셀 획득 횟수·확률을 예측하거나 보장하지 않습니다.</p>
     </main>
-  </div>;
+  </div>}</LanguageScope>;
 }
