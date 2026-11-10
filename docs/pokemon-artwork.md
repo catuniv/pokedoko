@@ -1,25 +1,23 @@
-# 포켓몬 이미지 출처와 대체 표시
+# Pokémon GO 게임 이미지
 
-확인일: 2026-11-10. 이미지는 생성하거나 편집하지 않았으며 아래 공개 원본 PNG를 그대로 `public/pokemon`에 저장했다. 일반 도감 번호와 폼 전용 이미지 번호는 구분한다.
+확인일: 2026-11-11. 캘린더·등장 포켓몬·교환 미리보기·지역 이벤트에서 도감 삽화 대신 실제 Pokémon GO 게임 아이콘을 사용한다. 원본 이미지를 생성·합성·편집하지 않고 투명 PNG를 배경과 별도 레이어로 표시한다.
 
-## 권리와 사용 조건
+## 출처와 검증
 
-`public/pokemon`에는 원본 PNG 14개가 포함되어 있다. [PokeAPI sprites의 LICENCE.txt](https://github.com/PokeAPI/sprites/blob/master/LICENCE.txt)는 이미지 콘텐츠의 저작권이 The Pokémon Company에 있음을 명시하며, 저장소 자체는 CC0 1.0으로 배포한다고 안내한다. 이 두 안내를 구분해야 한다. PokeAPI에서 내려받을 수 있다는 이유로 Pokémon 이미지·상표까지 저작권 없는 자유 자산이 되는 것은 아니다.
+- [PokeMiners/pogo_assets](https://github.com/PokeMiners/pogo_assets), 확인 커밋 `db10df75d6f6f92018d9786af0aecc238fecc4ef`의 `Images/Pokemon - 256x256` 파일 목록을 확인했다.
+- 전체 파일 목록에 실제 존재하는 경로만 `lib/pokemon-go-sprites.json`에 등록한다. 파일명 추측으로 이미지 주소를 생성하지 않는다. 일반종·폼·의상·성별·색이 다른 모습은 서로 다른 원본으로 구분한다.
+- 현재 피드의 고유 아이콘 46개는 모두 원본 파일명과 일치한다. 현재 일정과 주요 교환용 94개를 `public/pokemon-go`에 보관한다. 모든 PNG의 256×256 크기, Git blob SHA1 원본 일치와 SHA256을 확인했고 `lib/pokemon-go-local-manifest.json`에 기록했다.
+- 지역 이벤트의 배경 12개·의상 5개·일반종 4개 원본은 `lib/regional-assets.json`에 따로 기록한다. 일반 라프라스·루차불·피카츄·팬텀도 GO 아이콘으로 교체했다.
+- 메가픽시는 확인된 투명 GO 아이콘이 아직 없다. 일반 픽시로 대신 표시하지 않는다. 행사 대표 이미지에는 [공식 공지](https://pokemongo.com/en/news/clefable-super-mega-raid-day-2026)의 게임 렌더가 포함된 원본 JPEG를 사용하고, 개별 포켓몬 칸에는 이미지 미등록을 표시한다. 출처·크기·해시는 `lib/pokemon-go-event-assets.json`에 있다.
 
-이 프로젝트는 비공식 팬 도구이며 Pokémon 명칭·이미지의 권리는 각 권리자에게 있다. 이 저장소를 공개하거나 소스 코드의 라이선스를 정하더라도 외부 이미지의 권리를 새로 부여하지 않는다. 다른 용도로 재배포하거나 수익화하려면 원본 조건과 권리 범위를 별도로 확인해야 한다. 전체 외부 자료 고지는 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)에 정리했다.
+## 표시와 오류 처리
 
-## 원본 확인
+`pokemonArtworkCandidates`는 정확한 원본 파일명 또는 확인된 종·폼을 매칭한다. 로컬 원본을 먼저 쓰고, 실패하면 같은 모습의 고정 커밋 원격 원본을 시도한다. 지역폼·메가·큐레무·자시안·자마젠타 등은 이름과 폼을 확인하고, 등록되지 않은 의상을 일반종으로 바꾸지 않는다. 후보가 없거나 모두 실패하면 이름과 `폼 이미지 미등록`/`이미지 미등록`을 표시한다. 레코드가 바뀌면 실패 상태를 초기화한다.
 
-- [Pokémon GO 픽시 슈퍼 메가 레이드 데이 공식 공지](https://pokemongo.com/ko/news/clefable-super-mega-raid-day-2026)의 대표 이미지에서 메가픽시 모습을 확인했다. 일반 픽시 그림으로 대체하지 않는다.
-- [PokeAPI 메가픽시 응답](https://pokeapi.co/api/v2/pokemon/clefable-mega): `id: 10278`, `species: clefable`(도감 36), `sprites.other.official-artwork.front_default`에 정확한 메가폼 원본이 있다. [아트워크 원본](https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/10278.png)을 그대로 저장했다.
-- [화이트큐레무 응답](https://pokeapi.co/api/v2/pokemon/kyurem-white)은 10023, [블랙큐레무 응답](https://pokeapi.co/api/v2/pokemon/kyurem-black)은 10022, [무한다이맥스 응답](https://pokeapi.co/api/v2/pokemon/eternatus-eternamax)은 10190의 폼 아트워크를 사용한다.
-- 일반 포켓몬 삐삐 35, 별가사리 120, 리그레 605, 자망칼 624, 레시라무 643, 제크로무 644, 암멍이 744, 흥나숭 810, 염버니 813, 울머기 816은 동일한 PokeAPI sprites 저장소의 `other/official-artwork/{id}.png` 원본을 저장했다.
-- [PokeAPI sprites 원본 저장소와 사용 안내](https://github.com/PokeAPI/sprites). PokeAPI는 이미지 제공·정리 출처이며 Pokémon 저작권 소유자라는 뜻이 아니다. Pokémon 관련 권리는 각 권리자에게 있다.
+일정 피드의 `Pokemon.shiny`는 **색이 다른 모습을 만날 가능성**이다. 이 값만으로 그림을 색이 다른 모습으로 바꾸지 않는다. 원본 파일 자체가 색이 다른 모습인 경우에는 유지한다. 교환 모집의 `TradePokemon.shiny`는 사용자가 선택한 실제 모습이므로 별도의 `appearance.shiny` 인자로 반영한다. 교환 배경은 기존 원본·로딩 실패·사용자 선택 동작을 보존한다.
 
-포함 파일: `35.png`, `120.png`, `605.png`, `624.png`, `643.png`, `644.png`, `744.png`, `810.png`, `813.png`, `816.png`, `10022.png`, `10023.png`, `10190.png`, `10278.png`. 폼 전용 번호는 PokeAPI 이미지 식별자이며 기본종 도감 번호와 다르다.
+이 변경으로 PokeAPI 도감 삽화·HOME·픽셀 스프라이트 후보와 사용하지 않는 기존 PNG 14개를 제거했다. 새 게임 폼이 카탈로그에 없으면 잘못된 그림을 넣는 대신 미등록으로 남긴다. 일정 갱신과 이미지 카탈로그 갱신은 별개다.
 
-## 로딩 동작
+## 권리 고지
 
-`pokemonArtworkCandidates`는 원본 이미지와 확인된 정확한 폼 이미지를 우선 사용한다. 로컬 이미지가 있으면 외부 서비스 응답에 의존하지 않는다. 실패 시 같은 폼의 PokeAPI 원격 아트워크·HOME 이미지를 순서대로 시도한다. 일반종 또는 `normal`일 때만 기본종 아트워크·HOME·스프라이트를 보조 후보로 만든다. 미래 일반종도 유효한 숫자 ID면 별도 라이브러리나 클라이언트 API 요청 없이 같은 안전한 경로를 사용한다.
-
-확인되지 않은 폼에는 일반종 이미지를 넣지 않는다. 후보를 모두 불러오지 못하면 포켓몬 이름과 `폼 이미지 미등록` 또는 `이미지 미등록`을 표시한다. `PokemonArtwork`는 이미지 오류마다 다음 후보를 한 번씩만 시도하고 후보 목록이 바뀌면 다시 로딩한다. 이벤트 등록 정보의 정확성과 실제 이미지 네트워크 성공 여부는 별도로 검증한다.
+PokeMiners는 원본 게임 자료의 확인 출처다. 해당 게임 이미지·명칭·상표의 권리는 원래 권리자에게 있다. 공개 GitHub 저장소에서 받을 수 있다는 사실을 CC0 또는 자유 사용 허락으로 간주하지 않는다. 서비스는 비공식 무료 팬 도구이며 전체 고지는 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)를 따른다.

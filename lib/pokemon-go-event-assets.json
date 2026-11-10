@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-11-11",
+  "officialPage": "https://pokemongo.com/en/news/clefable-super-mega-raid-day-2026",
+  "sourceUrl": "https://lh3.googleusercontent.com/HyFWaQMZqtZNT3Sb3uFeHyWMBFI8bB_4hNQ2NLrpfBGrH1YijjIr1n0ZNC0YlNAZHPpfiWTq0zzgT9MRUFzlMoEjN4ENEm0AlnuJFZRA9CQ=s0-e365",
+  "bytes": 1420108,
+  "sha256": "2990ae38f3b1d375ffea23706216e0f313927d7b6cf7d13428b20e0db4af30e4",
+  "width": 1920,
+  "height": 1080,
+  "format": "JPEG",
+  "alpha": false,
+  "usage": "Official event hero only; not a transparent species sprite",
+  "verification": "Downloaded original hero referenced by official event HTML; visually inspected game-rendered Mega Clefable with scene, gyms, and logos. No individual transparent sprite in HTML. PokeMiners db10df75 full tree only pm36.icon.png and pm36.s.icon.png, not Mega. LeekDuck event shows catchable standard Clefable pokemon_icon_036_00.png and shiny only.",
+  "file": "mega-clefable-2026.2990ae38f3b1.jpg"
+}

@@ -1,0 +1,947 @@
+{
+  "sourceRepository": "https://github.com/PokeMiners/pogo_assets",
+  "commit": "db10df75d6f6f92018d9786af0aecc238fecc4ef",
+  "checkedAt": "2026-11-11",
+  "assets": [
+    {
+      "file": "pm1.icon.png",
+      "sourcePath": "Addressable Assets/pm1.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm1.icon.png",
+      "sha256": "e3377a7ca9d354e4c4adea5132f013b584df0186df16c00ade8ddd20ab1bba60",
+      "gitBlobSha": "332ba2f8e7f15655d3e7f3edc53ab6e15ada9dc3",
+      "bytes": 26592,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm1.s.icon.png",
+      "sourcePath": "Addressable Assets/pm1.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm1.s.icon.png",
+      "sha256": "5caa523619965125cfd28efd0f56bf0b3c4a34b87ab860f843c8197ae25dddea",
+      "gitBlobSha": "6b648836726b6807d4fb9aa709693278e79dca31",
+      "bytes": 25826,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm120.icon.png",
+      "sourcePath": "Addressable Assets/pm120.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm120.icon.png",
+      "sha256": "ff77548be6bbfae2bd69a344e087c082de3812aa09c6941be9413e9cf7a3ccf5",
+      "gitBlobSha": "a858f3805063ef958adc8b9d531f21c9fb7512ef",
+      "bytes": 23600,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm120.s.icon.png",
+      "sourcePath": "Addressable Assets/pm120.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm120.s.icon.png",
+      "sha256": "15fcdf0d6f9367ab6846be6a4d6a1aba07668cbb22c81e9bfe64fbe12ddd2ab1",
+      "gitBlobSha": "257f905a88c908f29b06cd35d32699e923f42875",
+      "bytes": 25796,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm131.icon.png",
+      "sourcePath": "Addressable Assets/pm131.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm131.icon.png",
+      "sha256": "824e17ae68e024a2fe118ded96d7395d82201490b3d3455fcfaca49176b9b4f7",
+      "gitBlobSha": "f138d6619973b3e9b26215195b24368b3037ced0",
+      "bytes": 39956,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm131.s.icon.png",
+      "sourcePath": "Addressable Assets/pm131.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm131.s.icon.png",
+      "sha256": "1b8be89ce08516e8f35f6f74f401f27c1080716af4d7148303b210f2c2b36f29",
+      "gitBlobSha": "44693b0c40a8c00b04b5ba4a31cfc68072191e97",
+      "bytes": 40125,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm132.icon.png",
+      "sourcePath": "Addressable Assets/pm132.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm132.icon.png",
+      "sha256": "55e9aa4beaa8ecd3537a16c47785a44136e90ad8c3149194323117e8d22aad36",
+      "gitBlobSha": "6b3694176e4d51005b8d1ced64fa45e84b4fc1aa",
+      "bytes": 15652,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm132.s.icon.png",
+      "sourcePath": "Addressable Assets/pm132.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm132.s.icon.png",
+      "sha256": "e9540b30d4966237e7bbd76653230a52afba05df4f3560cd31be6412b577056a",
+      "gitBlobSha": "3f63074e64eb58a6e5560191819f4c46f3904e75",
+      "bytes": 15364,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm150.icon.png",
+      "sourcePath": "Addressable Assets/pm150.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm150.icon.png",
+      "sha256": "cf2d21d43c3dd4461bf6911717997872bfd97c904fc7f253f75ff9176d4883a5",
+      "gitBlobSha": "b30475eef68e9abc88ed151a81ec0abbf7bf6dec",
+      "bytes": 29502,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm150.s.icon.png",
+      "sourcePath": "Addressable Assets/pm150.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm150.s.icon.png",
+      "sha256": "2a7743c03d016ede734bc825ba71cf772a76908d9eee4b6eec7a97c41688d43d",
+      "gitBlobSha": "6b1be66a4da13b1d8f70509d84edade04fdcce78",
+      "bytes": 28905,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm151.icon.png",
+      "sourcePath": "Addressable Assets/pm151.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm151.icon.png",
+      "sha256": "9d879d795dd3fa087bf0affdc5fa6dec23905fa77dbd8006555288600ad106f1",
+      "gitBlobSha": "2301d1d953f6c436e6262f98e12fc195c3b736c7",
+      "bytes": 15139,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm151.s.icon.png",
+      "sourcePath": "Addressable Assets/pm151.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm151.s.icon.png",
+      "sha256": "6ab6f86ec305a23a506051aa7c1e17c00d41220702ef2d43c1fd2e6ece2ba495",
+      "gitBlobSha": "9186fd942bc378d29a8fa116bc229d95ce69a48e",
+      "bytes": 15338,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm221.icon.png",
+      "sourcePath": "Addressable Assets/pm221.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm221.icon.png",
+      "sha256": "77e398ac59bfc47deead5326f44e58f8e9b7acfb80f0516cf298bb652ecc0ef5",
+      "gitBlobSha": "5211d2c57ef7f5e48466aab7b76ec62676cfa9f4",
+      "bytes": 27704,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm246.icon.png",
+      "sourcePath": "Addressable Assets/pm246.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm246.icon.png",
+      "sha256": "9afb126abfd871c191f8eacd3af41e944a0a85e83447ddf5bea414b196f9ea06",
+      "gitBlobSha": "7e8706d4e72ac09008f4896ad991f8c8714c0032",
+      "bytes": 16369,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm25.icon.png",
+      "sourcePath": "Addressable Assets/pm25.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.icon.png",
+      "sha256": "4db52480d1090d8357fc41ffd6eb6d5592dfab2736742b7a2d054e6bc775f4a1",
+      "gitBlobSha": "74fb03628fd8683691a5c462c627a1f54516a30b",
+      "bytes": 19097,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm25.s.icon.png",
+      "sourcePath": "Addressable Assets/pm25.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.s.icon.png",
+      "sha256": "4cc507212e19dd93654f6e74b0e354abd5a8e313085037783d12147fbfafb927",
+      "gitBlobSha": "f1edd09b15ee69f6813bd0545b397c73c02ec73b",
+      "bytes": 18802,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm258.icon.png",
+      "sourcePath": "Addressable Assets/pm258.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm258.icon.png",
+      "sha256": "f0027252a1c3790f0d7bf738df322689ab581d5e88c0f056f2b1540bfef01776",
+      "gitBlobSha": "a945fc478c74ea2a5445fa170f0513c1b6f89089",
+      "bytes": 14999,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm296.icon.png",
+      "sourcePath": "Addressable Assets/pm296.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm296.icon.png",
+      "sha256": "2e2dad269f2e73c412955286c68b4bf9b319786b5fe571e9ec628d9c11fbbc87",
+      "gitBlobSha": "d8adf574440a5b28fcaf4d6dec86c2619459f2b8",
+      "bytes": 28666,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm35.icon.png",
+      "sourcePath": "Addressable Assets/pm35.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm35.icon.png",
+      "sha256": "21cc9532084cfe805c8699bf2476957041c347b0416c72358b1e0f04fa96fd93",
+      "gitBlobSha": "c6838c2719da62067c98d7ea8ac2b11b55fcc333",
+      "bytes": 22818,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm35.s.icon.png",
+      "sourcePath": "Addressable Assets/pm35.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm35.s.icon.png",
+      "sha256": "ac3584e0a4aa423c74082f6819c90e12e1ea4eba5a9d7b7dafd006f93b6f34d3",
+      "gitBlobSha": "90d75483ce97f3cf197ae6584959c95fa16d7198",
+      "bytes": 23167,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm354.fMEGA.icon.png",
+      "sourcePath": "Addressable Assets/pm354.fMEGA.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm354.fMEGA.icon.png",
+      "sha256": "fbbdfbdc90db54b202e1c73523e0c5fc119964cca5b1edd5407ccb3f66086bf3",
+      "gitBlobSha": "e7b6e3d9600068a380c46a4b2f63804d3f6cff54",
+      "bytes": 37628,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm354.fMEGA.s.icon.png",
+      "sourcePath": "Addressable Assets/pm354.fMEGA.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm354.fMEGA.s.icon.png",
+      "sha256": "50a76ac566d7eefc4f8f79b47bd8a21e40be303485b6160e1becc84d3ccd4560",
+      "gitBlobSha": "ac8f1a502f9f06ce11e1f62418b3dacb0dd2d093",
+      "bytes": 38149,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm376.fMEGA.icon.png",
+      "sourcePath": "Addressable Assets/pm376.fMEGA.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm376.fMEGA.icon.png",
+      "sha256": "0b8ef98972a10495dc45c2b1d95b2605302c3d3b308018421a81a9a07d70dedc",
+      "gitBlobSha": "3378cfc89c9ba35228e07389105067eabd383ce8",
+      "bytes": 60750,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm376.fMEGA.s.icon.png",
+      "sourcePath": "Addressable Assets/pm376.fMEGA.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm376.fMEGA.s.icon.png",
+      "sha256": "303fa11c785fe412c087c57ea41fe1fb0f2e7e7964325032c4b19870f8aa5f93",
+      "gitBlobSha": "405b1b31a431bbb5f1bfff8577c215db3da42d26",
+      "bytes": 58619,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm394.icon.png",
+      "sourcePath": "Addressable Assets/pm394.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm394.icon.png",
+      "sha256": "686ed33079d1a58f55c23618c1d45c9f3f5af7934d6725c92a0c42a738b5e2c5",
+      "gitBlobSha": "c0526b554bd6b6d6c9a6921a619b1bb32a401d1e",
+      "bytes": 26244,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm4.icon.png",
+      "sourcePath": "Addressable Assets/pm4.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm4.icon.png",
+      "sha256": "6171154dc1da8070fe5729c805c44e1f8f95500de1165af01899f5b545f3ffee",
+      "gitBlobSha": "756cef60e741326a327d0d91450ea623c5ff5c97",
+      "bytes": 19782,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm4.s.icon.png",
+      "sourcePath": "Addressable Assets/pm4.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm4.s.icon.png",
+      "sha256": "3693cebca50b62884fdad22556fce5fb8ee22701e29a404ea59793683311c3d4",
+      "gitBlobSha": "ad6c0a228d9f8c02f022881e12b60095f64cbdce",
+      "bytes": 19206,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm408.icon.png",
+      "sourcePath": "Addressable Assets/pm408.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm408.icon.png",
+      "sha256": "0b8aaef537330a953c96116c4d1b6185b7b7eea1ed494927aaac7558af8f2647",
+      "gitBlobSha": "d5b54cc951eb8e466eaa263629f4872d40a1362a",
+      "bytes": 22673,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm605.icon.png",
+      "sourcePath": "Addressable Assets/pm605.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm605.icon.png",
+      "sha256": "494b368dcf6385e89916df6153c031703fc80c717fa5392a409afff02cec9fbe",
+      "gitBlobSha": "ca0f9146a49833f84b724a6a9f14097760a1aeaf",
+      "bytes": 20456,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm605.s.icon.png",
+      "sourcePath": "Addressable Assets/pm605.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm605.s.icon.png",
+      "sha256": "9e25352c2704865a5a0b53b2286458e427b5c7e62ac7f9ec53f71fa8b575a353",
+      "gitBlobSha": "6287620e2a099ca2fe576f0eede85f0868b9fa41",
+      "bytes": 20666,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm61.icon.png",
+      "sourcePath": "Addressable Assets/pm61.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm61.icon.png",
+      "sha256": "b6d1d80b7ca5bd9bf7ccb43577af811eb1110a01e91627db590ea5659a414f94",
+      "gitBlobSha": "e29acca29e2c15c67f3f2500a4c083a0174bec4c",
+      "bytes": 33318,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm621.icon.png",
+      "sourcePath": "Addressable Assets/pm621.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm621.icon.png",
+      "sha256": "046ca56ab4cb98c7a30e8414f81cf7665e4fe6535a7b70a575a2b74c70c37a11",
+      "gitBlobSha": "b8480b539c29217899a01ec080a53802cc410eb9",
+      "bytes": 46873,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm624.icon.png",
+      "sourcePath": "Addressable Assets/pm624.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm624.icon.png",
+      "sha256": "64c19a17e224adf1a1b827ce754dd3b1c1e305b308a454fbcdaf5c00ab7226c5",
+      "gitBlobSha": "58acce865ecc04b57a070fc8b884287b23bd0201",
+      "bytes": 15898,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm624.s.icon.png",
+      "sourcePath": "Addressable Assets/pm624.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm624.s.icon.png",
+      "sha256": "35aa1d3b179b8e2ab69e7e2cf3e62a1e1787b1c0eff6f8c078feab356f55618e",
+      "gitBlobSha": "b08a3aa1afa0088ff5ad964f561cd89734baf6ef",
+      "bytes": 16518,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm641.fINCARNATE.icon.png",
+      "sourcePath": "Addressable Assets/pm641.fINCARNATE.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm641.fINCARNATE.icon.png",
+      "sha256": "ca8ac66c8397eb758001634439747d5d17bfead16fbaca6539e3fab6ca0386a5",
+      "gitBlobSha": "f669c1ab00864de62f71b3a819b59713991c069c",
+      "bytes": 43177,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm643.icon.png",
+      "sourcePath": "Addressable Assets/pm643.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm643.icon.png",
+      "sha256": "26c25bce6ad97b070cdd4f9cc97453f102e09f5da2e7e82a0d92a1e5d8873526",
+      "gitBlobSha": "86887af91f0398b44ebcb19336ded877c0ed33df",
+      "bytes": 55630,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm643.s.icon.png",
+      "sourcePath": "Addressable Assets/pm643.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm643.s.icon.png",
+      "sha256": "d35b461253d4273415653a07544a262c2e4193f9c6b0cedc0bf5df6a17b78382",
+      "gitBlobSha": "4be6485a32a27574b4a67c0c56298d36996fdbbe",
+      "bytes": 56493,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm644.icon.png",
+      "sourcePath": "Addressable Assets/pm644.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm644.icon.png",
+      "sha256": "1da45ca067d438050c2590b14b553b592fa864a8907fee21f38bde9629580f92",
+      "gitBlobSha": "d3af33a7b4d5ac730dce6bbcafebfa5b103bef6b",
+      "bytes": 62609,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm644.s.icon.png",
+      "sourcePath": "Addressable Assets/pm644.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm644.s.icon.png",
+      "sha256": "349b28d414b26094cdfe3207f5e0b24ee013c7686cc76190dcfe85174aa4e0c3",
+      "gitBlobSha": "505afd1926859a277d09d33b882d23ff6b038772",
+      "bytes": 62635,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm646.fBLACK.icon.png",
+      "sourcePath": "Addressable Assets/pm646.fBLACK.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm646.fBLACK.icon.png",
+      "sha256": "2de0559b4b4748d4cd5acc008b22f1044dfa6eb74c5fc025bb660d4b68aa16f8",
+      "gitBlobSha": "88021e0682f69fbbb0a567db75c17eec60498b22",
+      "bytes": 65254,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm646.fBLACK.s.icon.png",
+      "sourcePath": "Addressable Assets/pm646.fBLACK.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm646.fBLACK.s.icon.png",
+      "sha256": "e1e81195da37ced877dee0a7c62ba12bafd76c6a67d95581415fdb0ad914bbf8",
+      "gitBlobSha": "24d36e0cad67df607102ca1044c873ae8da2c8a0",
+      "bytes": 62874,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm646.fNORMAL.icon.png",
+      "sourcePath": "Addressable Assets/pm646.fNORMAL.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm646.fNORMAL.icon.png",
+      "sha256": "8d6779e2e2a285beb939b134e8afa14dd6c07abba1d0bae18678bf56e63b5536",
+      "gitBlobSha": "80218eff3fc2540ad51bbd43ded830101afc3c48",
+      "bytes": 58518,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm646.fNORMAL.s.icon.png",
+      "sourcePath": "Addressable Assets/pm646.fNORMAL.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm646.fNORMAL.s.icon.png",
+      "sha256": "a87d3ef7ccad89b85f06b606d52f0f199ef47205133eb1aebdd1353ac1341772",
+      "gitBlobSha": "fd3fad89ceb702f2bebfadbad1ae3e14ba963e1b",
+      "bytes": 57659,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm646.fWHITE.icon.png",
+      "sourcePath": "Addressable Assets/pm646.fWHITE.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm646.fWHITE.icon.png",
+      "sha256": "9a621b2bbc8d8485ab2e1ee308714ceb10532aff8c2d290bad4132db2f78e4ac",
+      "gitBlobSha": "887e4458e5b9efa150c651cab6a561ba87280059",
+      "bytes": 65325,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm646.fWHITE.s.icon.png",
+      "sourcePath": "Addressable Assets/pm646.fWHITE.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm646.fWHITE.s.icon.png",
+      "sha256": "3940ea101feebe940b450add4d950c3053c4248a20ef14c4915c94769505894c",
+      "gitBlobSha": "0e91410f31f8423beedd044ceeb675e5ef63416f",
+      "bytes": 65123,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm7.icon.png",
+      "sourcePath": "Addressable Assets/pm7.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm7.icon.png",
+      "sha256": "db4e30413d6b7bdf2044c1f395b52c9753068f82567ba43aee6aa680c98a7fe9",
+      "gitBlobSha": "5ad3f0b8634b1e16eea0933c14cf9ac08068ce06",
+      "bytes": 16847,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm7.s.icon.png",
+      "sourcePath": "Addressable Assets/pm7.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm7.s.icon.png",
+      "sha256": "ee4280e791b7c63796ec0b5675c68269881288e51b22cd857854f69d4e7e997d",
+      "gitBlobSha": "69cd4f86bc6122d3db8fd9494dfd92ae7b2ad1e6",
+      "bytes": 17848,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm701.icon.png",
+      "sourcePath": "Addressable Assets/pm701.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm701.icon.png",
+      "sha256": "0b5d8a0810d821adde740d1f6140bff9a6bf68913a9896dfd7073a6892fc869d",
+      "gitBlobSha": "deb8c38b3af6645e2e53fe867ed352e9f3963254",
+      "bytes": 32952,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm701.s.icon.png",
+      "sourcePath": "Addressable Assets/pm701.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm701.s.icon.png",
+      "sha256": "c50a6ba8919d27d9573d4b9224105bf22e172e83578f1daddd72d957737b3425",
+      "gitBlobSha": "d25a59f42177dfe16c5ef55c79939e215230e670",
+      "bytes": 32413,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm744.icon.png",
+      "sourcePath": "Addressable Assets/pm744.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm744.icon.png",
+      "sha256": "3ccdc29b92c101d05eb7425620b6da6917e3edea5098e71237f3f8467b5076d6",
+      "gitBlobSha": "bd225e247c586ac56151efa6574f3dffa7f523ea",
+      "bytes": 22609,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm744.s.icon.png",
+      "sourcePath": "Addressable Assets/pm744.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm744.s.icon.png",
+      "sha256": "834462749afd2946702cec041588836dd6e83d65b60f1e10faf6d40d50f27cc9",
+      "gitBlobSha": "3c2a6ec9d4946acc62920ae2e25d618b5779b970",
+      "bytes": 21966,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm810.icon.png",
+      "sourcePath": "Addressable Assets/pm810.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm810.icon.png",
+      "sha256": "9937beed7d89fd17107dc6bb20be43b1fe39c1b2cf23829420a7546dba1ac5ec",
+      "gitBlobSha": "a74ab94b2d2c86e433abc2bfaae6943c56374e73",
+      "bytes": 15253,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm810.s.icon.png",
+      "sourcePath": "Addressable Assets/pm810.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm810.s.icon.png",
+      "sha256": "0f0854a9bf0862b2ae0821ce0314c43bc58db8fafdc11ab927f49ee473826d68",
+      "gitBlobSha": "d2a9e5d59b87212ec8f064ee09e9b3b50dad7202",
+      "bytes": 15250,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm813.icon.png",
+      "sourcePath": "Addressable Assets/pm813.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm813.icon.png",
+      "sha256": "14228cec786b450790df47049e93b56bcbd9f6aaf6d8fe334e98a4f6ee832f75",
+      "gitBlobSha": "a2f86fc2b09d82315bf76fd02045879d14399216",
+      "bytes": 12031,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm813.s.icon.png",
+      "sourcePath": "Addressable Assets/pm813.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm813.s.icon.png",
+      "sha256": "638ff16905d4968a459ee5f644397603a211d81b5a6989620930830983431eb9",
+      "gitBlobSha": "4222a3c8f883049846787aa48f3a5be9402b6ea4",
+      "bytes": 13180,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm816.icon.png",
+      "sourcePath": "Addressable Assets/pm816.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm816.icon.png",
+      "sha256": "3cea28270d2bd79899b79677fd12382481edf4e9be86f9ea8c8853531d75d221",
+      "gitBlobSha": "89145c65109ebe7cd0ca6862f4a14d76544319c8",
+      "bytes": 12110,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm816.s.icon.png",
+      "sourcePath": "Addressable Assets/pm816.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm816.s.icon.png",
+      "sha256": "df963ef661c428411d9e9b316e285bc7f0ad30e068855138218462659803bf41",
+      "gitBlobSha": "9031439616b830b1c3cb0eac4b39c3a0c5e3f376",
+      "bytes": 11542,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm888.fCROWNED_SWORD.icon.png",
+      "sourcePath": "Addressable Assets/pm888.fCROWNED_SWORD.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm888.fCROWNED_SWORD.icon.png",
+      "sha256": "8e2094f6d6b2138b345286a160f9011316fd1ead7f58a73f77e7efaf30c0b426",
+      "gitBlobSha": "8afc991441c709a873354ee51eb3425c1328f19e",
+      "bytes": 44456,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm888.fCROWNED_SWORD.s.icon.png",
+      "sourcePath": "Addressable Assets/pm888.fCROWNED_SWORD.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm888.fCROWNED_SWORD.s.icon.png",
+      "sha256": "ac2b8e0f80a6158b50c57255a118cf1f4ba52c3e20f30f2ef06a910b63bb1e72",
+      "gitBlobSha": "ed72e718a912a16a0daeaf8e00d49ea46664c086",
+      "bytes": 43068,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm888.icon.png",
+      "sourcePath": "Addressable Assets/pm888.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm888.icon.png",
+      "sha256": "ff143eca29ed289f33df6d6ac2be2dc9b631f2f303b291af158b91b6b5a89a7f",
+      "gitBlobSha": "c3119393abf4ddfb66bc1dcb4a86c6d0560c8607",
+      "bytes": 51567,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm889.fCROWNED_SHIELD.icon.png",
+      "sourcePath": "Addressable Assets/pm889.fCROWNED_SHIELD.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm889.fCROWNED_SHIELD.icon.png",
+      "sha256": "4fd0011cb6d8ef9732c42f71fac3d5c628103a234c3ebd8d28e292060ec0fb96",
+      "gitBlobSha": "90df771ff281c255ebed1f9a862e58d02cc3bb8f",
+      "bytes": 59458,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm889.fCROWNED_SHIELD.s.icon.png",
+      "sourcePath": "Addressable Assets/pm889.fCROWNED_SHIELD.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm889.fCROWNED_SHIELD.s.icon.png",
+      "sha256": "71eedc5757d2d0c1b552d5d78852441723f541fa8ca215cce9585e352e07a4e5",
+      "gitBlobSha": "3ab26ef6b6d257539ffcf28c33782440544aa41b",
+      "bytes": 59528,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm889.icon.png",
+      "sourcePath": "Addressable Assets/pm889.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm889.icon.png",
+      "sha256": "298885dbc01d04e2c08b31c66b2ede44a909704d55c3cea3d4cdcbd6f9f2a745",
+      "gitBlobSha": "8681ca2c120cfdf2d53738723ca158a3e7e14b7e",
+      "bytes": 56007,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm890.fETERNAMAX.icon.png",
+      "sourcePath": "Addressable Assets/pm890.fETERNAMAX.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm890.fETERNAMAX.icon.png",
+      "sha256": "2a367ddd5a9326d3d18836d91a47207a6249fba5aeabc537fd664bff8a6d4a5c",
+      "gitBlobSha": "64fc0ec6d89d952af47f560cab8af4894dda159f",
+      "bytes": 54940,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm890.fETERNAMAX.s.icon.png",
+      "sourcePath": "Addressable Assets/pm890.fETERNAMAX.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm890.fETERNAMAX.s.icon.png",
+      "sha256": "9240f41d4c5834701fc08f84476f2c5b4c01cdec7420e451517bdbd0f3a793cc",
+      "gitBlobSha": "c7b02e5ef2a7e02303171bf10b4de71fce8d55fb",
+      "bytes": 54801,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm94.icon.png",
+      "sourcePath": "Addressable Assets/pm94.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm94.icon.png",
+      "sha256": "92696095fd4e139dded34a235f61106b8e882306aa9e6aec92373a299a6e7748",
+      "gitBlobSha": "0866bb6940a01588c7cf175029878defdbd9381b",
+      "bytes": 38709,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm94.s.icon.png",
+      "sourcePath": "Addressable Assets/pm94.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm94.s.icon.png",
+      "sha256": "f9726dded42e2599792b2ccecb28597dc927f0ec1c16a7b0c03add17acdf9a59",
+      "gitBlobSha": "0fcb64a7ce576138f97d3ddbfd12c4adaaaf22d7",
+      "bytes": 37663,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm968.icon.png",
+      "sourcePath": "Addressable Assets/pm968.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm968.icon.png",
+      "sha256": "160501e26ca03c64546817d25645223f0ebabeb559f40b964b6a31e5b5fab28f",
+      "gitBlobSha": "d200cd99ae09157fe7be73a3655a2a3d2a5b558f",
+      "bytes": 21406,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pm983.s.icon.png",
+      "sourcePath": "Addressable Assets/pm983.s.icon.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm983.s.icon.png",
+      "sha256": "ad72ecfd470620b1bd487016d14cb8057d0c52be829d36bf0f4bc446d5318c8e",
+      "gitBlobSha": "670943e997dc9f7b4511b82de9badc8bd4491412",
+      "bytes": 28837,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_302_00_shiny.png",
+      "sourcePath": "pokemon_icon_302_00_shiny.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_302_00_shiny.png",
+      "sha256": "eb74beb4d83ab76930ed976d65318324e178cfef8e34d9d2acb9b4ce774d4c78",
+      "gitBlobSha": "8df627f653517ed0ae1268725077f88ea226704a",
+      "bytes": 11515,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_302_51.png",
+      "sourcePath": "pokemon_icon_302_51.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_302_51.png",
+      "sha256": "4fbc60892134650437962f254553a20f83b13184f446358295f8021d70ca3f1f",
+      "gitBlobSha": "ee3a54f0fa264e02522fc3a9c0786554df3ae819",
+      "bytes": 23145,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_302_51_shiny.png",
+      "sourcePath": "pokemon_icon_302_51_shiny.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_302_51_shiny.png",
+      "sha256": "774360e98f1e8cc0dff483127709de49fcf26259f8043b6a0c4285df5f7dc9da",
+      "gitBlobSha": "ecd1a505f9bcec1e7a1bb04ed37cb19160ede2eb",
+      "bytes": 22349,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_354_00_shiny.png",
+      "sourcePath": "pokemon_icon_354_00_shiny.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_354_00_shiny.png",
+      "sha256": "f08edc748b368dade2571d2e750a1740a404d2f09bc3f8db38ff07dc125a35ac",
+      "gitBlobSha": "a407ef5af647ac1cd73e7ac6d9eff7dbe0c2ae6b",
+      "bytes": 21618,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_376_00_shiny.png",
+      "sourcePath": "pokemon_icon_376_00_shiny.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_376_00_shiny.png",
+      "sha256": "90ee5ce65d4ab73a6fa22092f7bbe501491812a3b87979757cc629bef0206fe1",
+      "gitBlobSha": "2167d33c91a77966172288f80b4b999498b9d69c",
+      "bytes": 55414,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_386_11.png",
+      "sourcePath": "pokemon_icon_386_11.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_386_11.png",
+      "sha256": "d6af710074d49172fc44f3132c724745b89a21de3d04e1285235d24c1e6e0c5b",
+      "gitBlobSha": "3f6b7d9c8c9e1e5dd164aa39b33a230419705051",
+      "bytes": 41420,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_386_11_shiny.png",
+      "sourcePath": "pokemon_icon_386_11_shiny.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_386_11_shiny.png",
+      "sha256": "5849926be7e38b8c95d75c2f3fa22b5a86ac2cf0ce66011d7d4845e5c0dec969",
+      "gitBlobSha": "4b4fdbf3fc5bfb88ae9f1b34b77ef7dcd7a618a9",
+      "bytes": 41989,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_386_12.png",
+      "sourcePath": "pokemon_icon_386_12.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_386_12.png",
+      "sha256": "29668c31c5d568ba881a5c6c59489c1cb18f6e8da8962bb46023bb021b45d996",
+      "gitBlobSha": "35f5b6e4a9db65ba89a5c990d23b579d5ccfb9c1",
+      "bytes": 42384,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_386_12_shiny.png",
+      "sourcePath": "pokemon_icon_386_12_shiny.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_386_12_shiny.png",
+      "sha256": "aa44eb07ed4de8529b35c79f9d3c096ccc85f20a8b1ecaf61ff5aa5bf6059415",
+      "gitBlobSha": "f68a22cef012a4457fea454b0a75eaf5371ea037",
+      "bytes": 40974,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_386_13.png",
+      "sourcePath": "pokemon_icon_386_13.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_386_13.png",
+      "sha256": "4a7f993811a493048a950ad4adcd331411f092a523c09f30dfe86f89d2af2af3",
+      "gitBlobSha": "f15f9bc7112e2bc92119e39fc126b3905e5f4a79",
+      "bytes": 43938,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_386_13_shiny.png",
+      "sourcePath": "pokemon_icon_386_13_shiny.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_386_13_shiny.png",
+      "sha256": "735868006b45ffba42b597934771776599dd3146d310fe97085a4e79fb0913d8",
+      "gitBlobSha": "ff7859d275fcdbabb1fd0488e0e5f94760fa39df",
+      "bytes": 43712,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_386_14.png",
+      "sourcePath": "pokemon_icon_386_14.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_386_14.png",
+      "sha256": "68b507e16c80715a7e1cba29ca7277b360add4ecb06833b93e7af2727dc4a53d",
+      "gitBlobSha": "5d3c4f7ed555f504c3b73d6dd849b0463f45d6a8",
+      "bytes": 37565,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_386_14_shiny.png",
+      "sourcePath": "pokemon_icon_386_14_shiny.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_386_14_shiny.png",
+      "sha256": "1ba701a3cc252c35ed6754911bbd466ab3c69b1a923c1070a99f5661948f5a64",
+      "gitBlobSha": "aaf4176b391d5cb685f50cf79746e81e4590f38f",
+      "bytes": 37920,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_487_11.png",
+      "sourcePath": "pokemon_icon_487_11.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_487_11.png",
+      "sha256": "c4ae81a7db357f42b013b51a4e1a364918c9d3ac2a13745c51b38022b3ae4acf",
+      "gitBlobSha": "778980f37753a8ca82af7993a5aa3fadcb8de0e8",
+      "bytes": 62251,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_487_11_shiny.png",
+      "sourcePath": "pokemon_icon_487_11_shiny.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_487_11_shiny.png",
+      "sha256": "1c59cbe93c3e1f6a50c9f8ce6456198884820b24f8a526c8b4e3997c9d413e48",
+      "gitBlobSha": "5f341fb2ffa868c493f5088f36d6a4172b6a254b",
+      "bytes": 62440,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_488_00.png",
+      "sourcePath": "pokemon_icon_488_00.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_488_00.png",
+      "sha256": "cd1392503707cd3067add670a1b53d4824d53da1fb30ac65936fa1b917b3f157",
+      "gitBlobSha": "9692d386df0d8a7eac730d5e9722074961d600a7",
+      "bytes": 34676,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_488_00_shiny.png",
+      "sourcePath": "pokemon_icon_488_00_shiny.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_488_00_shiny.png",
+      "sha256": "61c0e74bcf82d0e115dea167c2a6c52e9ebbce96c979625f691fd191417dd610",
+      "gitBlobSha": "c6789b72a3de416b9474ac759a64e7dda8561633",
+      "bytes": 35562,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_491_00.png",
+      "sourcePath": "pokemon_icon_491_00.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_491_00.png",
+      "sha256": "b77106f1ad9ff37500f9d8f78a6a3e4c9ab31d4031ef60284d7fb3501c9489f3",
+      "gitBlobSha": "46e5654f48df30f8bc2466d493a5ba5d89311238",
+      "bytes": 34236,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_491_00_shiny.png",
+      "sourcePath": "pokemon_icon_491_00_shiny.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_491_00_shiny.png",
+      "sha256": "d103a6f21777436bdec604af9cf0d5ba2612716165d87324279beca81991fad8",
+      "gitBlobSha": "68a197e765796cdf543422d0769312763e497f4b",
+      "bytes": 35479,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_624_00.png",
+      "sourcePath": "pokemon_icon_624_00.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_624_00.png",
+      "sha256": "f10195838ab38b7cd0991c3b78003eeca96d7797405a126bafd9f182107c41b1",
+      "gitBlobSha": "ff6aa0888ce175b3957b73483fc0cd9d2eb676eb",
+      "bytes": 16292,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_624_00_shiny.png",
+      "sourcePath": "pokemon_icon_624_00_shiny.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_624_00_shiny.png",
+      "sha256": "b7d96d3d3284ccecfb0225091606885ab174925cdfd81411ccc56e179cfc31b4",
+      "gitBlobSha": "7dacf022490ed62ac50402c1fa39e6babd353e60",
+      "bytes": 16429,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_625_00.png",
+      "sourcePath": "pokemon_icon_625_00.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_625_00.png",
+      "sha256": "d78bafa49351708f83544b1f0691891599dbc8ccd3dee88761b3dcc1e8f7c6f7",
+      "gitBlobSha": "69800449982620fb0a5714b0fb4563926523ed51",
+      "bytes": 29385,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_625_00_shiny.png",
+      "sourcePath": "pokemon_icon_625_00_shiny.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_625_00_shiny.png",
+      "sha256": "13b2ce43b167c2dbba175d27bb338d98b78b48049a105024ba2219f2a4fbc6e4",
+      "gitBlobSha": "3b6d033e652a3b817604fc0afb4d1580b542d2e4",
+      "bytes": 30618,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_641_11.png",
+      "sourcePath": "pokemon_icon_641_11.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_641_11.png",
+      "sha256": "4be1bf5ed9e245ad9c1c44cfbb5e47818a3743edf02daee6dae7404a38af59f7",
+      "gitBlobSha": "3266b8c9b56857b17ccfb15c8aa2b16070593edf",
+      "bytes": 36319,
+      "width": 256,
+      "height": 256
+    },
+    {
+      "file": "pokemon_icon_714_00.png",
+      "sourcePath": "pokemon_icon_714_00.png",
+      "sourceUrl": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/db10df75d6f6f92018d9786af0aecc238fecc4ef/Images/Pokemon%20-%20256x256/pokemon_icon_714_00.png",
+      "sha256": "9e5f936a980a95ec81d79584c36756415acbdcd1e5d74cafe75bed45cff66738",
+      "gitBlobSha": "9d3d9f4182efa8db1a4eae869c8e6b55e3d8abbe",
+      "bytes": 17276,
+      "width": 256,
+      "height": 256
+    }
+  ]
+}

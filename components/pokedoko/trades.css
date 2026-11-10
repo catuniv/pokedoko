@@ -53,3 +53,4 @@
 
 .trade-background-thumb-image{position:relative;overflow:hidden;flex:none;width:84px;height:84px;border-radius:5px}.trade-background-thumb-image>img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}@media(max-width:600px){.trade-background-thumb-image{width:76px;height:76px}}
 .trade-pokemon-background,.trade-background-thumb-image>img{max-width:none;max-height:none}
+.trade-game-sprite[data-artwork-state="unavailable"]{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;max-width:100%;padding:8px;text-align:center;overflow-wrap:anywhere;color:var(--trade-muted);font-size:11px;line-height:1.6}.trade-game-sprite .pokemon-artwork-placeholder-note{font-size:10px}

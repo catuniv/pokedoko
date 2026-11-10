@@ -93,12 +93,12 @@ tests/                       의미 있는 시간대·데이터 검증
 - 실시간 레이드: [NYCPokeMap](https://www.nycpokemap.com/gym.html), [SydneyPogoMap](https://www.sydneypogomap.com/gym.html), [SGPokeMap](https://sgpokemap.com/gym.html)
 - 추가 수집: [LondonPogoMap](https://londonpogomap.com/gym.html), [VanPokeMap](https://vanpokemap.com/gym.html), [PoGo Radar](https://pokecoords.iflowgo.com/)
 - 포켓몬 명칭: [PokéAPI 공개 명칭 데이터](https://github.com/PokeAPI/pokeapi/blob/master/data/v2/csv/pokemon_species_names.csv)
-- 포켓몬 이미지: [PokeAPI sprites](https://github.com/PokeAPI/sprites), [원본 라이선스·권리 고지](https://github.com/PokeAPI/sprites/blob/master/LICENCE.txt). 저장한 PNG 14개의 출처는 [이미지 문서](docs/pokemon-artwork.md)에 정리했습니다.
+- 포켓몬 이미지: [PokeMiners/pogo_assets](https://github.com/PokeMiners/pogo_assets)의 실제 Pokémon GO 게임 아이콘. 확인된 일반종·폼·색이 다른 모습만 사용하고, 현재 일정·주요 교환용 94개 원본을 로컬에 보관합니다. 지역 이벤트의 코스튬·배경과 공식 메가픽시 행사 대표 이미지도 원본을 사용합니다. 출처·해시·확인 범위는 [이미지 문서](docs/pokemon-artwork.md)에 정리했습니다.
 - 지도: [Natural Earth](https://www.naturalearthdata.com/about/terms-of-use/), 공개 도메인
 
 ScrapedDuck은 LeekDuck의 허락을 받아 제공되는 커뮤니티 피드입니다. [원본 사용 조건](https://github.com/bigfoott/ScrapedDuck#for-developers)에 따라 LeekDuck과 ScrapedDuck의 출처를 표시하며 광고 수익화와 유료벽을 사용하지 않습니다. 현재 서비스는 무료입니다.
 
-Pokémon 명칭·이미지의 권리는 해당 권리자에게 있으며 본 프로젝트는 비공식 팬 도구입니다. PokeAPI에서 제공하는 이미지도 저작권 없는 자유 이미지로 취급하지 않습니다. 외부 이미지·피드·지도·동봉한 라이브러리의 조건은 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)를 확인하세요. 이 고지는 프로젝트 소스 코드에 새로운 포괄 라이선스를 부여하지 않습니다.
+Pokémon 명칭·이미지의 권리는 해당 권리자에게 있으며 본 프로젝트는 비공식 팬 도구입니다. 공개 저장소에서 제공하는 게임 이미지도 저작권 없는 자유 이미지로 취급하지 않습니다. 외부 이미지·피드·지도·동봉한 라이브러리의 조건은 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)를 확인하세요. 이 고지는 프로젝트 소스 코드에 새로운 포괄 라이선스를 부여하지 않습니다.
 
 ## 배포와 접근 권한
 

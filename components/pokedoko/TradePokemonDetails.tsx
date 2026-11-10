@@ -8,6 +8,7 @@ import { tradeBackgroundImage, tradeBackgroundImageStyle } from "@/lib/trade-bac
 import { useTradeBackgroundCatalog } from "./TradeBackgroundCatalog";
 import { LanguageScope, useLanguage } from "./LanguageProvider";
 import { tradeSpeciesName } from "@/lib/trade-pokemon-search";
+import { PokemonArtwork } from "./PokemonArtwork";
 
 export const tradeBackgroundLabel = formatTradeBackground;
 
@@ -60,21 +61,20 @@ function TradeBackgroundThumbnail({ background }: { background: TradeBackground 
   return <LanguageScope><figure className="trade-background-thumbnail"><div className="trade-background-thumb-image"><img src={image.src} style={tradeBackgroundImageStyle(image)} alt={`${image.label} 배경`} width={84} height={84} loading="lazy" decoding="async" onError={() => setFailed(true)} /></div><figcaption><strong>선택한 배경</strong><span>{image.label}</span></figcaption></figure></LanguageScope>;
 }
 
-/** Original background art sits behind the transparent species illustration. */
+/** Original background art sits behind the transparent Pokémon GO game sprite. */
 export function TradePokemonPreview({ pokemon, emptyLabel, background: selectedBackground }: { pokemon?: TradePokemon; emptyLabel?: string; background?: TradeBackground }) {
-  const [failedSource, setFailedSource] = useState(""), [failedBackground, setFailedBackground] = useState("");
+  const [failedBackground, setFailedBackground] = useState("");
   const background = selectedBackground ?? pokemon?.background;
   const { presets, fetchedAt } = useTradeBackgroundCatalog();
   const image = tradeBackgroundImage(background, presets);
   const backgroundAttempt = image ? `${image.src}:${fetchedAt ?? ""}` : "";
   const named = background?.kind === "location" || background?.kind === "special";
   const hasImage = !!image && failedBackground !== backgroundAttempt;
-  const source = pokemon && !pokemon.form.trim() ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.shiny ? "shiny/" : ""}${pokemon.speciesId}.png` : "";
   return <LanguageScope><div className={`trade-pokemon-preview trade-preview-${background?.kind ?? "unspecified"}`} data-background-image={hasImage ? image.presetId : "none"}>
     <div className={`trade-pokemon-stage${hasImage ? " has-background" : ""}`}>
       {hasImage && <img className="trade-pokemon-background" src={image.src} style={tradeBackgroundImageStyle(image)} alt={`${image.label} 배경`} width={512} height={512} loading="lazy" decoding="async" onError={() => setFailedBackground(backgroundAttempt)} />}
       <div className="trade-pokemon-illustration" aria-hidden="true">
-        {source && source !== failedSource ? <img src={source} alt="" loading="lazy" decoding="async" onError={() => setFailedSource(source)} /> : <ImageIcon size={32} />}
+        {pokemon ? <PokemonArtwork pokemon={{ id: pokemon.speciesId, name: tradeSpeciesName(pokemon.speciesId), nameKo: "", form: pokemon.form, image: "" }} appearance={{ shiny: pokemon.shiny }} className="trade-game-sprite" /> : <ImageIcon size={32} />}
         {pokemon?.shiny && <Sparkles size={19} className="trade-shiny-mark" />}
       </div>
       {named && !!background.name.trim() && !hasImage && <span className="trade-stage-note">{image ? "배경 이미지 로딩 실패" : "배경 이미지 미등록"}</span>}

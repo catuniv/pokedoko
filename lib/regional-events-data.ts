@@ -695,7 +695,7 @@ export const REGIONAL_EVENTS: RegionalEvent[] = [
         "speciesId": 131,
         "name": "Lapras",
         "costume": null,
-        "spriteUrl": "/regional-assets/official-artwork-131.ffd98849dee0.png",
+        "spriteUrl": "/regional-assets/pm131.icon.824e17ae68e0.png",
         "background": {
           "name": "Sendai • Tohoku Location Background",
           "imageUrl": null,
@@ -758,7 +758,7 @@ export const REGIONAL_EVENTS: RegionalEvent[] = [
         "speciesId": 701,
         "name": "Hawlucha",
         "costume": null,
-        "spriteUrl": "/regional-assets/official-artwork-701.041072a1c2ef.png",
+        "spriteUrl": "/regional-assets/pm701.icon.0b5d8a0810d8.png",
         "background": {
           "name": "Mexico City Location Background",
           "imageUrl": null,
@@ -820,7 +820,7 @@ export const REGIONAL_EVENTS: RegionalEvent[] = [
         "speciesId": 25,
         "name": "Pikachu",
         "costume": null,
-        "spriteUrl": "/regional-assets/official-artwork-25.759ceafdb4b8.png",
+        "spriteUrl": "/regional-assets/pm25.icon.4db52480d109.png",
         "background": {
           "name": "London · Night Out Location Background",
           "imageUrl": "/regional-assets/lc_nightOut2026_London.f4a370585d1a.png"
@@ -837,7 +837,7 @@ export const REGIONAL_EVENTS: RegionalEvent[] = [
         "speciesId": 94,
         "name": "Gengar",
         "costume": null,
-        "spriteUrl": "/regional-assets/official-artwork-94.b6549b805376.png",
+        "spriteUrl": "/regional-assets/pm94.icon.92696095fd4e.png",
         "background": {
           "name": "London · Night Out Location Background",
           "imageUrl": "/regional-assets/lc_nightOut2026_London.f4a370585d1a.png"
@@ -898,7 +898,7 @@ export const REGIONAL_EVENTS: RegionalEvent[] = [
         "speciesId": 25,
         "name": "Pikachu",
         "costume": null,
-        "spriteUrl": "/regional-assets/official-artwork-25.759ceafdb4b8.png",
+        "spriteUrl": "/regional-assets/pm25.icon.4db52480d109.png",
         "background": {
           "name": "Los Angeles · Night Out Location Background",
           "imageUrl": "/regional-assets/lc_nightOut2026_LA.55bfefaf8c21.png"
@@ -915,7 +915,7 @@ export const REGIONAL_EVENTS: RegionalEvent[] = [
         "speciesId": 94,
         "name": "Gengar",
         "costume": null,
-        "spriteUrl": "/regional-assets/official-artwork-94.b6549b805376.png",
+        "spriteUrl": "/regional-assets/pm94.icon.92696095fd4e.png",
         "background": {
           "name": "Los Angeles · Night Out Location Background",
           "imageUrl": "/regional-assets/lc_nightOut2026_LA.55bfefaf8c21.png"

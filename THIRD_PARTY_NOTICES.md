@@ -1,16 +1,17 @@
 # 외부 자료와 라이선스 고지
 
-확인일: 2026-11-10.
+확인일: 2026-11-11.
 
 pokedoko는 [https://pokedoko.catuniv.workers.dev](https://pokedoko.catuniv.workers.dev)에서 무료로 제공하는 비공식 Pokémon GO 팬 도구입니다. 아래는 포함하거나 조회하는 외부 자료의 출처와 사용 조건입니다. 이 문서로 프로젝트 전체에 새로운 MIT 등의 포괄 라이선스를 부여하지 않으며, 소스 코드의 재사용 라이선스 선택은 저장소 소유자에게 있습니다.
 
 ## Pokémon 이미지와 명칭
 
-- 출처: [PokeAPI sprites](https://github.com/PokeAPI/sprites), [PokéAPI 명칭 데이터](https://github.com/PokeAPI/pokeapi/blob/master/data/v2/csv/pokemon_species_names.csv).
-- 원본 권리 고지: [PokeAPI sprites / LICENCE.txt](https://github.com/PokeAPI/sprites/blob/master/LICENCE.txt).
-- 원본은 이미지 콘텐츠의 저작권이 The Pokémon Company에 있음을 명시하면서 저장소 자체를 CC0 1.0으로 배포한다고 안내합니다. 원본 저장소의 CC0 안내가 다른 권리자의 이미지·상표에 대한 권리까지 대신 부여한다는 뜻으로 해석하지 않습니다.
-- 이 프로젝트는 Pokémon 명칭·이미지에 대한 소유권이나 별도 사용 허락을 부여하지 않습니다. Pokémon과 관련 명칭·이미지의 권리는 해당 권리자에게 있습니다.
-- `public/pokemon/`에 저장한 원본 PNG 14개의 목록과 정확한 폼별 출처는 [docs/pokemon-artwork.md](docs/pokemon-artwork.md)에 보존합니다. 원격으로 불러오는 이미지에도 같은 권리 구분이 적용됩니다.
+- 게임 이미지: [PokeMiners/pogo_assets](https://github.com/PokeMiners/pogo_assets)의 `Images/Pokemon - 256x256`. 원본 커밋·파일 목록을 확인한 Pokémon GO 아이콘만 사용하며 원본 PNG를 편집하지 않습니다.
+- 원본 저장소는 교육 목적 자료이며 Pokémon Company·Niantic 등 원래 권리자의 저작권을 안내합니다. 공개 원본에 접근할 수 있다는 사실이 이미지·상표에 자유 재배포 권리를 부여한다는 뜻은 아닙니다.
+- `public/pokemon-go/`의 PNG 94개는 원본 바이트를 보존하고 `lib/pokemon-go-local-manifest.json`에 SHA256·Git blob 해시·크기·URL을 기록합니다. 지역 이벤트의 별도 원본 21개는 `lib/regional-assets.json`에 기록합니다. 확인된 나머지 아이콘은 같은 고정 커밋에서 필요할 때 불러옵니다.
+- 메가픽시 행사 대표 이미지는 [공식 공지](https://pokemongo.com/en/news/clefable-super-mega-raid-day-2026)의 원본 JPEG를 사용합니다. 투명 개별 아이콘으로 쓰거나 일반 픽시로 바꾸지 않습니다. 출처·해시는 `lib/pokemon-go-event-assets.json`에 기록합니다.
+- 포켓몬 명칭: [PokéAPI 공개 명칭 데이터](https://github.com/PokeAPI/pokeapi/blob/master/data/v2/csv/pokemon_species_names.csv). PokeAPI 도감 삽화·HOME 이미지는 현재 화면의 대체 후보에서 제거했습니다.
+- 이 프로젝트는 Pokémon 명칭·이미지에 대한 소유권이나 별도 사용 허락을 부여하지 않습니다. 정확한 표시·대체 규칙은 [docs/pokemon-artwork.md](docs/pokemon-artwork.md)에 정리합니다.
 
 ## Pokémon GO 배경 이미지와 교환 검색 명칭
 

@@ -9,6 +9,8 @@ type Props = {
   pokemon: Pick<Pokemon, "id" | "name" | "nameKo" | "form" | "image">;
   className?: string;
   loading?: "eager" | "lazy";
+  /** Feed.shiny describes availability; only an explicit appearance changes the image. */
+  appearance?: { shiny?: boolean };
 };
 
 function ArtworkImage({ pokemon, className, loading = "lazy", candidates }: Props & { candidates: string[] }) {
@@ -33,7 +35,7 @@ function ArtworkImage({ pokemon, className, loading = "lazy", candidates }: Prop
 }
 
 export function PokemonArtwork(props: Props) {
-  const candidates = pokemonArtworkCandidates(props.pokemon);
+  const candidates = pokemonArtworkCandidates(props.pokemon, props.appearance);
   // A changed record resets failures without effects or render-time state updates.
   return <LanguageScope>{<ArtworkImage key={JSON.stringify([props.pokemon.id, props.pokemon.name, props.pokemon.form, candidates])} {...props} candidates={candidates} />}</LanguageScope>;
 }
