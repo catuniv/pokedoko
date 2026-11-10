@@ -4549,10 +4549,18 @@ h4 {
   border-radius: 4px;
 }
 .live-city-summary {
+  --city-summary-inset: 22px;
+  display: flex;
+  flex-direction: column;
+  align-self: start;
   min-width: 0;
 }
+.live-city-summary > .panel-heading {
+  padding: 21px var(--city-summary-inset) 8px;
+}
 .live-city-row {
-  width: 100%;
+  width: calc(100% - 2 * var(--city-summary-inset));
+  margin: 0 var(--city-summary-inset);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -4575,7 +4583,10 @@ h4 {
 }
 .live-city-summary .live-empty {
   min-height: 170px;
-  padding: 20px 0;
+  padding: 20px var(--city-summary-inset);
+}
+.live-city-summary > .panel-caption {
+  padding: 15px var(--city-summary-inset) 0;
 }
 .live-inline-link {
   display: inline-flex;
@@ -4588,6 +4599,12 @@ h4 {
   padding: 11px 13px;
   font-size: 12px;
   font-weight: 700;
+}
+.live-city-summary > .live-inline-link {
+  width: calc(100% - 2 * var(--city-summary-inset));
+  min-height: 44px;
+  justify-content: center;
+  margin: 16px var(--city-summary-inset) 20px;
 }
 .live-toolbar {
   display: flex;
@@ -4833,6 +4850,9 @@ h4 {
   }
 }
 @media (max-width: 760px) {
+  .live-city-summary {
+    --city-summary-inset: 16px;
+  }
   .sidebar nav {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
