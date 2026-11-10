@@ -1,12 +1,25 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronRight, LocateFixed, MapPin, RefreshCw, X } from "lucide-react";
+import { ArrowUpRight, ChevronRight, LocateFixed, MapPin, RefreshCw, X } from "lucide-react";
 import { CITIES } from "@/lib/cities";
 import type { LiveRaid } from "@/lib/live-raid-types";
-import { findRaidHotspots, type RaidHotspot } from "@/lib/raid-hotspots";
+import { findRaidHotspots, findRecommendedRaidHotspots, type CommunityRaidSpot, type RaidHotspot } from "@/lib/raid-hotspots";
 import CoordinateCopyButton from "./CoordinateCopyButton";
 import hotspotWorkerUrl from "../../lib/raid-hotspots.worker.ts?worker&url";
+
+const RECOMMENDATIONS: CommunityRaidSpot[] = CITIES.flatMap((city) =>
+  city.spots.flatMap((spot, index) => spot.sourceUrl ? [{
+    id: `${city.id}:spot:${index}`,
+    cityId: city.id,
+    name: spot.name,
+    lat: spot.lat,
+    lon: spot.lon,
+    sourceUrl: spot.sourceUrl,
+    coordinateSource: spot.coordinateSource,
+  }] : []),
+);
+type RankingMode = "density" | "community";
 
 export type RaidRegion = {
   id: string;
@@ -26,6 +39,7 @@ type Props = {
 
 export default function RaidHotspots({ raids, now, selected, onSelect }: Props) {
   const [radiusKm, setRadiusKm] = useState(3);
+  const [mode, setMode] = useState<RankingMode>("density");
   const [result, setResult] = useState<{
     key: string;
     spots: RaidHotspot[];
@@ -38,7 +52,7 @@ export default function RaidHotspots({ raids, now, selected, onSelect }: Props) 
   const inputKey = raids
     .map((r) => `${r.id}\u0001${r.cityId}\u0001${r.lat}\u0001${r.lon}\u0001${r.gymName}`)
     .join("\u0002");
-  const calculationKey = `${radiusKm}\u0000${inputKey}`;
+  const calculationKey = `${mode}\u0000${radiusKm}\u0000${inputKey}`;
 
   useEffect(() => {
     try {
@@ -64,7 +78,9 @@ export default function RaidHotspots({ raids, now, selected, onSelect }: Props) 
     };
     const fallback = () => {
       try {
-        complete(findRaidHotspots(raids, radiusKm));
+        complete(mode === "community"
+          ? findRecommendedRaidHotspots(raids, radiusKm, RECOMMENDATIONS)
+          : findRaidHotspots(raids, radiusKm));
       } catch {
         complete([], true);
       }
@@ -86,7 +102,7 @@ export default function RaidHotspots({ raids, now, selected, onSelect }: Props) 
         if (!canceled) fallback();
       };
       try {
-        current.postMessage({ requestId: id, raids, radiusKm });
+        current.postMessage({ requestId: id, raids, radiusKm, mode, recommendations: RECOMMENDATIONS });
       } catch {
         current.terminate();
         worker.current = null;
@@ -111,7 +127,7 @@ export default function RaidHotspots({ raids, now, selected, onSelect }: Props) 
       <div className="raid-hotspots-heading">
         <div>
           <span className="mini-label"><LocateFixed size={14} /> RADIUS SEARCH</span>
-          <h3 id="raid-hotspots-title">반경 안 레이드 많은 곳</h3>
+          <h3 id="raid-hotspots-title">{mode === "community" ? "추천 장소 주변 레이드 순위" : "반경 안 레이드 많은 곳"}</h3>
           <p>위에서 고른 도시·진행 상태·검색어를 기준으로 비교해요.</p>
         </div>
         <div className="raid-radius-options" role="group" aria-label="레이드 검색 반경">
@@ -130,8 +146,23 @@ export default function RaidHotspots({ raids, now, selected, onSelect }: Props) 
           ))}
         </div>
       </div>
+      <div className="raid-ranking-options" role="group" aria-label="레이드 지역 순위 기준">
+        {([
+          { value: "density", label: "레이드 밀집순" },
+          { value: "community", label: "추천 스팟 + 레이드" },
+        ] as const).map((option) => (
+          <button type="button" key={option.value} aria-pressed={mode === option.value} onClick={() => {
+            if (mode !== option.value) {
+              onSelect(null);
+              setMode(option.value);
+            }
+          }}>{option.label}</button>
+        ))}
+      </div>
       <p className="raid-hotspots-method">
-        각 체육관 좌표를 중심으로 반경 {radiusKm}km 안의 레이드 수를 비교합니다.
+        {mode === "community"
+          ? `이용자·지역 커뮤니티가 추천한 장소를 중심으로 반경 ${radiusKm}km 안의 레이드 수를 비교해요. 추천은 과거 이용 경험을 바탕으로 하며, 현재 참여 인원은 알 수 없어요. `
+          : `각 체육관 좌표를 중심으로 반경 ${radiusKm}km 안의 레이드 수를 비교합니다. `}
         같은 체육관이 겹치는 지역은 한 번만 추천하며 최대 5곳을 표시해요. 종료까지 5분 이상인 자료만 포함합니다.
       </p>
       {spots.length ? (
@@ -152,6 +183,11 @@ export default function RaidHotspots({ raids, now, selected, onSelect }: Props) 
                 <h4>{spot.gymName} 주변</h4>
                 <div className="raid-hotspot-count"><strong>{spot.count}</strong><span>개 <small>반경 {radiusKm}km</small></span></div>
                 <p>진행 {activeCount} · 대기 {spot.count - activeCount}</p>
+                {spot.communitySpot && (
+                  <a className="raid-hotspot-evidence" href={spot.communitySpot.sourceUrl} target="_blank" rel="noreferrer">
+                    추천 근거 <ArrowUpRight size={12} />
+                  </a>
+                )}
                 <small className="raid-hotspot-coordinates">{spot.lat},{spot.lon}</small>
                 <div className="raid-hotspot-actions">
                   <CoordinateCopyButton lat={spot.lat} lon={spot.lon} name={`${spot.gymName} 주변 중심`} />
@@ -168,7 +204,10 @@ export default function RaidHotspots({ raids, now, selected, onSelect }: Props) 
         </ol>
       ) : (
         <div className="raid-hotspots-empty" role="status">
-          {!ready && raids.length ? <><RefreshCw size={18} className="spinning" /> 반경별 레이드 수를 계산하고 있어요.</> : result.error && ready ? "지역을 계산하지 못했습니다. 반경을 바꿔 다시 확인하세요." : "선택한 조건에 맞는 레이드가 없어요."}
+          {!ready && raids.length ? <><RefreshCw size={18} className="spinning" /> 반경별 레이드 수를 계산하고 있어요.</> : result.error && ready ? "지역을 계산하지 못했습니다. 반경을 바꿔 다시 확인하세요." : mode === "community" ? <>
+            <span>추천 장소 주변에서 현재 조건에 맞는 레이드를 확인하지 못했어요.</span>
+            <button type="button" onClick={() => { onSelect(null); setMode("density"); }}>레이드 밀집순 보기</button>
+          </> : "선택한 조건에 맞는 레이드가 없어요."}
         </div>
       )}
       <p className="raid-hotspots-coverage">연결된 도시의 수집 자료 내 비교 · 조회 상한에 따른 일부 결과일 수 있어요. 실제 참여 인원 수는 제공되지 않습니다.</p>

@@ -269,11 +269,24 @@
 .pokemon-card:hover .pokemon-art img {
   transform: scale(1.07);
 }
-.pokemon-art-fallback {
+.pokemon-artwork-image[data-artwork-state="unavailable"] {
   position: relative;
-  font-size: 40px;
-  color: #adc3b5;
-  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 10px;
+  color: var(--muted);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.pokemon-artwork-placeholder-name {
+  font-size: 12px;
+  font-weight: 650;
+}
+.pokemon-artwork-placeholder-note {
+  font-size: 10px;
 }
 .pokemon-card-toggle > strong {
   font-size: 15px;

@@ -5171,6 +5171,46 @@ h4 {
   max-width: 760px;
   margin-top: 15px;
 }
+.raid-ranking-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 18px;
+}
+.raid-ranking-options button,
+.raid-hotspots-empty button {
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.raid-ranking-options button[aria-pressed="true"] {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+.raid-ranking-options button:focus-visible,
+.raid-hotspots-empty button:focus-visible,
+.raid-hotspot-evidence:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.raid-hotspot-evidence {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-bottom: 10px;
+  color: var(--accent);
+  font-size: 11px;
+}
+.raid-hotspots-empty:has(button) {
+  flex-wrap: wrap;
+  gap: 12px;
+}
 .raid-hotspot-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

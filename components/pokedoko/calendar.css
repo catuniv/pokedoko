@@ -482,10 +482,26 @@
   padding: 3px 7px 3px 3px;
   border-radius: 5px;
 }
-.event-calendar-detail-pokemon img {
+.event-calendar-pokemon-artwork {
   width: 29px;
   height: 29px;
   object-fit: contain;
+  flex-shrink: 0;
+}
+.event-calendar-pokemon-artwork[data-artwork-state="unavailable"] {
+  display: grid;
+  place-content: center;
+  width: auto;
+  max-width: 120px;
+  height: auto;
+  padding: 4px;
+  color: var(--muted);
+}
+.event-calendar-pokemon-artwork .pokemon-artwork-placeholder-name {
+  display: none;
+}
+.event-calendar-pokemon-artwork .pokemon-artwork-placeholder-note {
+  font-size: 9px;
 }
 .event-calendar button:focus-visible,
 .event-calendar a:focus-visible {

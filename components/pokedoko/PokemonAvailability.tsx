@@ -5,6 +5,7 @@ import { ArrowUpRight, ChevronDown, Search, Sparkles, X } from "lucide-react";
 import type { City, Feed, Pokemon } from "@/lib/pokedoko-types";
 import { eventWindow, formatKst, localParts } from "@/lib/raid-time";
 import { bossWindow, classifyBoss, pokemonIdentity } from "@/lib/feed-availability";
+import { PokemonArtwork } from "./PokemonArtwork";
 import "./pokemon.css";
 
 type Props = { feed: Feed; now: Date; city: City };
@@ -253,18 +254,7 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
                     )}
                   </span>
                   <span className="pokemon-art">
-                    {item.pokemon.image ? (
-                      <img
-                        src={item.pokemon.image}
-                        alt={item.pokemon.nameKo || item.pokemon.name}
-                        loading="lazy"
-                        onError={(event) => {
-                          event.currentTarget.style.opacity = "0";
-                        }}
-                      />
-                    ) : (
-                      <span className="pokemon-art-fallback">?</span>
-                    )}
+                    <PokemonArtwork pokemon={item.pokemon} className="pokemon-artwork-image" />
                   </span>
                   <strong>{item.pokemon.nameKo || item.pokemon.name}</strong>
                   {item.pokemon.nameKo &&

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import type { City, EventKind, GoEvent } from "@/lib/pokedoko-types";
 import { eventWindow, formatKst } from "@/lib/raid-time";
+import { PokemonArtwork } from "./PokemonArtwork";
 import "./calendar.css";
 
 type Props = { events: GoEvent[]; now: Date; city: City };
@@ -369,13 +370,7 @@ export default function EventCalendar({ events, now, city }: Props) {
                         <div className="event-calendar-detail-pokemon">
                           {item.event.pokemon.map((pokemon, index) => (
                             <span key={`${pokemon.name}-${index}`}>
-                              {pokemon.image && (
-                                <img
-                                  src={pokemon.image}
-                                  alt=""
-                                  loading="lazy"
-                                />
-                              )}
+                              <PokemonArtwork pokemon={pokemon} className="event-calendar-pokemon-artwork" />
                               <span>{pokemon.nameKo || pokemon.name}</span>
                             </span>
                           ))}

@@ -4,8 +4,12 @@ import type { EventTime, GoEvent, Pokemon } from "./pokedoko-types";
 // never a recurrence rule. The community feed remains the automatic source.
 const WILD_AREA_URL = "https://pokemongo.com/ko/gowildarea/global";
 const DYNAMAX_URL = "https://pokemongo.com/ko/news/dynamax-trails-eternamax-eternatus-2026";
-const WHITE_IMAGE = "https://lh3.googleusercontent.com/rZ5F64_bgthtpamfHuXVTHrNPcpNUikFzSvvlrKYDmu0-hYXrllAdK8UF7KpSm8fkPQiSgqL2pSMz37nEPkfyJjvCj5aUPRINdoKi2u05xY=s0-e365";
-const BLACK_IMAGE = "https://lh3.googleusercontent.com/z0I8oSy7YfD3nba83l6RAcYhupDaxoQT6Go1KXuX1_jEtWlWBmp2igqvEDFImfiVeBO-v_MX1q-NBhT8IF9LMXykX-VfxmypIo9bcoDaiHt3=s0-e365";
+const WHITE_IMAGE = "/pokemon/10023.png";
+const BLACK_IMAGE = "/pokemon/10022.png";
+const VERIFIED_FORM_IMAGES: Record<string, string> = {
+  "36:mega": "/pokemon/10278.png",
+  "890:eternamax": "/pokemon/10190.png",
+};
 
 const local = (value: string): EventTime => ({ value, kind: "local" });
 const pokemon = (
@@ -13,7 +17,7 @@ const pokemon = (
   name: string,
   nameKo: string,
   options: Partial<Pick<Pokemon, "image" | "shiny" | "types" | "form">> = {},
-): Pokemon => ({ id, name, nameKo, image: "", shiny: false, types: [], ...options });
+): Pokemon => ({ id, name, nameKo, image: VERIFIED_FORM_IMAGES[`${id}:${options.form}`] ?? `/pokemon/${id}.png`, shiny: false, types: [], ...options });
 
 export const OFFICIAL_EVENTS: GoEvent[] = [
   {
@@ -122,9 +126,9 @@ export const OFFICIAL_EVENTS: GoEvent[] = [
     kind: "raid-day",
     start: local("2026-11-28T14:00:00"),
     end: local("2026-11-28T17:00:00"),
-    image: "",
+    image: "/pokemon/10278.png",
     url: "https://pokemongo.com/ko/news/clefable-super-mega-raid-day-2026",
-    pokemon: [pokemon(36, "Mega Clefable", "메가픽시", { form: "mega", shiny: true, types: ["fairy"] })],
+    pokemon: [pokemon(36, "Mega Clefable", "메가픽시", { form: "mega", shiny: true, types: ["fairy", "flying"] })],
     summary: "현지 14~17시 대상 체육관에서 슈퍼 메가 레이드가 열려요. 모든 체육관에 등장하는 것은 아니에요. 유료 이벤트 티켓은 추가 보너스용이에요.",
   },
 ];

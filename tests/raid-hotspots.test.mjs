@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { performance } from 'node:perf_hooks';
-import { distanceKm, findRaidHotspots } from '../lib/raid-hotspots.ts';
+import { distanceKm, findRaidHotspots, findRecommendedRaidHotspots } from '../lib/raid-hotspots.ts';
 
 const raid = (id, lat = 0, lon = 0, cityId = 'city') => ({ id, lat, lon, cityId, gymName: `Gym ${id}`, bossName: null, startsAt: '2026-11-10T00:00:00Z', endsAt: '2026-11-10T01:00:00Z', observedAt: '2026-11-10T00:00:00Z', sourceUrl: null, status: 'active', expiresAt: '2026-11-10T00:10:00Z' });
 const compare = (a, b) => a < b ? -1 : a > b ? 1 : 0;
+const spot = (id, lat = 0, lon = 0, cityId = 'city', patch = {}) => ({ id, cityId, name: `추천 장소 ${id}`, lat, lon, sourceUrl: 'https://www.reddit.com/r/TheSilphRoad/comments/verified/', coordinateSource: 'https://www.wikidata.org/wiki/Q123#P625', ...patch });
 
 test('haversine distance handles the date line, poles, identical positions and antipodes', () => {
   assert.equal(distanceKm({ lat: 0, lon: 180 }, { lat: 0, lon: -180 }), 0);
@@ -122,4 +123,66 @@ test('5000-gym city and 15000-gym multi-city workloads complete without an all-p
   assert.equal(dense.length, 1);
   assert.equal(dense[0].count, 5000);
   assert.ok(singleMs < 5000 && multiMs < 10000 && denseMs < 5000, 'bounded large-data runtime');
+});
+
+test('community candidates use the actual recommended coordinate and count only real same-city raids', () => {
+  const input = [raid('a', 0, 0.001), raid('b', 0, 0.002), raid('a', 0, 0.001), raid('foreign', 0, 0.001, 'other-city'), raid('dense-1', 0, 1), raid('dense-2', 0, 1.001), raid('dense-3', 0, 1.002)];
+  const place = spot('park');
+  const original = JSON.stringify([input, place]);
+  const output = findRecommendedRaidHotspots(input, 0.5, [place]);
+  assert.equal(output.length, 1); assert.equal(output[0].id, 'recommended:city:park');
+  assert.equal(output[0].lat, place.lat); assert.equal(output[0].lon, place.lon);
+  assert.equal(output[0].gymName, place.name);
+  assert.deepEqual(output[0].raidIds, ['a', 'b']); assert.equal(output[0].count, 2);
+  assert.deepEqual(output[0].communitySpot, { name: place.name, sourceUrl: place.sourceUrl, coordinateSource: place.coordinateSource });
+  assert.equal(JSON.stringify([input, place]), original);
+  assert.equal(findRaidHotspots(input, 0.5)[0].count, 3);
+});
+
+test('recommended ranking evaluates every candidate before top-five selection and suppresses overlapping raid membership', () => {
+  const input = [raid('a', 0, 0), raid('b', 0, 0.001), raid('c', 0, 0.002), raid('d', 0, 0.1), raid('e', 0, 0.101), raid('f', 0, 0.2)];
+  const places = [spot('third', 0, 0.2), spot('second', 0, 0.1), spot('overlap', 0, 0.001), spot('first', 0, 0)];
+  const output = findRecommendedRaidHotspots(input, 0.5, places);
+  assert.deepEqual(output.map(s => s.id), ['recommended:city:first', 'recommended:city:second', 'recommended:city:third']);
+  assert.deepEqual(output.map(s => s.count), [3, 2, 1]);
+  assert.equal(new Set(output.flatMap(s => s.raidIds)).size, 6);
+  assert.deepEqual(findRecommendedRaidHotspots([...input].reverse(), 0.5, [...places].reverse()), output);
+});
+
+test('recommended circles include exact spherical boundaries and handle date-line wrapping', () => {
+  const center = spot('dateline', 0, 179.999);
+  const boundary = raid('boundary', 0, -179.999), inside = raid('inside', 0, 180), outside = raid('outside', 0, -179.9989);
+  const output = findRecommendedRaidHotspots([outside, boundary, inside], distanceKm(center, boundary), [center]);
+  assert.deepEqual(output[0].raidIds, ['boundary', 'inside']);
+  assert.equal(output[0].lon, 179.999);
+});
+
+test('zero-raid recommendations stay empty without falling back to gym rankings', () => {
+  assert.deepEqual(findRecommendedRaidHotspots([raid('a')], 1, [spot('distant', 0, 1)]), []);
+  assert.deepEqual(findRecommendedRaidHotspots([raid('a')], 1, [spot('foreign', 0, 0, 'other-city')]), []);
+  assert.deepEqual(findRecommendedRaidHotspots([], 1, [spot('a')]), []);
+  assert.deepEqual(findRecommendedRaidHotspots([raid('a')], 1, []), []);
+  assert.deepEqual(findRecommendedRaidHotspots([raid('a')], 1, [spot('a')], 0), []);
+});
+
+test('validates community sources and coordinates, bounds input size and deduplicates place IDs deterministically', () => {
+  const input = [raid('a')];
+  const places = [spot('valid'), spot('valid', 0, 0.001), spot('insecure', 0, 0, 'city', { sourceUrl: 'http://example.com' }), spot('script', 0, 0, 'city', { sourceUrl: 'javascript:alert(1)' }), spot('credentials', 0, 0, 'city', { sourceUrl: 'https://user:secret@example.com' }), spot('invalid-map', 0, 0, 'city', { coordinateSource: 'data:bad' }), spot('bad-lat', 91), spot('blank', 0, 0, 'city', { name: ' ' })];
+  const output = findRecommendedRaidHotspots(input, 1, places);
+  assert.equal(output.length, 1); assert.equal(output[0].lat, 0); assert.equal(output[0].lon, 0);
+  assert.deepEqual(findRecommendedRaidHotspots(input, 1, places.reverse()), output);
+  for (const radius of [0, -1, NaN, Infinity]) assert.throws(() => findRecommendedRaidHotspots(input, radius, []), RangeError);
+  for (const limit of [-1, 1.2, Infinity]) assert.throws(() => findRecommendedRaidHotspots(input, 1, [], limit), RangeError);
+  assert.throws(() => findRecommendedRaidHotspots(input, 1, Array.from({ length: 2001 }, () => spot('a'))), RangeError);
+});
+
+test('15000 raids and 112 community centres use bounded indexed queries', t => {
+  const input = ['a', 'b', 'c'].flatMap((city, group) => Array.from({ length: 5000 }, (_, index) => raid(`${city}-${index}`, 37.5 + group * 5 + Math.floor(index / 100) * 0.001, 127 + index % 100 * 0.001, city)));
+  const places = Array.from({ length: 112 }, (_, index) => spot(String(index), 37.5 + index % 3 * 5 + Math.floor(index / 3) * 0.001, 127.02, ['a', 'b', 'c'][index % 3]));
+  const start = performance.now();
+  const output = findRecommendedRaidHotspots(input, 0.5, places);
+  const elapsed = performance.now() - start;
+  t.diagnostic(`15000 raids /112 recommended centres: ${elapsed.toFixed(1)}ms`);
+  assert.equal(output.length, 5); assert.ok(output.every(s => s.communitySpot && s.count === s.raidIds.length));
+  assert.ok(elapsed < 5000, 'indexed recommendation queries complete within bounded runtime');
 });

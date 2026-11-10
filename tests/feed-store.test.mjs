@@ -109,3 +109,49 @@ test('hung storage is bounded and falls through to source loading', { timeout: 4
   assert.equal(result.cache, 'fresh'); assert.equal(result.storage, 'unavailable');
   assert.ok(performance.now() - started < 3000);
 });
+
+test('KV snapshots are labelled kv and eventual stale reads cannot move this isolate behind a newer successful feed', async () => {
+  let clock = FIXED;
+  const older = feed({ fetchedAt: new Date(FIXED - 60_000).toISOString() });
+  const r2 = bucket(); r2.kind = 'kv';
+  const cache = store(async () => feed({ fetchedAt: new Date(clock).toISOString() }), { now: () => new Date(clock) });
+  const written = await cache(r2); assert.equal(written.cache, 'fresh');
+  const originalGet = r2.get;
+  r2.get = async () => ({ text: async () => snapshot(older) });
+  clock += 1000;
+  const lagged = await cache(r2);
+  assert.equal(lagged.cache, 'memory'); assert.equal(lagged.feed.fetchedAt, written.feed.fetchedAt);
+  r2.get = originalGet;
+  const read = await cache(r2); assert.equal(read.cache, 'kv');
+  assert.equal(read.feed.fetchedAt, written.feed.fetchedAt);
+});
+
+test('KV negative-cache misses reuse a verified fresh memory write without repeating source loads or same-key writes', async () => {
+  let loads = 0, writes = 0;
+  const kv = { kind: 'kv', async get() { return null; }, async put() { writes++; } };
+  const cache = store(async () => { loads++; return feed(); });
+  const first = await cache(kv); assert.equal(first.cache, 'fresh');
+  const second = await cache(kv);
+  assert.equal(second.cache, 'memory'); assert.equal(second.storage, 'ready');
+  assert.equal(second.feed.fetchedAt, first.feed.fetchedAt); assert.equal(second.storedAt, first.storedAt);
+  assert.equal(loads, 1); assert.equal(writes, 1);
+});
+
+test('a failed KV write is not treated as a verified durable memory hit and can retry', async () => {
+  let writes = 0;
+  const kv = { kind: 'kv', async get() { return null; }, async put() { writes++; if (writes === 1) throw new Error('temporary write failure'); } };
+  const cache = store(async () => feed());
+  assert.equal((await cache(kv)).storage, 'unavailable');
+  const retried = await cache(kv);
+  assert.equal(writes, 2); assert.equal(retried.cache, 'fresh'); assert.equal(retried.storage, 'ready');
+});
+
+test('KV read errors remain unavailable even when a verified fresh memory write can be reused', async () => {
+  let failRead = false, writes = 0;
+  const kv = { kind: 'kv', async get() { if (failRead) throw new Error('read offline'); return null; }, async put() { writes++; } };
+  const cache = store(async () => feed());
+  await cache(kv); failRead = true;
+  const result = await cache(kv);
+  assert.equal(result.cache, 'memory'); assert.equal(result.storage, 'unavailable');
+  assert.equal(writes, 1); assert.equal(result.feed.fetchedAt, feed().fetchedAt);
+});
