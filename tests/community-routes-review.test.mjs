@@ -12,7 +12,7 @@ class CliExit extends Error {
 }
 
 /** Run the actual CLI in memory with no child process, credentials, file export or real database. */
-async function runWithCorruptedGeometry(action) {
+async function runWithCorruptedGeometry(action, rowPatch = {}) {
   const hook = `__pokedokoRouteReviewTest_${crypto.randomUUID().replaceAll('-', '')}`;
   const calls = [], logs = [];
   const status = action === 'reject' ? 'rejected' : action === 'remove' ? 'removed' : 'approved';
@@ -29,7 +29,7 @@ async function runWithCorruptedGeometry(action) {
       const sql = args[args.indexOf('--command') + 1];
       calls.push(sql);
       const results = sql.startsWith('SELECT ')
-        ? [{ id: ID, status: originalStatus, points_json: '{broken-json' }]
+        ? [{ id: ID, status: originalStatus, points_json: '{broken-json', ...rowPatch }]
         : [{ id: ID, status }];
       return { status: 0, stdout: JSON.stringify([{ success: true, results }]), stderr: '' };
     },
@@ -74,4 +74,31 @@ test('approval cannot publish corrupted geometry even with both review flags and
   assert.ok(result.error instanceof SyntaxError);
   assert.equal(result.calls.filter(sql => sql.startsWith('UPDATE ')).length, 0);
   assert.equal(result.logs.some(message => message.includes('공개 완료')), false);
+});
+
+const A = { lat: 37.5665, lon: 126.978 };
+const validRow = patch => ({
+  name: '운영자가 검토할 루트', city_id: 'seoul', start_name: '시청 시작', end_name: '시청 종료',
+  start_lat: A.lat, start_lon: A.lon, end_lat: A.lat, end_lon: A.lon, reported_distance_m: 575,
+  points_json: JSON.stringify([A, { lat: 37.5675, lon: 126.978 }, { lat: 37.5675, lon: 126.98 }, { lat: 37.5665, lon: 126.98 }, A]),
+  source_url: '', creator_name: '직접 기록한 제작자', rights_basis: 'creator', rights_details: '본인이 기록하고 공개 이용을 허락한 경로입니다.',
+  permission_confirmed: 1, in_game_confirmed: 1, last_checked_at: '2024-02-29', geometry_type: 'original', notes: '',
+  reversible: 0, estimated_minutes: 20, is_loop: 1, ...patch,
+});
+
+test('operator review reads all route metadata and accepts valid confirmed false and loop values', async () => {
+  const result = await runWithCorruptedGeometry('approve', validRow());
+  assert.equal(result.error, undefined);
+  assert.equal(result.calls.filter(sql => sql.startsWith('UPDATE ')).length, 1);
+  assert.ok(result.calls[0].includes('reversible,estimated_minutes,is_loop'));
+  assert.ok(result.logs.some(message => message.includes('공개 완료')));
+});
+
+test('operator approval cannot reinterpret corrupt stored direction, duration or loop values as valid metadata', async () => {
+  for (const patch of [{ reversible: 2 }, { estimated_minutes: 1441 }, { is_loop: 2 }, { end_lat: 37.5675, end_lon: 126.98 }]) {
+    const result = await runWithCorruptedGeometry('approve', validRow(patch));
+    assert.ok(result.error);
+    assert.equal(result.calls.filter(sql => sql.startsWith('UPDATE ')).length, 0);
+    assert.equal(result.logs.some(message => message.includes('공개 완료')), false);
+  }
 });

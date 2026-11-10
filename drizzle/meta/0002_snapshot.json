@@ -1,0 +1,1235 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "b1e76e56-19db-4956-8304-98f05e39698c",
+  "prevId": "d006d932-7f34-41a4-9443-8a1fa1c3a8e2",
+  "tables": {
+    "community_route_rate_limits": {
+      "name": "community_route_rate_limits",
+      "columns": {
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "window_start": {
+          "name": "window_start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "count": {
+          "name": "count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "community_route_rate_expiry_idx": {
+          "name": "community_route_rate_expiry_idx",
+          "columns": [
+            "expires_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "community_route_rate_limits_key_kind_window_start_pk": {
+          "columns": [
+            "key",
+            "kind",
+            "window_start"
+          ],
+          "name": "community_route_rate_limits_key_kind_window_start_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "community_route_rate_kind_check": {
+          "name": "community_route_rate_kind_check",
+          "value": "\"community_route_rate_limits\".\"kind\" IN ('hour','day')"
+        },
+        "community_route_rate_count_check": {
+          "name": "community_route_rate_count_check",
+          "value": "\"community_route_rate_limits\".\"count\" >= 0"
+        }
+      }
+    },
+    "community_routes": {
+      "name": "community_routes",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fingerprint": {
+          "name": "fingerprint",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "visitor_hash": {
+          "name": "visitor_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "city_id": {
+          "name": "city_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "start_name": {
+          "name": "start_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "end_name": {
+          "name": "end_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "start_lat": {
+          "name": "start_lat",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "start_lon": {
+          "name": "start_lon",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "end_lat": {
+          "name": "end_lat",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "end_lon": {
+          "name": "end_lon",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reported_distance_m": {
+          "name": "reported_distance_m",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "computed_distance_m": {
+          "name": "computed_distance_m",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "geometry_type": {
+          "name": "geometry_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'none'"
+        },
+        "geometry_validation": {
+          "name": "geometry_validation",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'missing'"
+        },
+        "reversible": {
+          "name": "reversible",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "estimated_minutes": {
+          "name": "estimated_minutes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_loop": {
+          "name": "is_loop",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "points_json": {
+          "name": "points_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "point_count": {
+          "name": "point_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "source_url": {
+          "name": "source_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "creator_name": {
+          "name": "creator_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rights_basis": {
+          "name": "rights_basis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rights_details": {
+          "name": "rights_details",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "permission_confirmed": {
+          "name": "permission_confirmed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "in_game_confirmed": {
+          "name": "in_game_confirmed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "last_checked_at": {
+          "name": "last_checked_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
+        "rights_reviewed": {
+          "name": "rights_reviewed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "route_reviewed": {
+          "name": "route_reviewed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "review_note": {
+          "name": "review_note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "reviewed_at": {
+          "name": "reviewed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "hour_bucket": {
+          "name": "hour_bucket",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "day_bucket": {
+          "name": "day_bucket",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "submission_policy": {
+          "name": "submission_policy",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "community_route_fingerprint_idx": {
+          "name": "community_route_fingerprint_idx",
+          "columns": [
+            "fingerprint"
+          ],
+          "isUnique": true
+        },
+        "community_route_public_idx": {
+          "name": "community_route_public_idx",
+          "columns": [
+            "status",
+            "city_id",
+            "published_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "community_route_status_check": {
+          "name": "community_route_status_check",
+          "value": "\"community_routes\".\"status\" IN ('pending','approved','rejected','removed')"
+        },
+        "community_route_geometry_type_check": {
+          "name": "community_route_geometry_type_check",
+          "value": "\"community_routes\".\"geometry_type\" IN ('none','original','estimated','reconstructed')"
+        },
+        "community_route_geometry_validation_check": {
+          "name": "community_route_geometry_validation_check",
+          "value": "(\"community_routes\".\"geometry_type\" = 'none' AND \"community_routes\".\"geometry_validation\" = 'missing' AND \"community_routes\".\"point_count\" = 0 AND \"community_routes\".\"points_json\" IS NULL) OR (\"community_routes\".\"geometry_type\" != 'none' AND \"community_routes\".\"geometry_validation\" = 'passed' AND \"community_routes\".\"point_count\" BETWEEN 2 AND 2000 AND \"community_routes\".\"points_json\" IS NOT NULL)"
+        },
+        "community_route_rights_check": {
+          "name": "community_route_rights_check",
+          "value": "\"community_routes\".\"rights_basis\" IN ('creator','permission','license') AND \"community_routes\".\"permission_confirmed\" = 1 AND \"community_routes\".\"in_game_confirmed\" = 1"
+        },
+        "community_route_start_check": {
+          "name": "community_route_start_check",
+          "value": "\"community_routes\".\"start_lat\" BETWEEN -90 AND 90 AND \"community_routes\".\"start_lon\" BETWEEN -180 AND 180"
+        },
+        "community_route_distance_check": {
+          "name": "community_route_distance_check",
+          "value": "\"community_routes\".\"reported_distance_m\" BETWEEN 100 AND 100000"
+        },
+        "community_route_publication_check": {
+          "name": "community_route_publication_check",
+          "value": "\"community_routes\".\"status\" != 'approved' OR (\"community_routes\".\"rights_reviewed\" = 1 AND \"community_routes\".\"route_reviewed\" = 1 AND \"community_routes\".\"reviewed_at\" IS NOT NULL AND \"community_routes\".\"published_at\" IS NOT NULL AND length(\"community_routes\".\"review_note\") > 0)"
+        }
+      }
+    },
+    "growth_daily_aggregates": {
+      "name": "growth_daily_aggregates",
+      "columns": {
+        "day": {
+          "name": "day",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "event": {
+          "name": "event",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "view": {
+          "name": "view",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "city": {
+          "name": "city",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'direct'"
+        },
+        "count": {
+          "name": "count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "growth_daily_aggregates_day_event_view_city_source_pk": {
+          "columns": [
+            "day",
+            "event",
+            "view",
+            "city",
+            "source"
+          ],
+          "name": "growth_daily_aggregates_day_event_view_city_source_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "growth_aggregate_count_check": {
+          "name": "growth_aggregate_count_check",
+          "value": "\"growth_daily_aggregates\".\"count\" >= 0"
+        },
+        "growth_aggregate_event_check": {
+          "name": "growth_aggregate_event_check",
+          "value": "\"growth_daily_aggregates\".\"event\" IN ('page_view','coordinate_copy','share','unique_visitor','returning_visitor_7d')"
+        }
+      }
+    },
+    "growth_daily_visitors": {
+      "name": "growth_daily_visitors",
+      "columns": {
+        "day": {
+          "name": "day",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "visitor_hash": {
+          "name": "visitor_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'direct'"
+        },
+        "returning_7d": {
+          "name": "returning_7d",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        }
+      },
+      "indexes": {
+        "growth_visitors_hash_day_idx": {
+          "name": "growth_visitors_hash_day_idx",
+          "columns": [
+            "visitor_hash",
+            "day"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "growth_daily_visitors_day_visitor_hash_pk": {
+          "columns": [
+            "day",
+            "visitor_hash"
+          ],
+          "name": "growth_daily_visitors_day_visitor_hash_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "growth_visitors_returning_check": {
+          "name": "growth_visitors_returning_check",
+          "value": "\"growth_daily_visitors\".\"returning_7d\" IN (0,1)"
+        }
+      }
+    },
+    "growth_feedback": {
+      "name": "growth_feedback",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "visitor_hash": {
+          "name": "visitor_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "message": {
+          "name": "message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "page": {
+          "name": "page",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "city": {
+          "name": "city",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "hour_bucket": {
+          "name": "hour_bucket",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "growth_feedback_created_idx": {
+          "name": "growth_feedback_created_idx",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "growth_feedback_category_check": {
+          "name": "growth_feedback_category_check",
+          "value": "\"growth_feedback\".\"category\" IN ('bug','suggestion','data')"
+        },
+        "growth_feedback_page_check": {
+          "name": "growth_feedback_page_check",
+          "value": "\"growth_feedback\".\"page\" IN ('live','raids','calendar','pokemon','city','event')"
+        },
+        "growth_feedback_message_check": {
+          "name": "growth_feedback_message_check",
+          "value": "length(\"growth_feedback\".\"message\") BETWEEN 20 AND 2000"
+        }
+      }
+    },
+    "growth_rate_limits": {
+      "name": "growth_rate_limits",
+      "columns": {
+        "visitor_hash": {
+          "name": "visitor_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "window_start": {
+          "name": "window_start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "count": {
+          "name": "count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "growth_rate_expiry_idx": {
+          "name": "growth_rate_expiry_idx",
+          "columns": [
+            "expires_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "growth_rate_limits_visitor_hash_kind_window_start_pk": {
+          "columns": [
+            "visitor_hash",
+            "kind",
+            "window_start"
+          ],
+          "name": "growth_rate_limits_visitor_hash_kind_window_start_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "growth_rate_kind_check": {
+          "name": "growth_rate_kind_check",
+          "value": "\"growth_rate_limits\".\"kind\" IN ('usage','feedback')"
+        },
+        "growth_rate_count_check": {
+          "name": "growth_rate_count_check",
+          "value": "\"growth_rate_limits\".\"count\" >= 0"
+        }
+      }
+    },
+    "growth_usage_events": {
+      "name": "growth_usage_events",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "visitor_hash": {
+          "name": "visitor_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "day": {
+          "name": "day",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "event": {
+          "name": "event",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "view": {
+          "name": "view",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "city": {
+          "name": "city",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'direct'"
+        },
+        "minute_bucket": {
+          "name": "minute_bucket",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "growth_usage_created_idx": {
+          "name": "growth_usage_created_idx",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "growth_usage_event_check": {
+          "name": "growth_usage_event_check",
+          "value": "\"growth_usage_events\".\"event\" IN ('page_view','coordinate_copy','share')"
+        },
+        "growth_usage_view_check": {
+          "name": "growth_usage_view_check",
+          "value": "\"growth_usage_events\".\"view\" IN ('live','raids','calendar','pokemon','city','event')"
+        },
+        "growth_usage_source_check": {
+          "name": "growth_usage_source_check",
+          "value": "\"growth_usage_events\".\"source\" IN ('direct','dc','inven','naver','kakao','discord','youtube','instagram','other')"
+        }
+      }
+    },
+    "trade_post_rate_limits": {
+      "name": "trade_post_rate_limits",
+      "columns": {
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "window_start": {
+          "name": "window_start",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "count": {
+          "name": "count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "trade_rate_expiry_idx": {
+          "name": "trade_rate_expiry_idx",
+          "columns": [
+            "expires_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "trade_post_rate_limits_key_kind_window_start_pk": {
+          "columns": [
+            "key",
+            "kind",
+            "window_start"
+          ],
+          "name": "trade_post_rate_limits_key_kind_window_start_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "trade_rate_kind_check": {
+          "name": "trade_rate_kind_check",
+          "value": "\"trade_post_rate_limits\".\"kind\" IN ('hour','day')"
+        },
+        "trade_rate_count_check": {
+          "name": "trade_rate_count_check",
+          "value": "\"trade_post_rate_limits\".\"count\" >= 0"
+        }
+      }
+    },
+    "trade_posts": {
+      "name": "trade_posts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "owner_key_hash": {
+          "name": "owner_key_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "visitor_hash": {
+          "name": "visitor_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "trainer_name": {
+          "name": "trainer_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "city_id": {
+          "name": "city_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "mode": {
+          "name": "mode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "offer_species_id": {
+          "name": "offer_species_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "offer_shiny": {
+          "name": "offer_shiny",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "offer_form": {
+          "name": "offer_form",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "want_species_id": {
+          "name": "want_species_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "want_shiny": {
+          "name": "want_shiny",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "want_form": {
+          "name": "want_form",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "contact_kind": {
+          "name": "contact_kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "contact_value": {
+          "name": "contact_value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "contact_public_consent": {
+          "name": "contact_public_consent",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "hour_bucket": {
+          "name": "hour_bucket",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "day_bucket": {
+          "name": "day_bucket",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "review_note": {
+          "name": "review_note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "reviewed_at": {
+          "name": "reviewed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "trade_owner_key_idx": {
+          "name": "trade_owner_key_idx",
+          "columns": [
+            "owner_key_hash"
+          ],
+          "isUnique": true
+        },
+        "trade_public_idx": {
+          "name": "trade_public_idx",
+          "columns": [
+            "status",
+            "city_id",
+            "mode",
+            "expires_at"
+          ],
+          "isUnique": false
+        },
+        "trade_expiry_idx": {
+          "name": "trade_expiry_idx",
+          "columns": [
+            "expires_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "trade_mode_check": {
+          "name": "trade_mode_check",
+          "value": "\"trade_posts\".\"mode\" IN ('local','remote')"
+        },
+        "trade_status_check": {
+          "name": "trade_status_check",
+          "value": "\"trade_posts\".\"status\" IN ('pending','approved','closed','removed','rejected')"
+        },
+        "trade_contact_check": {
+          "name": "trade_contact_check",
+          "value": "\"trade_posts\".\"contact_kind\" IN ('friend_code','discord','kakao') AND \"trade_posts\".\"contact_public_consent\" = 1"
+        },
+        "trade_shiny_check": {
+          "name": "trade_shiny_check",
+          "value": "\"trade_posts\".\"offer_shiny\" IN (0,1) AND \"trade_posts\".\"want_shiny\" IN (0,1)"
+        },
+        "trade_expiry_check": {
+          "name": "trade_expiry_check",
+          "value": "\"trade_posts\".\"expires_at\" > \"trade_posts\".\"created_at\" AND \"trade_posts\".\"expires_at\" <= \"trade_posts\".\"created_at\" + 604800"
+        },
+        "trade_publication_check": {
+          "name": "trade_publication_check",
+          "value": "\"trade_posts\".\"status\" != 'approved' OR (\"trade_posts\".\"published_at\" IS NOT NULL AND \"trade_posts\".\"reviewed_at\" IS NOT NULL AND length(\"trade_posts\".\"review_note\") > 0)"
+        }
+      }
+    }
+  },
+  "views": {
+    "feedback_inbox": {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "message": {
+          "name": "message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "page": {
+          "name": "page",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "city": {
+          "name": "city",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at_kst": {
+          "name": "created_at_kst",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "name": "feedback_inbox",
+      "isExisting": false,
+      "definition": "SELECT id, category, message, page, city,\n  datetime(created_at, 'unixepoch', '+9 hours') AS created_at_kst\n  FROM growth_feedback ORDER BY created_at DESC, id DESC"
+    },
+    "growth_daily_summary": {
+      "columns": {
+        "day": {
+          "name": "day",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "source": {
+          "name": "source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "page_views": {
+          "name": "page_views",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "coordinate_copies": {
+          "name": "coordinate_copies",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "shares": {
+          "name": "shares",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "unique_visitors": {
+          "name": "unique_visitors",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "returning_visitors_7d": {
+          "name": "returning_visitors_7d",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "returning_rate_7d_percent": {
+          "name": "returning_rate_7d_percent",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "name": "growth_daily_summary",
+      "isExisting": false,
+      "definition": "SELECT day, source,\n  SUM(CASE WHEN event = 'page_view' THEN count ELSE 0 END) AS page_views,\n  SUM(CASE WHEN event = 'coordinate_copy' THEN count ELSE 0 END) AS coordinate_copies,\n  SUM(CASE WHEN event = 'share' THEN count ELSE 0 END) AS shares,\n  SUM(CASE WHEN event = 'unique_visitor' THEN count ELSE 0 END) AS unique_visitors,\n  SUM(CASE WHEN event = 'returning_visitor_7d' THEN count ELSE 0 END) AS returning_visitors_7d,\n  CASE WHEN SUM(CASE WHEN event = 'unique_visitor' THEN count ELSE 0 END) = 0 THEN 0.0\n    ELSE ROUND(100.0 * SUM(CASE WHEN event = 'returning_visitor_7d' THEN count ELSE 0 END)\n      / SUM(CASE WHEN event = 'unique_visitor' THEN count ELSE 0 END), 2) END AS returning_rate_7d_percent\n  FROM growth_daily_aggregates GROUP BY day, source"
+    }
+  },
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

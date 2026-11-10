@@ -62,9 +62,9 @@ function query(sql) {
   if (!Array.isArray(response) || response.some(value => value.success === false)) throw new Error("D1 요청이 실패했습니다.");
   return response.flatMap(value => Array.isArray(value.results) ? value.results : []);
 }
-const columns = "id,status,name,city_id,start_name,end_name,start_lat,start_lon,end_lat,end_lon,reported_distance_m,computed_distance_m,geometry_type,geometry_validation,points_json,point_count,source_url,creator_name,rights_basis,rights_details,permission_confirmed,in_game_confirmed,last_checked_at,notes,review_note,reviewed_at,published_at,created_at";
+const columns = "id,status,name,city_id,start_name,end_name,start_lat,start_lon,end_lat,end_lon,reported_distance_m,computed_distance_m,geometry_type,geometry_validation,points_json,point_count,source_url,creator_name,rights_basis,rights_details,permission_confirmed,in_game_confirmed,last_checked_at,notes,review_note,reviewed_at,published_at,created_at,reversible,estimated_minutes,is_loop";
 if (action === "list") {
-  const rows = query(`SELECT id,name,city_id,geometry_type,point_count,last_checked_at,datetime(created_at,'unixepoch','+9 hours') AS received_kst FROM community_routes WHERE status=${literal(options.status)}${options.city ? ` AND city_id=${literal(options.city)}` : ""} ORDER BY created_at DESC,id DESC LIMIT 50`);
+  const rows = query(`SELECT id,name,city_id,geometry_type,point_count,last_checked_at,reversible,estimated_minutes,is_loop,datetime(created_at,'unixepoch','+9 hours') AS received_kst FROM community_routes WHERE status=${literal(options.status)}${options.city ? ` AND city_id=${literal(options.city)}` : ""} ORDER BY created_at DESC,id DESC LIMIT 50`);
   console.log(`지가르데 셀 루트 제보 · ${options.status} · 최대50개`);
   if (rows.length) console.table(rows); else console.log("해당하는 제보가 없습니다.");
   process.exit(0);
@@ -102,7 +102,9 @@ if (action === "approve") {
     ...(row.end_lat !== null && row.end_lon !== null ? { endPoint: { lat: row.end_lat, lon: row.end_lon } } : {}),
     reportedDistanceMeters: row.reported_distance_m, sourceUrl: row.source_url, creatorName: row.creator_name,
     rightsBasis: row.rights_basis, rightsDetails: row.rights_details, allowRedistribution: row.permission_confirmed === 1,
-    inGameConfirmed: row.in_game_confirmed === 1, lastCheckedAt: row.last_checked_at, geometryType: row.geometry_type, points, notes: row.notes });
+    inGameConfirmed: row.in_game_confirmed === 1, lastCheckedAt: row.last_checked_at, geometryType: row.geometry_type, points, notes: row.notes,
+    reversible: row.reversible === 0 ? false : row.reversible === 1 ? true : row.reversible ?? null,
+    estimatedMinutes: row.estimated_minutes ?? null, isLoop: row.is_loop === 0 ? false : row.is_loop === 1 ? true : row.is_loop ?? null });
   if (points) validateCommunityGeometry(points, row.reported_distance_m, { lat: row.start_lat, lon: row.start_lon }, row.end_lat !== null ? { lat: row.end_lat, lon: row.end_lon } : undefined);
   const updated = query(`UPDATE community_routes SET status='approved',rights_reviewed=1,route_reviewed=1,review_note=${literal(options.note.trim())},reviewed_at=unixepoch(),published_at=unixepoch() WHERE id=${literal(id)} AND status='pending' RETURNING id,status`);
   if (updated.length !== 1) throw new Error("검토 상태가 변경되어 공개하지 않았습니다.");

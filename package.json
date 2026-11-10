@@ -15,7 +15,8 @@
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "typecheck": "tsc --noEmit --incremental false",
     "growth:report": "node scripts/growth-report.mjs",
-    "routes:review": "node scripts/routes-review.mjs"
+    "routes:review": "node scripts/routes-review.mjs",
+    "trades:review": "node scripts/trades-review.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

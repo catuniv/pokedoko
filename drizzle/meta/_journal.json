@@ -15,6 +15,13 @@
       "when": 1794303642777,
       "tag": "0001_clumsy_red_hulk",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794306258927,
+      "tag": "0002_sticky_tigra",
+      "breakpoints": true
     }
   ]
 }

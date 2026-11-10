@@ -4290,6 +4290,11 @@ h4 {
 }
 
 /* Pokémon palette and the separate observation view. */
+.community-side-links { min-width: 0; }
+@media (max-width: 760px) {
+  .sidebar .community-side-links { display: flex; gap: 6px; }
+  .sidebar .community-side-links .nav-link { flex: 1; min-width: 0; width: auto; justify-content: center; font-size: 11px; }
+}
 .sidebar {
   color: #c9d6f0;
 }

@@ -157,6 +157,8 @@ test('bounded retention removes expired private data while preserving ninety-day
   const summary = rows(db, 'growth_daily_summary');
   const retention = await pruneGrowthData(db, new Date(FIXED + 31 * 86400000));
   assert.equal(retention.deleted.community_route_rate_limits, 0);
+  assert.equal(retention.deleted.trade_post_rate_limits, 0);
+  assert.equal(retention.deleted.trade_posts, 0);
   assert.equal(rows(db, 'growth_usage_events').length, 0); assert.equal(rows(db, 'growth_feedback').length, 0);
   assert.equal(rows(db, 'growth_daily_visitors').length, 0); assert.equal(rows(db, 'growth_rate_limits').length, 0);
   assert.deepEqual(rows(db, 'growth_daily_summary'), summary);
@@ -207,7 +209,7 @@ test('opportunistic retention is throttled per database for an hour and has no w
   const first = database(), second = database();
   assert.equal(queue(first, context), true); assert.equal(queue(first, context), false);
   assert.equal(queue(second, context), true); await Promise.all(work);
-  assert.equal(first.calls.length, 6); assert.equal(second.calls.length, 6);
+  assert.equal(first.calls.length, 8); assert.equal(second.calls.length, 8);
   let dynamic = FIXED;
   const hourly = createGrowthRetentionScheduler({ now: () => new Date(dynamic) });
   const hourlyWork = [], ctx = { waitUntil(promise) { hourlyWork.push(promise); } };

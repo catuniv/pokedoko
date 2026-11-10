@@ -1,5 +1,5 @@
 import { CITIES } from "./cities";
-import { COMMUNITY_ROUTE_MAX_BYTES, COMMUNITY_ROUTE_REVIEW_POLICY, CommunityRouteValidationError, communityGpxFilename, communityRouteGpx, validateCommunityGeometry, validateCommunitySubmission, type CommunityRouteDetail, type CommunityRouteSummary } from "./community-routes";
+import { COMMUNITY_ROUTE_MAX_BYTES, COMMUNITY_ROUTE_REVIEW_POLICY, CommunityRouteValidationError, communityGpxFilename, communityRouteGpx, validateCommunityGeometry, validateCommunityRouteMetadata, validateCommunitySubmission, type CommunityRouteDetail, type CommunityRoutePlace, type CommunityRouteSummary } from "./community-routes";
 
 export type CommunityRouteDatabase = Pick<D1Database, "prepare" | "batch">;
 type Row = Record<string, string | number | null>;
@@ -7,7 +7,7 @@ const READ_HEADERS = { "Cache-Control": "no-store", "X-Content-Type-Options": "n
 const UUID = /^[a-f\d]{8}-[a-f\d]{4}-[1-8][a-f\d]{3}-[89ab][a-f\d]{3}-[a-f\d]{12}$/i;
 const COLUMNS = `id, name, city_id, start_name, end_name, start_lat, start_lon, end_lat, end_lon,
   reported_distance_m, computed_distance_m, geometry_type, geometry_validation, point_count,
-  source_url, creator_name, last_checked_at, published_at`;
+  source_url, creator_name, last_checked_at, published_at, reversible, estimated_minutes, is_loop`;
 const PUBLISHED = "status = 'approved' AND rights_reviewed = 1 AND route_reviewed = 1 AND published_at IS NOT NULL";
 const response = (value: unknown, status = 200, extra: Record<string, string> = {}) => Response.json(value, { status, headers: { ...READ_HEADERS, ...extra } });
 const error = (status: number, code: string, message: string, extra: Record<string, string> = {}) => response({ ok: false, error: code, message }, status, extra);
@@ -64,6 +64,9 @@ function summary(row: Row): CommunityRouteSummary {
     gpxAvailable: geometryType !== "none" && row.geometry_validation === "passed" && Number(row.point_count) >= 2,
     pointCount: Number(row.point_count), creatorName: String(row.creator_name), ...(row.source_url ? { sourceUrl: String(row.source_url) } : {}),
     lastCheckedAt: String(row.last_checked_at), publishedAt: new Date(Number(row.published_at) * 1000).toISOString(),
+    reversible: row.reversible === 1 ? true : row.reversible === 0 ? false : null,
+    estimatedMinutes: typeof row.estimated_minutes === "number" && Number.isSafeInteger(row.estimated_minutes) && row.estimated_minutes >= 1 && row.estimated_minutes <= 1440 ? row.estimated_minutes : null,
+    isLoop: row.is_loop === 1 ? true : row.is_loop === 0 ? false : null,
   };
 }
 export async function handleCommunityRoutesGet(request: Request, db?: CommunityRouteDatabase): Promise<Response> {
@@ -81,12 +84,37 @@ export async function handleCommunityRoutesGet(request: Request, db?: CommunityR
     return response({ ok: true, routes: result.results.map(summary), total, page, hasMore: offset + result.results.length < total });
   } catch (cause) { return failure(cause); }
 }
+/** These are contributed endpoint locations, never a mirrored game POI database. */
+export async function handleCommunityRoutePlacesGet(request: Request, db?: CommunityRouteDatabase): Promise<Response> {
+  try {
+    const city = new URL(request.url).searchParams.get("city") ?? "seoul";
+    if (!CITIES.some(item => item.id === city)) return error(400, "invalid_query", "목록에서 도시를 선택해 주세요.");
+    if (!db) return failure(undefined);
+    const [result, count] = await Promise.all([
+      db.prepare(`SELECT id, start_name, end_name, start_lat, start_lon, end_lat, end_lon FROM community_routes WHERE ${PUBLISHED} AND city_id = ? ORDER BY published_at DESC, id DESC LIMIT 200`).bind(city).all<Row>(),
+      db.prepare(`SELECT COUNT(*) AS total FROM community_routes WHERE ${PUBLISHED} AND city_id = ?`).bind(city).first<{ total: number }>(),
+    ]);
+    if (!result.success) return failure(undefined);
+    const places: CommunityRoutePlace[] = [], seen = new Set<string>();
+    const append = (row: Row, side: "start" | "end") => {
+      const name = row[`${side}_name`], latitude = row[`${side}_lat`], longitude = row[`${side}_lon`];
+      if (typeof name !== "string" || !name.trim() || typeof latitude !== "number" || typeof longitude !== "number" || !Number.isFinite(latitude) || !Number.isFinite(longitude) || Math.abs(latitude) > 90 || Math.abs(longitude) > 180) return;
+      const key = JSON.stringify([name, latitude, longitude]);
+      if (seen.has(key)) return;
+      seen.add(key);
+      places.push({ id: `${row.id}:${side}`, name, point: { lat: latitude, lon: longitude }, sourceRouteId: String(row.id) });
+    };
+    for (const row of result.results) { append(row, "start"); append(row, "end"); }
+    return response({ ok: true, places: places.slice(0, 300), truncated: (count?.total ?? 0) > result.results.length || places.length > 300 });
+  } catch (cause) { return failure(cause); }
+}
 async function findRoute(id: string, db?: CommunityRouteDatabase): Promise<CommunityRouteDetail | null> {
   if (!UUID.test(id)) return null;
   if (!db) throw new Error("Missing DB");
   const row = await db.prepare(`SELECT ${COLUMNS}, points_json, rights_basis, rights_details, notes FROM community_routes WHERE ${PUBLISHED} AND id = ?`).bind(id).first<Row>();
   if (!row) return null;
   const base = summary(row);
+  validateCommunityRouteMetadata(base, base.startPoint, base.endPoint);
   const route: CommunityRouteDetail = { ...base, rightsBasis: row.rights_basis as CommunityRouteDetail["rightsBasis"], rightsDetails: String(row.rights_details), notes: String(row.notes) };
   if (base.gpxAvailable) {
     // Revalidate stored geometry before either a map or GPX can use it.
@@ -129,12 +157,13 @@ export async function handleCommunityRouteSubmission(request: Request, db?: Comm
       (id, fingerprint, visitor_hash, name, city_id, start_name, end_name, start_lat, start_lon, end_lat, end_lon,
        reported_distance_m, computed_distance_m, geometry_type, geometry_validation, points_json, point_count,
        source_url, creator_name, rights_basis, rights_details, permission_confirmed, in_game_confirmed,
-       last_checked_at, notes, status, hour_bucket, day_bucket, created_at, submission_policy)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, ?, ?, 'pending', ?, ?, ?, ?)
+       last_checked_at, notes, status, hour_bucket, day_bucket, created_at, submission_policy, reversible, estimated_minutes, is_loop)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, ?, ?, 'pending', ?, ?, ?, ?, ?, ?, ?)
       ON CONFLICT(fingerprint) DO NOTHING RETURNING id`)
       .bind(id, fingerprint, visitorHash, route.name, route.cityId, route.startName, route.endName, route.startPoint.lat, route.startPoint.lon, route.endPoint?.lat ?? null, route.endPoint?.lon ?? null,
         route.reportedDistanceMeters, checked?.computedDistanceMeters ?? null, route.geometryType, checked ? "passed" : "missing", checked ? JSON.stringify(checked.points) : null, checked?.pointCount ?? 0,
-        route.sourceUrl ?? "", route.creatorName, route.rightsBasis, route.rightsDetails, route.lastCheckedAt, route.notes, hour, day, seconds, COMMUNITY_ROUTE_REVIEW_POLICY).first<{ id: string }>();
+        route.sourceUrl ?? "", route.creatorName, route.rightsBasis, route.rightsDetails, route.lastCheckedAt, route.notes, hour, day, seconds, COMMUNITY_ROUTE_REVIEW_POLICY,
+        route.reversible === undefined ? null : Number(route.reversible), route.estimatedMinutes ?? null, route.isLoop === undefined ? null : Number(route.isLoop)).first<{ id: string }>();
     if (inserted) return response({ ok: true, id, status: "pending" }, 201);
     // Never disclose another submitter's pending ID, its existence, or moderation status.
     const duplicate = await db.prepare("SELECT id FROM community_routes WHERE fingerprint = ? AND visitor_hash = ? AND status = 'pending'").bind(fingerprint, visitorHash).first<{ id: string }>();

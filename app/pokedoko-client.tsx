@@ -322,7 +322,7 @@ export default function Pokedoko({
           <a className="nav-link" href={`/gpx?city=${encodeURIComponent(selectedCity)}`}><Route size={19} />GPX 자동사냥</a>
         </nav>
         <div className="sidebar-caption saved-caption">나의 플래너</div>
-        <a className="nav-link" href={`/routes?city=${encodeURIComponent(selectedCity)}`}><MapPin size={18} />지가르데 셀 루트</a>
+        <div className="community-side-links"><a className="nav-link" href={`/routes?city=${encodeURIComponent(selectedCity)}`}><MapPin size={18} />지가르데 셀 루트</a><a className="nav-link" href={`/trades?city=${encodeURIComponent(selectedCity)}`}><ArrowDownUp size={18} />포켓몬 교환</a></div>
         <button
           className="nav-link"
           onClick={() => {

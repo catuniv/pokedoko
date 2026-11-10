@@ -104,6 +104,7 @@ export const communityRoutes = sqliteTable("community_routes", {
   startLat: real("start_lat").notNull(), startLon: real("start_lon").notNull(), endLat: real("end_lat"), endLon: real("end_lon"),
   reportedDistanceM: real("reported_distance_m").notNull(), computedDistanceM: real("computed_distance_m"),
   geometryType: text("geometry_type").notNull().default("none"), geometryValidation: text("geometry_validation").notNull().default("missing"),
+  reversible: integer("reversible"), estimatedMinutes: integer("estimated_minutes"), isLoop: integer("is_loop"),
   pointsJson: text("points_json"), pointCount: integer("point_count").notNull().default(0),
   sourceUrl: text("source_url").notNull().default(""), creatorName: text("creator_name").notNull(),
   rightsBasis: text("rights_basis").notNull(), rightsDetails: text("rights_details").notNull(),
@@ -134,4 +135,37 @@ export const communityRouteRateLimits = sqliteTable("community_route_rate_limits
   index("community_route_rate_expiry_idx").on(table.expiresAt),
   check("community_route_rate_kind_check", sql`${table.kind} IN ('hour','day')`),
   check("community_route_rate_count_check", sql`${table.count} >= 0`),
+]);
+
+/** Recruitment posts, never a game inventory or trade execution service. */
+export const tradePosts = sqliteTable("trade_posts", {
+  id: text("id").primaryKey(), ownerKeyHash: text("owner_key_hash").notNull(), visitorHash: text("visitor_hash").notNull(),
+  trainerName: text("trainer_name").notNull(), cityId: text("city_id").notNull(), mode: text("mode").notNull(),
+  offerSpeciesId: integer("offer_species_id").notNull(), offerShiny: integer("offer_shiny").notNull().default(0), offerForm: text("offer_form").notNull().default(""),
+  wantSpeciesId: integer("want_species_id").notNull(), wantShiny: integer("want_shiny").notNull().default(0), wantForm: text("want_form").notNull().default(""),
+  contactKind: text("contact_kind").notNull(), contactValue: text("contact_value").notNull(), contactPublicConsent: integer("contact_public_consent").notNull(),
+  notes: text("notes").notNull().default(""), status: text("status").notNull().default("pending"),
+  createdAt: integer("created_at").notNull(), expiresAt: integer("expires_at").notNull(),
+  hourBucket: integer("hour_bucket").notNull(), dayBucket: integer("day_bucket").notNull(),
+  reviewNote: text("review_note").notNull().default(""), reviewedAt: integer("reviewed_at"), publishedAt: integer("published_at"),
+}, table => [
+  uniqueIndex("trade_owner_key_idx").on(table.ownerKeyHash),
+  index("trade_public_idx").on(table.status, table.cityId, table.mode, table.expiresAt),
+  index("trade_expiry_idx").on(table.expiresAt),
+  check("trade_mode_check", sql`${table.mode} IN ('local','remote')`),
+  check("trade_status_check", sql`${table.status} IN ('pending','approved','closed','removed','rejected')`),
+  check("trade_contact_check", sql`${table.contactKind} IN ('friend_code','discord','kakao') AND ${table.contactPublicConsent} = 1`),
+  check("trade_shiny_check", sql`${table.offerShiny} IN (0,1) AND ${table.wantShiny} IN (0,1)`),
+  check("trade_expiry_check", sql`${table.expiresAt} > ${table.createdAt} AND ${table.expiresAt} <= ${table.createdAt} + 604800`),
+  check("trade_publication_check", sql`${table.status} != 'approved' OR (${table.publishedAt} IS NOT NULL AND ${table.reviewedAt} IS NOT NULL AND length(${table.reviewNote}) > 0)`),
+]);
+
+export const tradePostRateLimits = sqliteTable("trade_post_rate_limits", {
+  key: text("key").notNull(), kind: text("kind").notNull(), windowStart: integer("window_start").notNull(),
+  count: integer("count").notNull().default(0), expiresAt: integer("expires_at").notNull(),
+}, table => [
+  primaryKey({ columns: [table.key, table.kind, table.windowStart] }),
+  index("trade_rate_expiry_idx").on(table.expiresAt),
+  check("trade_rate_kind_check", sql`${table.kind} IN ('hour','day')`),
+  check("trade_rate_count_check", sql`${table.count} >= 0`),
 ]);

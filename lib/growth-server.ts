@@ -130,6 +130,8 @@ export async function pruneGrowthData(db?: GrowthDatabase, now = new Date(), lim
     ["growth_daily_aggregates", "day <= ?", kstDay(new Date(now.getTime() - 90 * DAY))],
     ["growth_rate_limits", "expires_at <= ?", seconds],
     ["community_route_rate_limits", "expires_at <= ?", seconds],
+    ["trade_post_rate_limits", "expires_at <= ?", seconds],
+    ["trade_posts", "expires_at <= ?", seconds - 30 * DAY / 1000],
   ] as const;
   const result = await db.batch(rules.map(([table, where, cutoff]) => db.prepare(`DELETE FROM ${table} WHERE rowid IN (SELECT rowid FROM ${table} WHERE ${where} LIMIT ?)`)
     .bind(cutoff, limit)));

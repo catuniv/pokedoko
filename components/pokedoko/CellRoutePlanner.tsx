@@ -112,7 +112,7 @@ export default function CellRoutePlanner() {
     if (routes.length >= CELL_ROUTE_MAX_ROUTES) return "기기에 경로 20개까지 등록할 수 있어요. 기존 경로를 지운 뒤 추가해 주세요.";
     const id = `community-${route.id}`;
     if (routes.some((item) => item.id === id || item.cityId === route.cityId && item.name === route.name && JSON.stringify(item.points) === JSON.stringify(route.points))) return "이미 이 기기에 추가한 루트예요.";
-    const imported: CellRoute = { id, name: route.name, cityId: route.cityId, points: route.points.map((point) => ({ ...point })), reversible: false, sourceUrl: route.sourceUrl, createdAt: new Date().toISOString() };
+    const imported: CellRoute = { id, name: route.name, cityId: route.cityId, points: route.points.map((point) => ({ ...point })), reversible: route.reversible === true, sourceUrl: route.sourceUrl, createdAt: new Date().toISOString() };
     setDirty(true); setRoutes((current) => [...current, imported]); selectCity(route.cityId);
     return null;
   }
@@ -164,7 +164,7 @@ export default function CellRoutePlanner() {
     setCompletions((records) => records.filter((record) => record.routeId !== route.id));
   }
   return <div className="cell-routes-page">
-    <header className="cell-routes-top"><a href="/live" className="cell-routes-brand">poke<strong>doko</strong></a><nav aria-label="주요 메뉴"><a href="/live">실시간 레이드</a><a href="/calendar">이벤트 달력</a><a href="/gpx">GPX 자동사냥</a><a href="/routes" aria-current="page">셀 루트 계획</a></nav></header>
+    <header className="cell-routes-top"><a href="/live" className="cell-routes-brand">poke<strong>doko</strong></a><nav aria-label="주요 메뉴"><a href="/live">실시간 레이드</a><a href="/calendar">이벤트 달력</a><a href="/gpx">GPX 자동사냥</a><a href="/routes" aria-current="page">셀 루트 목록</a><a href="/trades">포켓몬 교환</a></nav></header>
     <main className="cell-routes-main">
       <section className="cell-routes-heading"><span className="cell-eyebrow"><Route size={15} /> POKÉMON GO ROUTES</span><h1>지가르데 셀 루트 목록</h1><p>지역별 게임 루트를 확인하고, 전체 경로가 있는 루트는 GPX로 내려받으세요.</p><div className="cell-route-source-status"><span>사용자 제보 · 검토 후 공개</span><p>공유 허락과 게임 루트 정보를 확인한 제보를 모아요. 파밍용 GPX는 게임 루트 목록에 등록하지 않습니다.</p></div></section>
       <CommunityRouteDirectory cityId={cityId} onCityChange={selectCity} onImport={importPublicRoute} />

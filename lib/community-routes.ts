@@ -3,6 +3,8 @@ import type { CellPoint } from "./cell-routes";
 
 export type CommunityGeometryType = "none" | "original" | "estimated" | "reconstructed";
 export type CommunityRightsBasis = "creator" | "permission" | "license";
+export type CommunityRouteMetadata = { reversible: boolean | null; estimatedMinutes: number | null; isLoop: boolean | null };
+export type CommunityRoutePlace = { id: string; name: string; point: CellPoint; sourceRouteId: string };
 export type CommunityRouteSummary = {
   id: string; name: string; cityId: string; startName: string; endName: string;
   startPoint: CellPoint; endPoint?: CellPoint; reportedDistanceMeters: number;
@@ -10,7 +12,7 @@ export type CommunityRouteSummary = {
   verificationStatus: "reviewed" | "needs_verification";
   gpxAvailable: boolean; pointCount: number; creatorName: string;
   sourceUrl?: string; lastCheckedAt: string; publishedAt: string;
-};
+} & CommunityRouteMetadata;
 export type CommunityRouteDetail = CommunityRouteSummary & {
   points?: CellPoint[]; rightsBasis: CommunityRightsBasis; rightsDetails: string; notes: string;
 };
@@ -21,6 +23,8 @@ export type CommunityRouteSubmission = {
   rightsDetails: string; allowRedistribution: true; inGameConfirmed: true;
   lastCheckedAt: string; geometryType: CommunityGeometryType; points?: CellPoint[];
   notes: string; website?: string;
+  /** Unknown metadata is omitted so existing v1 fingerprints stay identical. */
+  reversible?: boolean; estimatedMinutes?: number; isLoop?: boolean;
 };
 export const COMMUNITY_ROUTE_MAX_POINTS = 2000;
 export const COMMUNITY_ROUTE_MAX_BYTES = 192 * 1024;
@@ -53,6 +57,23 @@ export function communityDistanceMeters(a: CellPoint, b: CellPoint): number {
 export function communityGeometryLabel(type: CommunityGeometryType): string {
   return ({ none: "전체 경로 미확보", original: "전체 경로 데이터 있음", estimated: "추정 경로", reconstructed: "복원 경로" })[type];
 }
+/** Unknown is distinct from an explicitly confirmed false value. */
+export function validateCommunityRouteMetadata(input: { reversible?: unknown; estimatedMinutes?: unknown; isLoop?: unknown }, startPoint?: CellPoint, endPoint?: CellPoint): Pick<CommunityRouteSubmission, "reversible" | "estimatedMinutes" | "isLoop"> {
+  const optionalBoolean = (value: unknown, label: string): boolean | undefined => {
+    if (value === undefined || value === null) return undefined;
+    if (typeof value !== "boolean") return invalid("invalid_route_metadata", `${label}를 확인해 주세요.`);
+    return value;
+  };
+  const reversible = optionalBoolean(input.reversible, "역방향 가능 여부"), isLoop = optionalBoolean(input.isLoop, "순환 루트 여부");
+  const minutes = input.estimatedMinutes;
+  if (minutes !== undefined && minutes !== null && (typeof minutes !== "number" || !Number.isSafeInteger(minutes) || minutes < 1 || minutes > 1440)) return invalid("invalid_route_duration", "예상 시간은 1~1,440분 사이의 정수로 입력해 주세요.");
+  if (isLoop === true && (!startPoint || !endPoint || communityDistanceMeters(point(startPoint), point(endPoint)) > 100)) return invalid("loop_endpoint_mismatch", "순환 루트는 시작·종료 위치를 모두 지정하고 두 위치가 100m 이내여야 합니다.");
+  return {
+    ...(reversible !== undefined ? { reversible } : {}),
+    ...(typeof minutes === "number" ? { estimatedMinutes: minutes } : {}),
+    ...(isLoop !== undefined ? { isLoop } : {}),
+  };
+}
 /** Numerical checks never establish that a trace is a game-approved Route. */
 export function validateCommunityGeometry(input: unknown, reportedDistanceMeters: number, startPoint?: CellPoint, endPoint?: CellPoint): { points: CellPoint[]; computedDistanceMeters: number; pointCount: number } {
   if (!Array.isArray(input) || input.length < 2 || input.length > COMMUNITY_ROUTE_MAX_POINTS) return invalid("invalid_point_count", "전체 경로 좌표는 2~2,000개여야 합니다.");
@@ -70,7 +91,7 @@ export function validateCommunityGeometry(input: unknown, reportedDistanceMeters
   return { points, computedDistanceMeters, pointCount: points.length };
 }
 export function validateCommunitySubmission(input: unknown, now = new Date()): CommunityRouteSubmission {
-  const allowed = new Set(["visitorId", "name", "cityId", "startName", "endName", "startPoint", "endPoint", "reportedDistanceMeters", "sourceUrl", "creatorName", "rightsBasis", "rightsDetails", "allowRedistribution", "inGameConfirmed", "lastCheckedAt", "geometryType", "points", "notes", "website"]);
+  const allowed = new Set(["visitorId", "name", "cityId", "startName", "endName", "startPoint", "endPoint", "reportedDistanceMeters", "sourceUrl", "creatorName", "rightsBasis", "rightsDetails", "allowRedistribution", "inGameConfirmed", "lastCheckedAt", "geometryType", "points", "notes", "website", "reversible", "estimatedMinutes", "isLoop"]);
   if (!object(input) || Object.keys(input).some(key => !allowed.has(key)) || typeof input.visitorId !== "string" || !UUID.test(input.visitorId)) return invalid("invalid_payload", "제보 내용을 다시 확인해 주세요.");
   if (input.allowRedistribution !== true || input.inGameConfirmed !== true) return invalid("consent_required", "게임 루트 확인과 공개 이용 허락에 동의해 주세요.");
   if (typeof input.cityId !== "string" || !CITY_IDS.has(input.cityId)) return invalid("invalid_city", "목록에서 도시를 선택해 주세요.");
@@ -90,6 +111,7 @@ export function validateCommunitySubmission(input: unknown, now = new Date()): C
   const rightsDetails = text(input.rightsDetails, "이용 허락 근거", 1000, true, true) || (rightsBasis === "creator" ? "본인이 제작하고 공개 이용을 허락한 자료" : "");
   if (rightsBasis !== "creator" && (!sourceUrl || Array.from(rightsDetails).length < 20)) return invalid("rights_evidence_required", "제작자 허락 또는 라이선스의 공개 주소와 근거를 20자 이상 적어 주세요.");
   const startPoint = point(input.startPoint), endPoint = input.endPoint === undefined ? undefined : point(input.endPoint);
+  const metadata = validateCommunityRouteMetadata(input, startPoint, endPoint);
   if (communityDistanceMeters(startPoint, city) > 100000 || endPoint && communityDistanceMeters(endPoint, city) > 150000) return invalid("city_location_mismatch", "선택한 도시와 루트 위치가 너무 멉니다. 도시와 좌표를 확인해 주세요.");
   const reportedDistanceMeters = input.reportedDistanceMeters;
   if (typeof reportedDistanceMeters !== "number" || !Number.isFinite(reportedDistanceMeters) || reportedDistanceMeters < 100 || reportedDistanceMeters > 100000) return invalid("invalid_distance", "게임에 표시된 거리를 100~100,000m 범위로 입력해 주세요.");
@@ -106,6 +128,7 @@ export function validateCommunitySubmission(input: unknown, now = new Date()): C
     allowRedistribution: true, inGameConfirmed: true, lastCheckedAt: date, geometryType,
     ...(points ? { points } : {}), notes: text(input.notes, "설명", 1000, true, true),
     ...(input.website !== undefined ? { website: text(input.website, "website", 200, true) } : {}),
+    ...metadata,
   };
 }
 const xml = (value: string): string => value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\ufffe\uffff\ud800-\udfff]/gu, "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[char]!);
@@ -120,8 +143,10 @@ function decimal(value: number): string {
 export function communityRouteGpx(route: CommunityRouteDetail): string {
   if (!route.gpxAvailable || !route.points || route.geometryType === "none") return invalid("geometry_unavailable", "다운로드할 전체 경로가 없습니다.");
   const checked = validateCommunityGeometry(route.points, route.reportedDistanceMeters, route.startPoint, route.endPoint);
+  const metadata = validateCommunityRouteMetadata(route, route.startPoint, route.endPoint);
+  const metadataXml = `${metadata.reversible !== undefined ? `<pokedoko:reversible>${metadata.reversible}</pokedoko:reversible>` : ""}${metadata.estimatedMinutes !== undefined ? `<pokedoko:estimatedMinutes>${metadata.estimatedMinutes}</pokedoko:estimatedMinutes>` : ""}${metadata.isLoop !== undefined ? `<pokedoko:isLoop>${metadata.isLoop}</pokedoko:isLoop>` : ""}`;
   const description = `${communityGeometryLabel(route.geometryType)}; ${route.geometryType === "original" ? "커뮤니티 제공·운영자 검토 자료이며 공식 게임 내보내기를 보증하지 않음" : "게임 원본 경로와 동일함을 보장하지 않음"}; 공개 제작자: ${route.creatorName}; 이용 근거: ${route.rightsDetails}; 게임 확인일: ${route.lastCheckedAt}`;
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="pokedoko" xmlns="http://www.topografix.com/GPX/1/1" xmlns:pokedoko="urn:pokedoko:routes:1"><metadata><name>${xml(route.name)}</name><desc>${xml(description)}</desc>${route.sourceUrl ? `<link href="${xml(route.sourceUrl)}"><text>출처와 이용 허락</text></link>` : ""}<extensions><pokedoko:geometryType>${route.geometryType}</pokedoko:geometryType><pokedoko:verificationStatus>${route.verificationStatus}</pokedoko:verificationStatus></extensions></metadata><trk><name>${xml(route.name)}</name><desc>${xml(description)}</desc><trkseg>${checked.points.map(p => `<trkpt lat="${decimal(p.lat)}" lon="${decimal(p.lon === 180 ? -180 : p.lon)}"></trkpt>`).join("")}</trkseg></trk></gpx>\n`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="pokedoko" xmlns="http://www.topografix.com/GPX/1/1" xmlns:pokedoko="urn:pokedoko:routes:1"><metadata><name>${xml(route.name)}</name><desc>${xml(description)}</desc>${route.sourceUrl ? `<link href="${xml(route.sourceUrl)}"><text>출처와 이용 허락</text></link>` : ""}<extensions><pokedoko:geometryType>${route.geometryType}</pokedoko:geometryType><pokedoko:verificationStatus>${route.verificationStatus}</pokedoko:verificationStatus>${metadataXml}</extensions></metadata><trk><name>${xml(route.name)}</name><desc>${xml(description)}</desc><trkseg>${checked.points.map(p => `<trkpt lat="${decimal(p.lat)}" lon="${decimal(p.lon === 180 ? -180 : p.lon)}"></trkpt>`).join("")}</trkseg></trk></gpx>\n`;
 }
 export function communityGpxFilename(route: Pick<CommunityRouteSummary, "cityId" | "name" | "geometryType">): string {
   const name = route.name.normalize("NFC").replace(/[^\p{L}\p{N}._-]+/gu, "_").replace(/^\.+/, "").slice(0, 90) || "route";

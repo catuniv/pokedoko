@@ -6,6 +6,7 @@ import { CITIES } from "@/lib/cities";
 import { CELL_ROUTE_MAX_BYTES, cellPathKm, parseCellGpx, type CellPoint } from "@/lib/cell-routes";
 import { communityGeometryLabel, communityGpxFilename, type CommunityGeometryType, type CommunityRouteDetail, type CommunityRouteSummary } from "@/lib/community-routes";
 import RouteGeometryMap from "./RouteGeometryMap";
+import RouteLocationPicker, { type RoutePickerPlace } from "./RouteLocationPicker";
 import "./community-routes.css";
 
 const SUBMITTER_STORAGE_KEY = "pokedoko.route-submitter.v1";
@@ -26,6 +27,9 @@ function validSummary(value: unknown): value is CommunityRouteSummary {
     && (value.computedDistanceMeters === undefined || typeof value.computedDistanceMeters === "number" && Number.isFinite(value.computedDistanceMeters))
     && typeof value.pointCount === "number" && Number.isSafeInteger(value.pointCount) && value.pointCount >= 0 && value.pointCount <= 2000
     && typeof value.gpxAvailable === "boolean" && (value.verificationStatus === "reviewed" || value.verificationStatus === "needs_verification")
+    && (value.reversible === undefined || value.reversible === null || typeof value.reversible === "boolean")
+    && (value.isLoop === undefined || value.isLoop === null || typeof value.isLoop === "boolean")
+    && (value.estimatedMinutes === undefined || value.estimatedMinutes === null || typeof value.estimatedMinutes === "number" && Number.isInteger(value.estimatedMinutes) && value.estimatedMinutes >= 1 && value.estimatedMinutes <= 1440)
     && (value.geometryType === "none" || value.geometryType === "original" || value.geometryType === "estimated" || value.geometryType === "reconstructed") && validSource(value.sourceUrl);
 }
 function validDetail(value: unknown): value is CommunityRouteDetail {
@@ -48,6 +52,16 @@ function parsePoint(value: string, label: string): CellPoint {
   const [lat, lon] = numbers.map(Number);
   if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) throw new Error(`${label}의 위도·경도 범위를 확인해 주세요.`);
   return { lat, lon };
+}
+function optionalPoint(value: string): CellPoint | undefined { try { return parsePoint(value, "좌표"); } catch { return undefined; } }
+function yesNo(value: boolean | null | undefined, yes: string, no: string): string { return value === true ? yes : value === false ? no : "미확인"; }
+function readPlaces(value: unknown): { places: RoutePickerPlace[]; truncated: boolean } {
+  if (!record(value) || value.ok !== true || !Array.isArray(value.places) || value.places.length > 300 || typeof value.truncated !== "boolean") throw new Error("등록된 위치 응답을 확인하지 못했어요.");
+  const places: RoutePickerPlace[] = value.places.map(place => {
+    if (!record(place) || typeof place.id !== "string" || typeof place.name !== "string" || !validPoint(place.point) || typeof place.sourceRouteId !== "string") throw new Error("등록된 위치 정보를 확인하지 못했어요.");
+    return { id: place.id, name: place.name, point: place.point, sourceRouteId: place.sourceRouteId };
+  });
+  return { places, truncated: value.truncated };
 }
 async function responseMessage(response: Response, fallback: string): Promise<string> {
   try {
@@ -123,7 +137,7 @@ function PublicRouteCard({ route, onImport }: { route: CommunityRouteSummary; on
   return <article className="community-route-card">
     <div className="community-route-card-top"><div><span className={`community-route-status community-route-status-${displayed.geometryType}`}>{displayed.geometryType === "none" ? "전체 경로 미확보" : communityGeometryLabel(displayed.geometryType)}</span><h3>{route.name}</h3></div><strong className="community-route-distance">{distance(route.reportedDistanceMeters)}</strong></div>
     <p className="community-route-start"><MapPin size={14} /><span>시작 · {route.startName}</span></p>
-    <div className="community-route-card-meta"><span>{route.gpxAvailable ? "GPX 제공" : "GPX 없음"}</span><span>{route.verificationStatus === "reviewed" ? "운영자 확인" : "검증 필요"}</span><span>게임 확인일 {route.lastCheckedAt}</span></div>
+    <div className="community-route-card-meta"><span>{route.gpxAvailable ? "GPX 제공" : "GPX 없음"}</span><span>{route.verificationStatus === "reviewed" ? "운영자 확인" : "검증 필요"}</span><span>게임 확인일 {route.lastCheckedAt}</span><span>역방향 {yesNo(displayed.reversible, "가능", "불가")}</span>{typeof displayed.estimatedMinutes === "number" && <span>약 {displayed.estimatedMinutes}분</span>}{displayed.isLoop === true && <span>순환 루트</span>}</div>
     <div className="community-route-actions"><button type="button" className="community-secondary-button" onClick={toggle} aria-expanded={open}>{open ? <ChevronUp size={15} /> : <ChevronDown size={15} />}{open ? "접기" : "지도 보기"}</button>{route.gpxAvailable && <button type="button" className="community-download-button" onClick={() => void download()} disabled={downloading}>{downloading ? <LoaderCircle size={15} className="community-spin" /> : <ArrowDownToLine size={15} />}{downloading ? "파일 받는 중" : "GPX 다운로드"}</button>}</div>
     {downloadError && <p className="cell-form-error" role="alert">{downloadError}</p>}
     {open && <div className="community-route-detail">
@@ -131,7 +145,7 @@ function PublicRouteCard({ route, onImport }: { route: CommunityRouteSummary; on
       {error && <div className="cell-form-error" role="alert"><p>{error}</p><button type="button" className="community-inline-button" onClick={() => void loadDetail()}>다시 조회</button></div>}
       {detail && <>
         <RouteGeometryMap name={detail.name} points={detail.points} start={detail.startPoint} end={detail.endPoint} kindLabel={communityGeometryLabel(detail.geometryType)} />
-        <dl className="community-route-facts"><div><dt>시작 위치</dt><dd>{detail.startName}<button type="button" className="community-coordinate-button" onClick={() => void coordinateCopy.copy(coordinates(detail.startPoint))}>{coordinateCopy.copied === coordinates(detail.startPoint) ? <Check size={12} /> : null}{coordinateCopy.copied === coordinates(detail.startPoint) ? "복사됨" : coordinates(detail.startPoint)}</button></dd></div><div><dt>종료 위치</dt><dd>{detail.endName || "미확인"}{detail.endPoint && <button type="button" className="community-coordinate-button" onClick={() => void coordinateCopy.copy(coordinates(detail.endPoint!))}>{coordinateCopy.copied === coordinates(detail.endPoint) ? "복사됨" : coordinates(detail.endPoint)}</button>}</dd></div><div><dt>경로 데이터</dt><dd>{detail.geometryType === "none" ? "전체 경로 미확보" : `${communityGeometryLabel(detail.geometryType)} · ${detail.pointCount.toLocaleString()}점`}{typeof detail.computedDistanceMeters === "number" && <small>좌표 계산 거리 {distance(detail.computedDistanceMeters)}</small>}</dd></div><div><dt>제작자</dt><dd>{detail.creatorName}</dd></div><div><dt>이용 근거</dt><dd>{detail.rightsDetails}</dd></div></dl>
+        <dl className="community-route-facts"><div><dt>시작 위치</dt><dd>{detail.startName}<button type="button" className="community-coordinate-button" onClick={() => void coordinateCopy.copy(coordinates(detail.startPoint))}>{coordinateCopy.copied === coordinates(detail.startPoint) ? <Check size={12} /> : null}{coordinateCopy.copied === coordinates(detail.startPoint) ? "복사됨" : coordinates(detail.startPoint)}</button></dd></div><div><dt>종료 위치</dt><dd>{detail.endName || "미확인"}{detail.endPoint && <button type="button" className="community-coordinate-button" onClick={() => void coordinateCopy.copy(coordinates(detail.endPoint!))}>{coordinateCopy.copied === coordinates(detail.endPoint) ? "복사됨" : coordinates(detail.endPoint)}</button>}</dd></div><div><dt>역방향</dt><dd>{yesNo(detail.reversible, "진행 가능", "진행 불가")}</dd></div><div><dt>예상 시간</dt><dd>{typeof detail.estimatedMinutes === "number" ? `${detail.estimatedMinutes}분 · 게임 표시 기준` : "미확인"}</dd></div><div><dt>순환 루트</dt><dd>{yesNo(detail.isLoop, "시작 위치로 돌아오는 루트", "시작과 끝이 다른 루트")}</dd></div><div><dt>경로 데이터</dt><dd>{detail.geometryType === "none" ? "전체 경로 미확보" : `${communityGeometryLabel(detail.geometryType)} · ${detail.pointCount.toLocaleString()}점`}{typeof detail.computedDistanceMeters === "number" && <small>좌표 계산 거리 {distance(detail.computedDistanceMeters)}</small>}</dd></div><div><dt>제작자</dt><dd>{detail.creatorName}</dd></div><div><dt>이용 근거</dt><dd>{detail.rightsDetails}</dd></div></dl>
         {coordinateCopy.fallback && <label className="community-copy-fallback">자동 복사가 막혔어요. 좌표를 직접 복사해 주세요.<div><input readOnly value={coordinateCopy.fallback} onFocus={(event) => event.currentTarget.select()} aria-label="직접 복사할 루트 좌표" /><button type="button" onClick={coordinateCopy.close} aria-label="좌표 복사 안내 닫기"><X size={14} /></button></div></label>}
         {detail.sourceUrl && <a href={detail.sourceUrl} className="community-source-link" target="_blank" rel="noreferrer">제작자·원문 확인 <ArrowUpRight size={13} /></a>}
         {detail.notes && <p className="community-route-notes">{detail.notes}</p>}
@@ -143,22 +157,43 @@ function PublicRouteCard({ route, onImport }: { route: CommunityRouteSummary; on
   </article>;
 }
 
-type SubmissionForm = { name: string; cityId: string; startName: string; endName: string; startCoordinates: string; endCoordinates: string; distance: string; sourceUrl: string; creatorName: string; rightsBasis: "creator" | "permission" | "license"; rightsDetails: string; lastCheckedAt: string; geometryType: Exclude<CommunityGeometryType, "none">; notes: string; inGameConfirmed: boolean; allowRedistribution: boolean; website: string };
+type SubmissionForm = { name: string; cityId: string; startName: string; endName: string; startCoordinates: string; endCoordinates: string; distance: string; reversible: "" | "true" | "false"; isLoop: "" | "true" | "false"; estimatedMinutes: string; sourceUrl: string; creatorName: string; rightsBasis: "creator" | "permission" | "license"; rightsDetails: string; lastCheckedAt: string; geometryType: Exclude<CommunityGeometryType, "none">; notes: string; inGameConfirmed: boolean; allowRedistribution: boolean; website: string };
 function todayForCity(cityId: string): string {
   const city = CITIES.find((item) => item.id === cityId) ?? CITIES[0];
   const parts = new Intl.DateTimeFormat("en-CA", { timeZone: city.zone, year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
   const part = (kind: string) => parts.find((item) => item.type === kind)!.value;
   return `${part("year")}-${part("month")}-${part("day")}`;
 }
-function newForm(cityId: string): SubmissionForm { return { name: "", cityId, startName: "", endName: "", startCoordinates: "", endCoordinates: "", distance: "", sourceUrl: "", creatorName: "", rightsBasis: "creator", rightsDetails: "", lastCheckedAt: todayForCity(cityId), geometryType: "original", notes: "", inGameConfirmed: false, allowRedistribution: false, website: "" }; }
+function newForm(cityId: string): SubmissionForm { return { name: "", cityId, startName: "", endName: "", startCoordinates: "", endCoordinates: "", distance: "", reversible: "", isLoop: "", estimatedMinutes: "", sourceUrl: "", creatorName: "", rightsBasis: "creator", rightsDetails: "", lastCheckedAt: todayForCity(cityId), geometryType: "original", notes: "", inGameConfirmed: false, allowRedistribution: false, website: "" }; }
 
 function RouteSubmissionForm({ cityId }: { cityId: string }) {
   const [form, setForm] = useState(() => newForm(cityId));
   const [points, setPoints] = useState<CellPoint[] | undefined>(), [filename, setFilename] = useState("");
   const [fileReading, setFileReading] = useState(false), [sending, setSending] = useState(false);
   const [error, setError] = useState(""), [fileError, setFileError] = useState(""), [success, setSuccess] = useState<{ id: string; duplicate: boolean } | null>(null);
+  const [mapSelection, setMapSelection] = useState<"start" | "end">("start");
+  const [places, setPlaces] = useState<RoutePickerPlace[]>([]), [placesLoading, setPlacesLoading] = useState(true), [placesError, setPlacesError] = useState(""), [placesTruncated, setPlacesTruncated] = useState(false), [placesRefresh, setPlacesRefresh] = useState(0);
   const file = useRef<HTMLInputElement>(null), fileRequest = useRef(0), visitor = useRef<string | null>(null);
   useEffect(() => () => { fileRequest.current++; }, []);
+  useEffect(() => {
+    let active = true;
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 15_000);
+    setPlaces([]); setPlacesError(""); setPlacesLoading(true); setPlacesTruncated(false);
+    void (async () => {
+      try {
+        const response = await fetch(`/api/routes/places?city=${encodeURIComponent(form.cityId)}`, { headers: { Accept: "application/json" }, signal: controller.signal });
+        if (!response.ok) throw new Error(await responseMessage(response, "등록된 위치를 불러오지 못했어요."));
+        const result = readPlaces(await response.json());
+        if (active) { setPlaces(result.places); setPlacesTruncated(result.truncated); }
+      } catch (failure) { if (active) setPlacesError(failure instanceof Error && failure.name !== "AbortError" ? failure.message : "위치 조회 시간이 초과됐어요. 다시 시도해 주세요."); }
+      finally { clearTimeout(timer); if (active) setPlacesLoading(false); }
+    })();
+    return () => { active = false; controller.abort(); clearTimeout(timer); };
+  }, [form.cityId, placesRefresh]);
+  function pickLocation(target: "start" | "end", point: CellPoint, name?: string) {
+    const value = coordinates(point);
+    setForm(current => target === "start" ? { ...current, startCoordinates: value, ...(name ? { startName: name } : {}), ...(current.isLoop === "true" ? { endCoordinates: value, endName: name || current.startName } : {}) } : { ...current, endCoordinates: value, ...(name ? { endName: name } : {}) });
+  }
   function change<K extends keyof SubmissionForm>(key: K, value: SubmissionForm[K]) { setForm((current) => ({ ...current, [key]: value })); }
   async function readFile(selected: File | undefined) {
     const request = ++fileRequest.current;
@@ -172,8 +207,11 @@ function RouteSubmissionForm({ cityId }: { cityId: string }) {
       const parsed = parseCellGpx(text, undefined, { preserveConsecutiveDuplicates: true });
       const document = new DOMParser().parseFromString(text, "application/xml");
       const declaredKind = document.getElementsByTagNameNS("*", "geometryType")[0]?.textContent?.trim();
+      const declaredReverse = document.getElementsByTagNameNS("*", "reversible")[0]?.textContent?.trim();
+      const declaredLoop = document.getElementsByTagNameNS("*", "isLoop")[0]?.textContent?.trim();
+      const declaredMinutes = document.getElementsByTagNameNS("*", "estimatedMinutes")[0]?.textContent?.trim();
       setPoints(parsed); setFilename(selected.name);
-      setForm((current) => ({ ...current, startCoordinates: current.startCoordinates.trim() || coordinates(parsed[0]), endCoordinates: current.endCoordinates.trim() || coordinates(parsed.at(-1)!), geometryType: declaredKind === "estimated" || declaredKind === "reconstructed" || declaredKind === "original" ? declaredKind : current.geometryType }));
+      setForm((current) => ({ ...current, startCoordinates: current.startCoordinates.trim() || coordinates(parsed[0]), endCoordinates: current.endCoordinates.trim() || coordinates(parsed.at(-1)!), geometryType: declaredKind === "estimated" || declaredKind === "reconstructed" || declaredKind === "original" ? declaredKind : current.geometryType, ...(declaredReverse === "true" || declaredReverse === "false" ? { reversible: declaredReverse } : {}), ...(declaredLoop === "true" || declaredLoop === "false" ? { isLoop: declaredLoop } : {}), ...(declaredMinutes && /^\d{1,4}$/.test(declaredMinutes) && Number(declaredMinutes) >= 1 && Number(declaredMinutes) <= 1440 ? { estimatedMinutes: declaredMinutes } : {}) }));
     } catch (failure) { if (request === fileRequest.current) setFileError(failure instanceof Error ? failure.message : "GPX를 읽지 못했어요."); }
     finally { if (request === fileRequest.current) setFileReading(false); }
   }
@@ -188,18 +226,20 @@ function RouteSubmissionForm({ cityId }: { cityId: string }) {
       const startPoint = parsePoint(form.startCoordinates, "시작 좌표"), endPoint = form.endCoordinates.trim() ? parsePoint(form.endCoordinates, "종료 좌표") : undefined;
       const reportedDistanceMeters = Number(form.distance);
       if (!Number.isFinite(reportedDistanceMeters) || reportedDistanceMeters <= 0) throw new Error("게임에 표시된 거리를 m 단위로 입력해 주세요.");
+      const estimatedMinutes = form.estimatedMinutes.trim() ? Number(form.estimatedMinutes) : null;
+      if (estimatedMinutes !== null && (!Number.isInteger(estimatedMinutes) || estimatedMinutes < 1 || estimatedMinutes > 1440)) throw new Error("예상 시간은 1~1,440분의 정수로 입력해 주세요.");
       if (!visitor.current) {
         try { const saved = localStorage.getItem(SUBMITTER_STORAGE_KEY); visitor.current = saved && /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(saved) ? saved : crypto.randomUUID(); localStorage.setItem(SUBMITTER_STORAGE_KEY, visitor.current); }
         catch { visitor.current = crypto.randomUUID(); }
       }
       setSending(true);
-      const payload = { visitorId: visitor.current, name: form.name.trim(), cityId: form.cityId, startName: form.startName.trim(), endName: form.endName.trim(), startPoint, endPoint, reportedDistanceMeters, creatorName: form.creatorName.trim(), sourceUrl: form.sourceUrl.trim() || undefined, rightsBasis: form.rightsBasis, rightsDetails: form.rightsDetails.trim(), allowRedistribution: true, inGameConfirmed: true, lastCheckedAt: form.lastCheckedAt, geometryType: points ? form.geometryType : "none", points, notes: form.notes.trim(), website: form.website };
+      const payload = { visitorId: visitor.current, name: form.name.trim(), cityId: form.cityId, startName: form.startName.trim(), endName: form.endName.trim(), startPoint, endPoint, reportedDistanceMeters, reversible: form.reversible === "" ? null : form.reversible === "true", isLoop: form.isLoop === "" ? null : form.isLoop === "true", estimatedMinutes, creatorName: form.creatorName.trim(), sourceUrl: form.sourceUrl.trim() || undefined, rightsBasis: form.rightsBasis, rightsDetails: form.rightsDetails.trim(), allowRedistribution: true, inGameConfirmed: true, lastCheckedAt: form.lastCheckedAt, geometryType: points ? form.geometryType : "none", points, notes: form.notes.trim(), website: form.website };
       const response = await fetch("/api/routes", { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload), signal: controller.signal });
       if (!response.ok) throw new Error(await responseMessage(response, "제보를 저장하지 못했어요. 입력 내용을 확인해 주세요."));
       const body = await response.json();
       if (!record(body) || body.ok !== true || typeof body.id !== "string" || body.status !== "pending") throw new Error("제보 접수 결과를 확인하지 못했어요. 다시 제출하기 전에 잠시 기다려 주세요.");
       setSuccess({ id: body.id, duplicate: body.duplicate === true });
-      setForm(newForm(form.cityId)); setPoints(undefined); setFilename(""); if (file.current) file.current.value = "";
+      setForm(newForm(form.cityId)); setMapSelection("start"); setPoints(undefined); setFilename(""); if (file.current) file.current.value = "";
     } catch (failure) { setError(failure instanceof Error && failure.name !== "AbortError" ? failure.message : "제보 요청 시간이 초과됐어요. 접수됐을 수 있으니 잠시 후 같은 내용으로 다시 확인해 주세요."); }
     finally { clearTimeout(timer); setSending(false); }
   }
@@ -210,9 +250,13 @@ function RouteSubmissionForm({ cityId }: { cityId: string }) {
     <fieldset disabled={sending}>
       <legend className="community-form-legend">루트 정보</legend>
       <div className="cell-form-row"><label>게임에 표시된 루트 이름<input required maxLength={80} value={form.name} onChange={(event) => change("name", event.target.value)} /></label><label>도시<select required value={form.cityId} onChange={(event) => setForm((current) => ({ ...current, cityId: event.target.value, lastCheckedAt: current.lastCheckedAt > todayForCity(event.target.value) ? todayForCity(event.target.value) : current.lastCheckedAt }))}>{CITIES.map((city) => <option key={city.id} value={city.id}>{city.name} · {city.country}</option>)}</select></label></div>
+      <RouteLocationPicker cityId={form.cityId} start={optionalPoint(form.startCoordinates)} end={optionalPoint(form.endCoordinates)} points={points} geometryLabel={points ? communityGeometryLabel(form.geometryType) : undefined} places={places} loading={placesLoading} error={placesError} truncated={placesTruncated} selection={mapSelection} onSelectionChange={setMapSelection} onPick={pickLocation} disabled={pending} onRetry={() => setPlacesRefresh(value => value + 1)} />
       <div className="cell-form-row"><label>시작 포켓스톱·위치 이름<input required maxLength={120} value={form.startName} onChange={(event) => change("startName", event.target.value)} /></label><label>종료 포켓스톱·위치 이름 <span className="community-optional">선택</span><input maxLength={120} value={form.endName} onChange={(event) => change("endName", event.target.value)} /></label></div>
       <div className="cell-form-row"><label>시작 좌표<input required inputMode="text" maxLength={80} value={form.startCoordinates} onChange={(event) => change("startCoordinates", event.target.value)} placeholder="37.5665,126.978" /><small>위도,경도 · GPX를 넣으면 비어 있는 좌표를 채워요</small></label><label>종료 좌표 <span className="community-optional">선택</span><input inputMode="text" maxLength={80} value={form.endCoordinates} onChange={(event) => change("endCoordinates", event.target.value)} placeholder="위도,경도" /></label></div>
       <div className="cell-form-row"><label>게임 표시 거리 (m)<input type="number" required min={100} max={100000} step={1} inputMode="numeric" value={form.distance} onChange={(event) => change("distance", event.target.value)} placeholder="예: 1200" /></label><label>마지막 게임 확인일<input type="date" required value={form.lastCheckedAt} max={todayForCity(form.cityId)} onChange={(event) => change("lastCheckedAt", event.target.value)} /></label></div>
+      <div className="cell-form-row"><label>역방향 진행<select value={form.reversible} onChange={event => change("reversible", event.target.value as SubmissionForm["reversible"])}><option value="">미확인</option><option value="false">한 방향만 가능</option><option value="true">역방향도 가능</option></select></label><label>예상 시간 (분) <span className="community-optional">선택</span><input type="number" min={1} max={1440} step={1} inputMode="numeric" value={form.estimatedMinutes} onChange={event => change("estimatedMinutes", event.target.value)} placeholder="게임에 표시된 시간" /></label></div>
+      <label className="community-full-label">순환 루트 여부<select value={form.isLoop} onChange={event => change("isLoop", event.target.value as SubmissionForm["isLoop"])}><option value="">미확인</option><option value="false">시작과 끝이 다른 루트</option><option value="true">시작 위치로 돌아오는 순환 루트</option></select><small>순환 루트는 게임에서 같은 시작·종료 위치인지 확인해 주세요. 이 설정으로 GPX 경로를 자동으로 연결하지 않아요.</small></label>
+      {form.isLoop === "true" && <button type="button" className="community-secondary-button" disabled={!optionalPoint(form.startCoordinates)} onClick={() => setForm(current => ({ ...current, endCoordinates: current.startCoordinates, endName: current.startName }))}>종료 위치를 시작점과 같게</button>}
       <label className="community-file-label"><FileUp size={19} /><span>전체 경로 GPX <small>선택 · 1MiB · 좌표 2,000개 이하</small></span><input ref={file} type="file" accept=".gpx,application/gpx+xml,application/xml,text/xml" disabled={sending} onChange={(event) => void readFile(event.target.files?.[0])} /></label>
       {fileReading && <p className="community-route-loading" role="status"><LoaderCircle size={15} className="community-spin" />파일을 읽고 있어요.</p>}
       {(filename || fileError) && <div className="community-file-preview"><span>{filename ? `${filename} · ${points?.length.toLocaleString()}점 · ${distance(cellPathKm(points ?? []) * 1000)}` : "선택한 파일을 확인해 주세요"}</span><button type="button" onClick={() => { fileRequest.current++; setFileReading(false); setPoints(undefined); setFilename(""); setFileError(""); if (file.current) file.current.value = ""; }}>파일 제거</button></div>}

@@ -85,6 +85,55 @@ test('community submission requires explicit game confirmation and redistributio
   }
 });
 
+test('unknown route metadata stays omitted while confirmed false values remain explicit', () => {
+  const legacy = validateCommunitySubmission(submission(), NOW);
+  const unknown = validateCommunitySubmission(submission({ reversible: null, estimatedMinutes: null, isLoop: null }), NOW);
+  assert.deepEqual(unknown, legacy);
+  assert.equal(JSON.stringify(unknown), JSON.stringify(legacy), 'unknown fields must not change the legacy fingerprint payload');
+  for (const key of ['reversible', 'estimatedMinutes', 'isLoop']) assert.equal(Object.hasOwn(unknown, key), false);
+  const known = validateCommunitySubmission(submission({ reversible: false, estimatedMinutes: 20, isLoop: false }), NOW);
+  assert.equal(known.reversible, false);
+  assert.equal(known.estimatedMinutes, 20);
+  assert.equal(known.isLoop, false);
+  for (const value of [0, 1, 'false', 'true', {}, []]) {
+    invalid(() => validateCommunitySubmission(submission({ reversible: value }), NOW));
+    invalid(() => validateCommunitySubmission(submission({ isLoop: value }), NOW));
+  }
+});
+
+test('estimated route duration accepts only integer minutes from one to a full day', () => {
+  for (const estimatedMinutes of [1, 20, 1440]) assert.equal(validateCommunitySubmission(submission({ estimatedMinutes }), NOW).estimatedMinutes, estimatedMinutes);
+  for (const estimatedMinutes of [0, -1, 1441, 1.5, '20', NaN, Infinity, true]) {
+    invalid(() => validateCommunitySubmission(submission({ estimatedMinutes }), NOW));
+  }
+});
+
+test('a declared loop needs nearby endpoints without closing, reversing or inventing track points', () => {
+  invalid(() => validateCommunitySubmission(submission({ isLoop: true, endPoint: undefined }), NOW));
+  invalid(() => validateCommunitySubmission(submission({ isLoop: true, endPoint: C }), NOW));
+  const closeEnd = point(A.lat + .0002, A.lon);
+  const input = [A, B, C, D, closeEnd].map(value => ({ ...value }));
+  const accepted = validateCommunitySubmission(submission({ points: input, endPoint: closeEnd, isLoop: true, reversible: true }), NOW);
+  assert.equal(accepted.isLoop, true);
+  assert.equal(accepted.reversible, true);
+  assert.deepEqual(accepted.points, input);
+  assert.notDeepEqual(accepted.points.at(-1), A, 'a near-start last coordinate must not be replaced with the first point');
+  const markersOnly = validateCommunitySubmission(submission({ geometryType: 'none', points: undefined, isLoop: true }), NOW);
+  assert.equal(markersOnly.points, undefined, 'the loop flag cannot create a full path from its two markers');
+});
+
+test('GPX includes known direction, duration and loop metadata without forcing unknown fields to false', () => {
+  const base = { ...submission(), id: '550e8400-e29b-41d4-a716-446655440001', gpxAvailable: true, verificationStatus: 'reviewed' };
+  const unknown = communityRouteGpx({ ...base, reversible: null, estimatedMinutes: null, isLoop: null });
+  for (const key of ['reversible', 'estimatedMinutes', 'isLoop']) assert.equal(unknown.includes(`<pokedoko:${key}>`), false);
+  const xml = communityRouteGpx({ ...base, reversible: false, estimatedMinutes: 20, isLoop: true });
+  assert.ok(xml.includes('<pokedoko:reversible>false</pokedoko:reversible>'));
+  assert.ok(xml.includes('<pokedoko:estimatedMinutes>20</pokedoko:estimatedMinutes>'));
+  assert.ok(xml.includes('<pokedoko:isLoop>true</pokedoko:isLoop>'));
+  assert.deepEqual([...xml.matchAll(/<trkpt lat="([^"]+)" lon="([^"]+)"/g)].map(match => point(Number(match[1]), Number(match[2]))), points());
+  invalid(() => communityRouteGpx({ ...base, isLoop: true, endPoint: C }));
+});
+
 test('a metadata-only actual Route cannot manufacture GPX from its start marker', () => {
   const input = submission({ geometryType: 'none', points: undefined, endName: '', endPoint: undefined });
   const accepted = validateCommunitySubmission(input, NOW);

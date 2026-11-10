@@ -14,7 +14,7 @@ const commonUrl = moduleUrl(common);
 const server = (await readFile(new URL('../lib/community-routes-server.ts', import.meta.url), 'utf8'))
   .replace(/from (["'])\.\/community-routes\1/g, `from '${commonUrl}'`)
   .replace(/from (["'])\.\/cities\1/g, `from '${citiesUrl}'`);
-const { handleCommunityRoutesGet, handleCommunityRouteGet, handleCommunityRouteGpx, handleCommunityRouteSubmission } = await import(moduleUrl(server));
+const { handleCommunityRoutesGet, handleCommunityRoutePlacesGet, handleCommunityRouteGet, handleCommunityRouteGpx, handleCommunityRouteSubmission } = await import(moduleUrl(server));
 const migrationFiles = (await readdir(new URL('../drizzle/', import.meta.url))).filter(name => /^\d+.*\.sql$/.test(name)).sort();
 const migrations = await Promise.all(migrationFiles.map(name => readFile(new URL(`../drizzle/${name}`, import.meta.url), 'utf8')));
 
@@ -39,10 +39,10 @@ const listRequest = (query = 'city=seoul') => new Request(`${ORIGIN}/api/communi
 const at = value => () => new Date(value);
 
 /** Actual migrations and SQL run in SQLite; the wrapper only translates D1's result envelope. */
-function database() {
+function database({ migrationLimit = migrations.length } = {}) {
   const sql = new DatabaseSync(':memory:');
   sql.exec('PRAGMA foreign_keys = ON');
-  for (const migration of migrations) sql.exec(migration);
+  for (const migration of migrations.slice(0, migrationLimit)) sql.exec(migration);
   const calls = [];
   return { sql, calls,
     prepare(query) {
@@ -130,6 +130,135 @@ test('only approved routes appear publicly, with geometry reserved for the detai
     assert.equal((await handleCommunityRouteGet(id, db)).status, 404);
     assert.equal((await handleCommunityRouteGpx(id, db)).status, 404);
     assert.equal((await (await handleCommunityRoutesGet(listRequest(), db)).json()).routes.length, 0);
+  }
+});
+
+test('direction, duration and loop fields round-trip without replacing unknown with false', async () => {
+  const db = database();
+  const knownId = await submit(db, { reversible: false, estimatedMinutes: 20, isLoop: true });
+  const unknownId = await submit(db, { name: '메타 정보가 아직 없는 제보', reversible: null, estimatedMinutes: null, isLoop: null });
+  const knownRow = rows(db).find(row => row.id === knownId), unknownRow = rows(db).find(row => row.id === unknownId);
+  assert.equal(knownRow.reversible, 0);
+  assert.equal(knownRow.estimated_minutes, 20);
+  assert.equal(knownRow.is_loop, 1);
+  for (const key of ['reversible', 'estimated_minutes', 'is_loop']) assert.equal(unknownRow[key], null);
+  approve(db, knownId); approve(db, unknownId);
+  const list = (await (await handleCommunityRoutesGet(listRequest(), db)).json()).routes;
+  const known = list.find(route => route.id === knownId), unknown = list.find(route => route.id === unknownId);
+  assert.deepEqual([known.reversible, known.estimatedMinutes, known.isLoop], [false, 20, true]);
+  assert.deepEqual([unknown.reversible, unknown.estimatedMinutes, unknown.isLoop], [null, null, null]);
+  const detail = (await (await handleCommunityRouteGet(knownId, db)).json()).route;
+  assert.deepEqual([detail.reversible, detail.estimatedMinutes, detail.isLoop], [false, 20, true]);
+  const xml = await (await handleCommunityRouteGpx(knownId, db)).text();
+  assert.ok(xml.includes('<pokedoko:reversible>false</pokedoko:reversible>'));
+  assert.ok(xml.includes('<pokedoko:estimatedMinutes>20</pokedoko:estimatedMinutes>'));
+  assert.ok(xml.includes('<pokedoko:isLoop>true</pokedoko:isLoop>'));
+  assert.deepEqual([...xml.matchAll(/<trkpt lat="([^"]+)" lon="([^"]+)"/g)].map(match => ({ lat: Number(match[1]), lon: Number(match[2]) })), points());
+});
+
+/** Construct the previous release's canonical payload independently of the new normalizer. */
+function legacyRecord(input) {
+  return {
+    name: input.name.trim(), cityId: input.cityId, startName: input.startName.trim(), endName: input.endName.trim(),
+    startPoint: input.startPoint, ...(input.endPoint ? { endPoint: input.endPoint } : {}), reportedDistanceMeters: input.reportedDistanceMeters,
+    ...(input.sourceUrl ? { sourceUrl: input.sourceUrl } : {}), creatorName: input.creatorName.trim(), rightsBasis: input.rightsBasis,
+    rightsDetails: input.rightsDetails.trim(), allowRedistribution: true, inGameConfirmed: true,
+    lastCheckedAt: input.lastCheckedAt, geometryType: input.geometryType, ...(input.points ? { points: input.points } : {}), notes: input.notes.trim(),
+  };
+}
+async function hash(value) {
+  return Buffer.from(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))).toString('hex');
+}
+async function seedLegacy(db, input, status = 'pending') {
+  const id = crypto.randomUUID(), seconds = Math.floor(FIXED / 1000), record = legacyRecord(input);
+  const row = {
+    id, fingerprint: await hash(JSON.stringify(record)), visitor_hash: await hash(`pokedoko-route-submitter-v1:${input.visitorId}`),
+    name: record.name, city_id: record.cityId, start_name: record.startName, end_name: record.endName,
+    start_lat: record.startPoint.lat, start_lon: record.startPoint.lon, end_lat: record.endPoint?.lat ?? null, end_lon: record.endPoint?.lon ?? null,
+    reported_distance_m: record.reportedDistanceMeters, computed_distance_m: record.points ? 575 : null,
+    geometry_type: record.geometryType, geometry_validation: record.points ? 'passed' : 'missing',
+    points_json: record.points ? JSON.stringify(record.points) : null, point_count: record.points?.length ?? 0,
+    source_url: record.sourceUrl ?? '', creator_name: record.creatorName, rights_basis: record.rightsBasis, rights_details: record.rightsDetails,
+    permission_confirmed: 1, in_game_confirmed: 1, last_checked_at: record.lastCheckedAt, notes: record.notes,
+    hour_bucket: Math.floor(seconds / 3600) * 3600, day_bucket: Math.floor(seconds / 86400) * 86400, created_at: seconds,
+    submission_policy: 'community-routes-v1',
+  };
+  const columns = Object.keys(row);
+  db.sql.prepare(`INSERT INTO community_routes (${columns.join(',')}) VALUES (${columns.map(() => '?').join(',')})`).run(...columns.map(column => row[column]));
+  if (status === 'approved') approve(db, id);
+  return id;
+}
+
+test('the new migration preserves old review states and pending fingerprints across unknown-metadata retries', async () => {
+  const db = database({ migrationLimit: 2 });
+  const pending = submission(), originalId = await seedLegacy(db, pending);
+  const estimatedId = await seedLegacy(db, submission({ name: '이전에 공개된 추정 경로', geometryType: 'estimated' }), 'approved');
+  const missingId = await seedLegacy(db, submission({ name: '이전에 공개된 위치 정보', geometryType: 'none', points: undefined, endPoint: undefined, endName: '' }), 'approved');
+  const before = rows(db);
+  for (const migration of migrations.slice(2)) db.sql.exec(migration);
+  const after = rows(db);
+  for (const row of after) {
+    for (const key of ['reversible', 'estimated_minutes', 'is_loop']) assert.equal(row[key], null);
+    const withoutNew = { ...row }; delete withoutNew.reversible; delete withoutNew.estimated_minutes; delete withoutNew.is_loop;
+    assert.deepEqual(withoutNew, before.find(old => old.id === row.id), 'the schema extension must not rewrite existing identity, permission or geometry');
+  }
+  const retried = await handleCommunityRouteSubmission(post({ ...pending, reversible: null, estimatedMinutes: null, isLoop: null }), db, at(FIXED + 1000));
+  assert.equal(retried.status, 201);
+  assert.deepEqual(await retried.json(), { ok: true, id: originalId, status: 'pending', duplicate: true });
+  assert.equal(rows(db).length, 3);
+  assert.equal((await handleCommunityRouteGet(originalId, db)).status, 404);
+  const estimated = (await (await handleCommunityRouteGet(estimatedId, db)).json()).route;
+  assert.equal(estimated.geometryType, 'estimated');
+  assert.deepEqual(estimated.points, points());
+  assert.deepEqual([estimated.reversible, estimated.estimatedMinutes, estimated.isLoop], [null, null, null]);
+  assert.equal((await handleCommunityRouteGpx(missingId, db)).status, 404);
+  const metadataColumns = db.sql.prepare('PRAGMA table_info(community_routes)').all().filter(row => ['reversible', 'estimated_minutes', 'is_loop'].includes(row.name));
+  assert.equal(metadataColumns.length, 3);
+  assert.ok(metadataColumns.every(row => row.notnull === 0 && row.dflt_value === null));
+});
+
+test('place selection exposes only approved local endpoints and preserves exact coordinates when deduplicating', async () => {
+  const db = database();
+  const first = await submit(db, { name: '공개 A', startName: '동일한 시작 지점', endName: '공개 종료 지점' }); approve(db, first);
+  const same = await submit(db, { name: '공개 B', startName: '동일한 시작 지점', endName: '' }); approve(db, same);
+  const hidden = await submit(db, { name: '비공개 루트', startName: '비공개 지점' });
+  const near = await submit(db, { visitorId: crypto.randomUUID(), name: '가까운 별도 지점', startName: '동일한 시작 지점', startPoint: { lat: A.lat + 1e-9, lon: A.lon }, endName: '', endPoint: undefined, geometryType: 'none', points: undefined }); approve(db, near);
+  const tokyo = await submit(db, { visitorId: crypto.randomUUID(), name: '도쿄 공개 지점', cityId: 'tokyo', startName: '도쿄 지점', startPoint: { lat: 35.68088, lon: 139.80078 }, endPoint: undefined, endName: '', geometryType: 'none', points: undefined }); approve(db, tokyo);
+  const response = await handleCommunityRoutePlacesGet(new Request(`${ORIGIN}/api/routes/places?city=seoul`), db);
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.equal(body.truncated, false);
+  assert.equal(body.places.length, 3);
+  assert.equal(body.places.filter(place => place.name === '동일한 시작 지점').length, 2, 'nearby distinct coordinates must not be rounded into the same place');
+  assert.ok(body.places.some(place => place.point.lat === A.lat + 1e-9));
+  assert.ok(body.places.every(place => [first, same, near].includes(place.sourceRouteId)));
+  for (const place of body.places) assert.deepEqual(Object.keys(place).sort(), ['id', 'name', 'point', 'sourceRouteId']);
+  const text = JSON.stringify(body);
+  assert.equal(text.includes(hidden), false); assert.equal(text.includes(tokyo), false);
+  assert.equal(text.includes('비공개 지점'), false); assert.equal(text.includes(VISITOR), false);
+  approve(db, first, 'removed'); approve(db, same, 'rejected');
+  const after = await (await handleCommunityRoutePlacesGet(new Request(`${ORIGIN}/api/routes/places?city=seoul`), db)).json();
+  assert.equal(after.places.length, 1);
+  assert.equal(after.places[0].sourceRouteId, near);
+  assert.equal((await handleCommunityRoutePlacesGet(new Request(`${ORIGIN}/api/routes/places?city=unknown`), db)).status, 400);
+  assert.equal((await handleCommunityRoutePlacesGet(new Request(`${ORIGIN}/api/routes/places?city=seoul`))).status, 503);
+});
+
+test('public place responses cap actual place output and report the bounded route scan honestly', async () => {
+  for (const distinct of [false, true]) {
+    const db = database();
+    const first = await submit(db, { geometryType: 'none', points: undefined }); approve(db, first);
+    const original = rows(db)[0], columns = Object.keys(original);
+    const insert = db.sql.prepare(`INSERT INTO community_routes (${columns.join(',')}) VALUES (${columns.map(() => '?').join(',')})`);
+    const total = distinct ? 151 : 201;
+    for (let index = 1; index < total; index++) {
+      const row = { ...original, id: crypto.randomUUID(), fingerprint: index.toString(16).padStart(64, '0'), visitor_hash: index.toString(16).padStart(64, '0'), name: `검토된 장소 ${index}`,
+        ...(distinct ? { start_name: `시작 장소 ${index}`, end_name: `끝 장소 ${index}`, start_lat: A.lat + index * .000001, end_lat: A.lat + index * .000001 } : {}) };
+      assert.equal(Number(insert.run(...columns.map(column => row[column])).changes), 1);
+    }
+    const result = await (await handleCommunityRoutePlacesGet(new Request(`${ORIGIN}/api/routes/places?city=seoul`), db)).json();
+    assert.equal(result.ok, true); assert.equal(result.truncated, true);
+    assert.equal(result.places.length, distinct ? 300 : 2);
   }
 });
 

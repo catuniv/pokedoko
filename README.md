@@ -29,6 +29,8 @@ npm run growth:report # 운영자 Cloudflare 계정의 최근7일 이용 집계
 - 반경 1·3·5·10km 안의 레이드가 많은 지역 최대 5곳 비교. ‘레이드 밀집순’과 ‘추천 스팟 + 레이드’ 선택, 추천 근거·지역 중심 좌표 복사, 반경 내 체육관 분포·목록 확인. 도시·진행 상태·검색 조건과 5분 기준을 함께 적용하며 30개 표시 제한 전의 전체 유효 자료를 계산
 - `/gpx` 자동사냥 경로: 공개 GPX 8개를 원본에서 직접 불러오거나 공개 퀘스트 포켓스톱 좌표로 순환 경로 생성. 9.3·15·20km/h 프리셋, km/h·m/s 직접 입력, 원본·출발점 연결·왕복·1~20회 반복, GPX/좌표 복사와 다운로드 지원. 이동 속도는 사용자 설정이며 게임의 포획·부화 결과를 보장하지 않음
 - `/routes` 지가르데 셀 루트 목록: 도시별 사용자 제보·운영자 검토 후 공개, 시작 위치·거리·전체 경로 지도·개별 GPX 다운로드. GPX가 없는 항목과 추정·복원 경로는 구분하며, 기존 개인 GPX 방문 계획·셀 기록은 브라우저에 보존. 검증된 초기 공개 자료는 아직0개이며 제보를 검토해 채움
+- 루트 지도 제보: 지도에서 시작·종료 또는 등록된 포켓스톱을 선택하고 역방향·순환·예상 시간을 입력. 위치 마커는 우리 서비스의 공개 검토를 마친 루트에서 모으며 미확인 데이터는 그대로 구분
+- `/trades` 포켓몬 교환 상대 찾기: 제공/희망 포켓몬·지역·대면/리모트 준비·공개 연락 방법을 등록하고 검토 후 공개. 로그인 없이 작성 기기에서 자기 글 마감·삭제,1·3·7일 모집 만료. 실제 게임 교환·인벤토리·우정 조건 인증은 제공하지 않음
 - `/raids` 레이드아워: 24개 대표 도시의 현지 시각, 공지된 레이드아워·레이드데이 시간표, 한국시간의 시작·종료 시각과 다음 공식 회차
 - IANA 시간대 변환: 서머타임, 날짜 변경선, UTC와 현지 시각 원본을 각각 처리
 - 세계 지도·대륙/도시/국가 검색·진행 상태 필터·도시 즐겨찾기
@@ -48,6 +50,7 @@ npm run growth:report # 운영자 Cloudflare 계정의 최근7일 이용 집계
 제보·집계 확인과 보관 기준은 [docs/growth-operations.md](docs/growth-operations.md), 게시할 채널별 링크는 [docs/community-launch.md](docs/community-launch.md), 검색·공유 메타데이터는 [docs/seo-and-sharing.md](docs/seo-and-sharing.md)에 정리했습니다.
 자동사냥 GPX 설정·데이터 범위는 [docs/hunting-gpx.md](docs/hunting-gpx.md), 공개 경로 출처는 [docs/hunting-route-sources.md](docs/hunting-route-sources.md), 사용자 등록 셀 루트의 범위와 보관은 [docs/zygarde-routes.md](docs/zygarde-routes.md)에 정리했습니다.
 지가르데 셀 루트 제보·공개 검토·GPX 검증 및 운영자 명령은 [docs/community-routes.md](docs/community-routes.md)에 정리했습니다.
+교환 모집·작성자 관리·공식 조건 확인 범위·운영자 검토 명령은 [docs/trades.md](docs/trades.md)에 정리했습니다.
 
 ## 데이터의 의미
 
