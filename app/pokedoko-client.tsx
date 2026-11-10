@@ -13,7 +13,6 @@ import {
   Info,
   LocateFixed,
   MapPin,
-  Plus,
   Radio,
   RefreshCw,
   Search,
@@ -37,10 +36,12 @@ import type { City, Feed, GymObservation, Region } from "@/lib/pokedoko-types";
 import map from "@/lib/world-map.json";
 import EventCalendar from "@/components/pokedoko/EventCalendar";
 import PokemonAvailability from "@/components/pokedoko/PokemonAvailability";
+import LiveRaids from "@/components/pokedoko/LiveRaids";
 
-type View = "raids" | "calendar" | "pokemon";
+type View = "live" | "raids" | "calendar" | "pokemon";
 const NAV = [
-  { id: "raids", label: "글로벌 레이드", icon: Swords },
+  { id: "live", label: "실시간 레이드", icon: Radio },
+  { id: "raids", label: "레이드아워", icon: Swords },
   { id: "calendar", label: "이벤트 캘린더", icon: CalendarDays },
   { id: "pokemon", label: "등장 포켓몬", icon: Sparkles },
 ] as const;
@@ -53,16 +54,14 @@ const REGIONS: { id: Region | "all"; label: string }[] = [
   { id: "africa", label: "아프리카" },
 ];
 const COPY = {
+  live: ["실시간 레이드", "체육관별 진행 상황과 다음 부화 시간을 확인하세요."],
   raids: [
-    "지금, 어디서 레이드가 열릴까요?",
-    "전 세계 시간을 한국시간 하나로. 다음 모험을 미리 찾아보세요.",
+    "레이드아워 시간표",
+    "도시별 레이드아워·레이드데이 시작 시간을 한국시간으로 확인하세요.",
   ],
-  calendar: [
-    "놓치고 싶지 않은 순간을 모아",
-    "레이드아워부터 커뮤니티 데이까지, 이번 달의 모험을 계획하세요.",
-  ],
+  calendar: ["이벤트 캘린더", "날짜별 이벤트 일정과 등장 포켓몬을 확인하세요."],
   pokemon: [
-    "이번 모험에서 만날 포켓몬",
+    "등장 포켓몬",
     "최근 게시된 레이드 보스와 이벤트 등장 포켓몬을 확인하세요.",
   ],
 };
@@ -99,8 +98,12 @@ function isObservation(v: unknown): v is GymObservation {
   );
 }
 
-export default function Pokedoko() {
-  const [view, setView] = useState<View>("raids"),
+export default function Pokedoko({
+  initialView = "live",
+}: {
+  initialView?: View;
+}) {
+  const [view, setView] = useState<View>(initialView),
     [now, setNow] = useState<Date | null>(null),
     [feed, setFeed] = useState<Feed>(FALLBACK_FEED),
     [loading, setLoading] = useState(false);
@@ -135,7 +138,7 @@ export default function Pokedoko() {
         setFeed((p) => ({
           ...p,
           cached: true,
-          error: "새 자료를 불러오지 못해 마지막 확인 자료를 보여드려요.",
+          error: "갱신에 실패했습니다. 마지막 확인 자료를 표시합니다.",
         }));
     } finally {
       if (id === requestId.current) setLoading(false);
@@ -146,7 +149,11 @@ export default function Pokedoko() {
     const tick = setInterval(() => setNow(new Date()), 1000);
     const fromUrl = () => {
       const v = new URLSearchParams(location.search).get("view");
-      setView(v === "calendar" || v === "pokemon" ? v : "raids");
+      const path = location.pathname.split("/")[1];
+      const current = v || path;
+      setView(
+        NAV.some((n) => n.id === current) ? (current as View) : initialView,
+      );
     };
     fromUrl();
     window.addEventListener("popstate", fromUrl);
@@ -169,7 +176,7 @@ export default function Pokedoko() {
       window.removeEventListener("popstate", fromUrl);
       requestId.current++;
     };
-  }, [refresh]);
+  }, [refresh, initialView]);
   useEffect(() => {
     if (ready) {
       save("pokedoko.favorites", favorites);
@@ -186,10 +193,33 @@ export default function Pokedoko() {
   }, [view]);
   // IANA databases can differ between the server and a browser. Calculate the
   // moving world clock after hydration so both initial renders stay identical.
-  if (!now) return <div className="pokedoko-shell"><aside className="sidebar"><a className="brand" href="?view=raids"><span className="brand-orb"/><span>poke<strong>doko</strong><i>GLOBAL GO PLANNER</i></span></a></aside><div className="workspace"><main className="page"><div className="page-heading"><h1>당신의 다음 모험을 준비하고 있어요</h1></div><div className="panel" role="status">세계 도시의 시간을 계산하는 중이에요.</div></main></div></div>;
+  if (!now)
+    return (
+      <div className="pokedoko-shell">
+        <aside className="sidebar">
+          <a className="brand" href="/live">
+            <span className="brand-orb" />
+            <span>
+              poke<strong>doko</strong>
+              <i>POKÉMON GO PLANNER</i>
+            </span>
+          </a>
+        </aside>
+        <div className="workspace">
+          <main className="page">
+            <div className="page-heading">
+              <h1>pokedoko</h1>
+            </div>
+            <div className="panel" role="status">
+              불러오는 중…
+            </div>
+          </main>
+        </div>
+      </div>
+    );
   function navigate(v: View) {
     setView(v);
-    history.pushState(null, "", `?view=${v}`);
+    history.pushState(null, "", `/${v}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function favorite(id: string) {
@@ -202,9 +232,9 @@ export default function Pokedoko() {
       await navigator.clipboard.writeText(
         `${s.lat.toFixed(6)}, ${s.lon.toFixed(6)}`,
       );
-      setToast(`${s.name} 좌표를 복사했어요.`);
+      setToast(`${s.name} 좌표를 복사했습니다.`);
     } catch {
-      setToast("복사하지 못했어요. 표시된 좌표를 직접 선택해 주세요.");
+      setToast("좌표를 복사하지 못했습니다. 표시된 좌표를 선택하세요.");
     }
   }
   const raidEvents = feed.events
@@ -257,26 +287,25 @@ export default function Pokedoko() {
           (a.window?.start.getTime() ?? Infinity) -
             (b.window?.start.getTime() ?? Infinity),
     );
-  const rounds = getCityWindows(city, raidEvents, clock).slice(0, 3),
-    gyms = observations.filter((o) => o.cityId === city.id);
+  const rounds = getCityWindows(city, raidEvents, clock).slice(0, 3);
   return (
     <div className="pokedoko-shell">
       <aside className="sidebar">
         <a
           className="brand"
-          href="?view=raids"
+          href="/live"
           onClick={(e) => {
             e.preventDefault();
-            navigate("raids");
+            navigate("live");
           }}
         >
           <span className="brand-orb" />
           <span>
             poke<strong>doko</strong>
-            <i>GLOBAL GO PLANNER</i>
+            <i>POKÉMON GO PLANNER</i>
           </span>
         </a>
-        <div className="sidebar-caption">당신의 다음 모험</div>
+        <div className="sidebar-caption">포켓몬 GO</div>
         <nav aria-label="주 메뉴">
           {NAV.map((n) => (
             <button
@@ -306,7 +335,7 @@ export default function Pokedoko() {
         <button
           className="nav-link"
           onClick={() => {
-            navigate("raids");
+            navigate("live");
             setTimeout(
               () =>
                 document
@@ -322,9 +351,9 @@ export default function Pokedoko() {
         <div className="sidebar-note">
           <div className="orbit-decoration">✦</div>
           <span>
-            지구 반대편에서도,
+            도시별 시간은
             <br />
-            모험은 계속돼요.
+            한국시간 기준
           </span>
           <small>KST로 보는 포켓몬 GO</small>
         </div>
@@ -386,18 +415,32 @@ export default function Pokedoko() {
               </span>
             </div>
           </div>
-          <div className={`feed-note ${feed.cached ? "is-cached" : ""}`}>
-            <span>
-              <i />
-              {feed.cached ? "보관된 자료" : "커뮤니티 자료"} ·{" "}
-              {feed.error ?? `조회 ${formatKst(new Date(feed.fetchedAt))}`}
-            </span>
-            <button onClick={() => void refresh()} disabled={loading}>
-              <RefreshCw size={13} className={loading ? "spinning" : ""} />
-              {loading ? "불러오는 중" : "새로고침"}
-            </button>
-          </div>
-          {view === "calendar" ? (
+          {view !== "live" && (
+            <div className={`feed-note ${feed.cached ? "is-cached" : ""}`}>
+              <span>
+                <i />
+                {feed.cached ? "보관된 자료" : "커뮤니티 자료"} ·{" "}
+                {feed.error ?? `조회 ${formatKst(new Date(feed.fetchedAt))}`}
+              </span>
+              <button onClick={() => void refresh()} disabled={loading}>
+                <RefreshCw size={13} className={loading ? "spinning" : ""} />
+                {loading ? "불러오는 중" : "새로고침"}
+              </button>
+            </div>
+          )}
+          {view === "live" ? (
+            <LiveRaids
+              now={clock}
+              city={city}
+              onCityChange={setSelectedCity}
+              observations={observations}
+              onAdd={() => setGymForm(true)}
+              onDelete={(id) =>
+                setObservations((xs) => xs.filter((o) => o.id !== id))
+              }
+              onSchedule={() => navigate("raids")}
+            />
+          ) : view === "calendar" ? (
             <EventCalendar events={feed.events} now={clock} city={city} />
           ) : view === "pokemon" ? (
             <PokemonAvailability feed={feed} now={clock} city={city} />
@@ -409,7 +452,7 @@ export default function Pokedoko() {
                 </div>
                 <div>
                   <span>선택한 공식 일정</span>
-                  <h2>{event?.nameKo ?? "새 레이드 일정을 기다리고 있어요"}</h2>
+                  <h2>{event?.nameKo ?? "확인된 레이드 일정 없음"}</h2>
                   <p>
                     {event?.start.kind === "local"
                       ? "각 도시의 현지 시각에 진행 · 한국시간으로 변환"
@@ -466,7 +509,7 @@ export default function Pokedoko() {
                   <p>
                     {upcoming[0]
                       ? `${flag(upcoming[0].city.countryCode)} ${upcoming[0].city.name} · ${formatKst(upcoming[0].window!.start, false)}`
-                      : "예정된 시작 시간이 없어요"}
+                      : "확인된 다음 일정 없음"}
                   </p>
                 </article>
                 <article>
@@ -501,7 +544,7 @@ export default function Pokedoko() {
                   <div className="panel-heading">
                     <div>
                       <span className="mini-label">WORLD RAID WINDOW</span>
-                      <h2>지금의 레이드 세계 지도</h2>
+                      <h2>레이드아워 시간대 지도</h2>
                     </div>
                     <span className="live-label">
                       <i />
@@ -538,7 +581,7 @@ export default function Pokedoko() {
                         <path
                           d="M55.55 0H0V55.3"
                           fill="none"
-                          stroke="#e4ece9"
+                          stroke="var(--line)"
                           strokeWidth=".8"
                           strokeDasharray="2 4"
                         />
@@ -592,14 +635,17 @@ export default function Pokedoko() {
                       <LocateFixed size={15} />
                       {flag(city.countryCode)} {city.name} 선택됨
                     </span>
-                    <small>체육관 실황이 아닌 공식 일정 시간대 지도예요.</small>
+                    <small>
+                      공식 일정 시간대 기준 · 체육관별 실황은 실시간 레이드에서
+                      확인
+                    </small>
                   </div>
                 </section>
                 <aside className="panel next-panel">
                   <div className="panel-heading">
                     <div>
                       <span className="mini-label">UP NEXT</span>
-                      <h2>다음 모험은 여기</h2>
+                      <h2>다음 시작 도시</h2>
                     </div>
                     <Compass size={22} />
                   </div>
@@ -625,15 +671,11 @@ export default function Pokedoko() {
                     </button>
                   ))}
                   {!upcoming.length && (
-                    <p className="empty-small">
-                      새 공식 일정이 등록되면 다음 도시를 계산해요.
-                    </p>
+                    <p className="empty-small">확인된 다음 일정이 없습니다.</p>
                   )}
                   <div className="next-tip">
                     <Sparkles size={17} />
-                    <p>
-                      도시를 누르면 다음 회차와 추천 스팟을 확인할 수 있어요.
-                    </p>
+                    <p>도시 선택: 다음 회차와 추천 장소 표시</p>
                   </div>
                 </aside>
               </div>
@@ -884,8 +926,7 @@ export default function Pokedoko() {
                     ))}
                     {!rounds.length && (
                       <p className="empty-small">
-                        공지가 확인된 다음 회차가 없어요. 새 일정이 올라오면
-                        표시돼요.
+                        확인된 다음 회차가 없습니다.
                       </p>
                     )}
                   </div>
@@ -923,100 +964,16 @@ export default function Pokedoko() {
                     </div>
                   ))}
                   <p className="panel-caption">
-                    직접 선정한 대표 장소예요. 현재 레이드 수나 체육관 밀집도를
-                    측정한 순위가 아니에요.
+                    대표 장소 목록입니다. 실측 체육관 수·레이드 밀집도 순위는
+                    아닙니다.
                   </p>
                 </section>
               </div>
-              <section id="gym-timers" className="panel gym-panel">
-                <div className="panel-heading">
-                  <div>
-                    <span className="mini-label">GYM HATCH TRACKER</span>
-                    <h2>확인한 알, 다음 부화까지</h2>
-                    <p>{city.name} · 직접 확인한 체육관 시간을 등록해보세요.</p>
-                  </div>
-                  <button
-                    className="primary-button"
-                    onClick={() => setGymForm(true)}
-                  >
-                    <Plus size={17} />
-                    부화 시간 등록
-                  </button>
-                </div>
-                {gyms.length ? (
-                  <div className="gym-grid">
-                    {gyms.map((o) => {
-                      const state = getGymState(o, clock);
-                      return (
-                        <article className="gym-card" key={o.id}>
-                          <div className="gym-card-top">
-                            <span className="manual-label">직접 등록</span>
-                            <button
-                              aria-label={`${o.name} 삭제`}
-                              onClick={() =>
-                                setObservations((xs) =>
-                                  xs.filter((x) => x.id !== o.id),
-                                )
-                              }
-                            >
-                              <X size={15} />
-                            </button>
-                          </div>
-                          <h3>{o.name}</h3>
-                          <p>{o.pokemonName || "보스 정보 미등록"}</p>
-                          <strong className="gym-countdown">
-                            {state === "waiting"
-                              ? countdown(
-                                  Date.parse(o.startsAt) - clock.getTime(),
-                                )
-                              : state === "active" && o.endsAt
-                                ? countdown(
-                                    Date.parse(o.endsAt) - clock.getTime(),
-                                  )
-                                : state === "ended"
-                                  ? "종료"
-                                  : "종료 시각 미등록"}
-                          </strong>
-                          <small>
-                            {state === "waiting"
-                              ? "부화까지"
-                              : state === "active"
-                                ? "종료까지"
-                                : state === "ended"
-                                  ? "등록된 종료 시각 기준"
-                                  : "시작 이후 · 종료 여부 확인 필요"}{" "}
-                            · {formatKst(new Date(o.startsAt))}
-                          </small>
-                        </article>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className="gym-empty">
-                    <span>
-                      <Egg size={32} />
-                    </span>
-                    <div>
-                      <h3>아직 등록한 체육관이 없어요</h3>
-                      <p>
-                        실시간 관측 데이터가 연결되기 전에는 확인한 부화·종료
-                        시각을 직접 기록할 수 있어요.
-                      </p>
-                    </div>
-                    <button
-                      className="text-button"
-                      onClick={() => setGymForm(true)}
-                    >
-                      첫 타이머 만들기 <ChevronRight size={15} />
-                    </button>
-                  </div>
-                )}
-              </section>
             </>
           )}
           <footer className="footer">
             <span className="footer-brand">
-              pokedoko<span>오늘의 모험을, 조금 더 가깝게.</span>
+              pokedoko<span>포켓몬 GO 일정 · 한국시간 기준</span>
             </span>
             <p>
               <a href="https://leekduck.com" target="_blank" rel="noreferrer">
@@ -1038,7 +995,7 @@ export default function Pokedoko() {
             </p>
             <small>
               비공식 팬 프로젝트입니다. Pokémon과 관련 명칭·이미지의 권리는 해당
-              권리자에게 있습니다. 일정은 변경될 수 있어요.
+              권리자에게 있습니다. 일정은 변경될 수 있습니다.
             </small>
           </footer>
         </main>
@@ -1056,43 +1013,37 @@ export default function Pokedoko() {
           onSave={(o) => {
             setObservations((xs) => [...xs, o]);
             setGymForm(false);
-            setToast("체육관 타이머를 등록했어요.");
+            setToast("체육관 기록을 저장했습니다.");
           }}
         />
       )}
       {infoOpen && (
-        <Modal
-          title="시간과 데이터, 이렇게 읽어주세요"
-          onClose={() => setInfoOpen(false)}
-        >
+        <Modal title="시간 및 데이터 안내" onClose={() => setInfoOpen(false)}>
           <div className="info-copy">
-            <h3>모든 일정은 한국시간으로</h3>
+            <h3>한국시간(KST) 기준</h3>
+            <p>도시별 현지 날짜와 서머타임을 반영해 한국시간으로 변환합니다.</p>
+            <h3>레이드아워와 실시간 레이드</h3>
             <p>
-              대표 도시의 IANA 시간대를 사용해요. 현지 날짜와 서머타임을
-              반영해서 KST로 변환해요.
+              레이드아워는 공식 일정의 시간표입니다. 실시간 레이드는 체육관별
+              관측 자료와 직접 등록한 기록을 구분해 표시합니다.
             </p>
-            <h3>공식 일정과 실제 체육관은 달라요</h3>
+            <h3>다음 회차와 부화 시간</h3>
             <p>
-              초록색 도시는 선택한 이벤트 시간에 해당한다는 뜻이에요. 실제
-              체육관의 알·보스·남은 시간과 레이드 수는 별도 관측 자료가
-              필요해요.
-            </p>
-            <h3>라운드를 임의로 만들지 않아요</h3>
-            <p>
-              공지가 확인된 레이드아워·레이드데이 회차만 표시해요. 개별 체육관은
-              확인한 부화·종료 시각을 직접 등록할 수 있어요.
+              공식 공지로 확인한 회차와 사용자가 기록한 부화·종료 시각만
+              표시합니다.
             </p>
             <h3>추천 장소와 밀집도</h3>
             <p>
-              추천 스팟은 직접 고른 대표 장소 목록이에요. 실제 체육관 수나 현재
-              참가 인원을 측정한 수치가 아니에요.
+              추천 장소는 정적 목록입니다. 실시간 페이지의 집계는 연결된
+              공급원의 유효한 관측 자료만 포함하며, 전 세계 전체 수를 뜻하지
+              않습니다.
             </p>
           </div>
           <button
             className="primary-button modal-confirm"
             onClick={() => setInfoOpen(false)}
           >
-            확인했어요
+            확인
           </button>
         </Modal>
       )}
@@ -1111,9 +1062,12 @@ function Modal({
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = ref.current;
-    const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const trigger =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
     dialog?.showModal();
-    dialog?.querySelector<HTMLInputElement>('.gym-form input')?.focus();
+    dialog?.querySelector<HTMLInputElement>(".gym-form input")?.focus();
     return () => {
       dialog?.close();
       if (trigger?.isConnected) trigger.focus();
@@ -1156,14 +1110,14 @@ function GymForm({
     [pokemon, setPokemon] = useState(""),
     [error, setError] = useState("");
   return (
-    <Modal title={`${city.name} 체육관 부화 시간 등록`} onClose={onClose}>
+    <Modal title={`${city.name} 체육관 시간 등록`} onClose={onClose}>
       <form
         className="gym-form"
         onSubmit={(e) => {
           e.preventDefault();
           setError("");
           try {
-            if (!name.trim()) throw Error("체육관 이름을 적어주세요.");
+            if (!name.trim()) throw Error("체육관 이름을 입력하세요.");
             const start = localToInstant(starts, "Asia/Seoul"),
               end = ends ? localToInstant(ends, "Asia/Seoul") : null;
             if (
@@ -1172,7 +1126,7 @@ function GymForm({
             )
               throw Error("날짜와 시간을 확인해주세요.");
             if (end && end <= start)
-              throw Error("종료 시각은 부화 시각보다 늦어야 해요.");
+              throw Error("종료 시각은 시작 시각보다 늦어야 합니다.");
             onSave({
               id: crypto.randomUUID(),
               name: name.trim(),
@@ -1190,8 +1144,8 @@ function GymForm({
         }}
       >
         <p>
-          직접 확인한 시각만 기록해요. 아래 입력은 모두{" "}
-          <strong>한국시간(KST)</strong>이에요.
+          직접 확인한 시각을 입력하세요. 입력 기준은{" "}
+          <strong>한국시간(KST)</strong>입니다.
         </p>
         <label>
           체육관 이름
@@ -1231,8 +1185,8 @@ function GymForm({
           />
         </label>
         <p className="form-note">
-          종료 시각을 모르면 남은 시간을 추측하지 않아요. 이 기록은 현재
-          브라우저에만 저장돼요.
+          종료 시각이 없으면 진행 여부를 확정하지 않습니다. 기록은 이 브라우저에
+          저장됩니다.
         </p>
         {error && (
           <p className="form-error" role="alert">
@@ -1244,7 +1198,7 @@ function GymForm({
             취소
           </button>
           <button type="submit" className="primary-button">
-            타이머 등록
+            기록 저장
           </button>
         </div>
       </form>

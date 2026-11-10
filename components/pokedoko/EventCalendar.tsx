@@ -51,11 +51,12 @@ const labelForDay = (key: string) =>
 const localLabel = (date: Date, zone: string) =>
   new Intl.DateTimeFormat("ko-KR", {
     timeZone: zone,
+    year: "numeric",
     month: "numeric",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false,
+    hourCycle: "h23",
   }).format(date);
 const intersects = (item: CalendarEvent, key: string) => {
   const start = dateForKey(key).getTime();
@@ -108,7 +109,6 @@ export default function EventCalendar({ events, now, city }: Props) {
   const selectedEvents = filtered.filter((item) =>
     intersects(item, selectedDay),
   );
-  const detailed = selectedEvents.find(({ event }) => event.id === detailId);
   const monthEventCount = filtered.filter((item) =>
     cells.some((cell) => cell.current && intersects(item, cell.key)),
   ).length;
@@ -137,10 +137,8 @@ export default function EventCalendar({ events, now, city }: Props) {
     <section className="event-calendar" aria-label="포켓몬 GO 일정 달력">
       <div className="event-calendar-toolbar">
         <div>
-          <span className="event-calendar-eyebrow">YOUR NEXT ADVENTURE</span>
-          <h2>
-            일정을 놓치지 마세요<span>.</span>
-          </h2>
+          <span className="event-calendar-eyebrow">EVENT CALENDAR</span>
+          <h2>이벤트 일정</h2>
         </div>
         <div className="event-calendar-zone">
           <MapPin size={15} />
@@ -250,19 +248,17 @@ export default function EventCalendar({ events, now, city }: Props) {
           <div className="event-calendar-footnote">
             <span>
               <i className="event-calendar-footnote-dot" />
-              현지 일정은 선택한 도시의 시간대에 맞춰 계산해요.
+              선택한 도시의 현지 일정을 한국시간으로 표시합니다.
             </span>
             <span>KST · UTC+9</span>
           </div>
         </div>
         <aside className="event-calendar-agenda" aria-live="polite">
           <div className="event-calendar-agenda-heading">
-            <span className="event-calendar-eyebrow">DAY PLAN</span>
+            <span className="event-calendar-eyebrow">SELECTED DATE</span>
             <h3>{labelForDay(selectedDay)}</h3>
             <span>
-              {selectedEvents.length
-                ? `${selectedEvents.length}개의 일정이 있어요`
-                : "여유로운 하루예요"}
+              일정 {selectedEvents.length}개
             </span>
           </div>
           {selectedEvents.length === 0 ? (
@@ -270,11 +266,11 @@ export default function EventCalendar({ events, now, city }: Props) {
               <span className="event-calendar-empty-icon">
                 <CalendarDays size={27} />
               </span>
-              <h4>등록된 일정이 없어요</h4>
+              <h4>등록된 일정 없음</h4>
               <p>
-                다른 날짜를 눌러 보거나
+                다른 날짜를 선택하거나
                 <br />
-                다가오는 이벤트를 확인해 보세요.
+                다음 일정을 확인하세요.
               </p>
               {nextEvent && (
                 <button
@@ -289,89 +285,109 @@ export default function EventCalendar({ events, now, city }: Props) {
             <div className="event-calendar-agenda-list">
               {selectedEvents.map((item) => {
                 const active = item.start <= now && item.end > now;
+                const expanded = detailId === item.event.id;
+                const toggleId = `event-toggle-${item.event.id}`;
+                const panelId = `event-detail-${item.event.id}`;
                 return (
-                  <button
-                    type="button"
-                    className={`event-calendar-event ${detailId === item.event.id ? "is-open" : ""}`}
+                  <article
+                    className={`event-calendar-event ${expanded ? "is-open" : ""}`}
                     key={item.event.id}
-                    onClick={() =>
-                      setDetailId(
-                        detailId === item.event.id ? null : item.event.id,
-                      )
-                    }
-                    aria-expanded={detailId === item.event.id}
-                    aria-controls={`event-detail-${item.event.id}`}
                   >
-                    <span
-                      className={`event-calendar-kind event-color-${item.event.kind}`}
+                    <button
+                      type="button"
+                      className="event-calendar-event-toggle"
+                      id={toggleId}
+                      onClick={() =>
+                        setDetailId(expanded ? null : item.event.id)
+                      }
+                      aria-expanded={expanded}
+                      aria-controls={panelId}
                     >
-                      {KIND_NAMES[item.event.kind]}
-                    </span>
-                    {active && (
-                      <span className="event-calendar-live">진행 중</span>
-                    )}
-                    <strong>{item.event.nameKo || item.event.name}</strong>
-                    <span className="event-calendar-event-time">
-                      <Clock3 size={13} />
-                      {formatKst(item.start, true)} –{" "}
-                      {formatKst(item.end, true)}
-                    </span>
-                    <span className="event-calendar-event-more">
-                      {detailId === item.event.id ? "상세 접기" : "상세 보기"}
-                      <ChevronRight size={14} />
-                    </span>
-                  </button>
+                      <span
+                        className={`event-calendar-kind event-color-${item.event.kind}`}
+                      >
+                        {KIND_NAMES[item.event.kind]}
+                      </span>
+                      {active && (
+                        <span className="event-calendar-live">진행 중</span>
+                      )}
+                      <strong>{item.event.nameKo || item.event.name}</strong>
+                      <span className="event-calendar-event-time">
+                        <Clock3 size={13} />
+                        {formatKst(item.start, true)} –{" "}
+                        {formatKst(item.end, true)} KST
+                      </span>
+                      <span className="event-calendar-event-more">
+                        {expanded ? "상세 접기" : "상세 보기"}
+                        <ChevronRight size={14} />
+                      </span>
+                    </button>
+                    <div
+                      className="event-calendar-detail"
+                      id={panelId}
+                      role="region"
+                      aria-labelledby={toggleId}
+                      hidden={!expanded}
+                    >
+                      <div className="event-calendar-detail-top">
+                        <h4>이벤트 정보</h4>
+                        <button
+                          type="button"
+                          aria-label={`${item.event.nameKo || item.event.name} 상세 정보 닫기`}
+                          onClick={() => {
+                            setDetailId(null);
+                            document.getElementById(toggleId)?.focus();
+                          }}
+                        >
+                          <X size={17} />
+                        </button>
+                      </div>
+                      {item.event.summary && <p>{item.event.summary}</p>}
+                      <dl>
+                        <div>
+                          <dt>
+                            한국시간
+                            <br />(KST)
+                          </dt>
+                          <dd>
+                            {localLabel(item.start, "Asia/Seoul")}
+                            <br />~ {localLabel(item.end, "Asia/Seoul")}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>{city.name} 현지</dt>
+                          <dd>
+                            {localLabel(item.start, city.zone)}
+                            <br />~ {localLabel(item.end, city.zone)}
+                            <span className="event-calendar-detail-zone">
+                              {city.zone}
+                            </span>
+                          </dd>
+                        </div>
+                      </dl>
+                      {item.event.pokemon.length > 0 && (
+                        <div className="event-calendar-detail-pokemon">
+                          {item.event.pokemon.map((pokemon, index) => (
+                            <span key={`${pokemon.name}-${index}`}>
+                              {pokemon.image && (
+                                <img
+                                  src={pokemon.image}
+                                  alt=""
+                                  loading="lazy"
+                                />
+                              )}
+                              <span>{pokemon.nameKo || pokemon.name}</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <a href={item.event.url} target="_blank" rel="noreferrer">
+                        이벤트 원문 <ArrowUpRight size={15} />
+                      </a>
+                    </div>
+                  </article>
                 );
               })}
-            </div>
-          )}
-          {detailed && (
-            <div
-              className="event-calendar-detail"
-              id={`event-detail-${detailed.event.id}`}
-            >
-              <div className="event-calendar-detail-top">
-                <h4>이벤트 정보</h4>
-                <button
-                  type="button"
-                  aria-label="상세 정보 닫기"
-                  onClick={() => setDetailId(null)}
-                >
-                  <X size={17} />
-                </button>
-              </div>
-              {detailed.event.summary && <p>{detailed.event.summary}</p>}
-              <dl>
-                <div>
-                  <dt>한국 시간</dt>
-                  <dd>
-                    {formatKst(detailed.start, true)}
-                    <br />~ {formatKst(detailed.end, true)}
-                  </dd>
-                </div>
-                <div>
-                  <dt>{city.name} 현지</dt>
-                  <dd>
-                    {localLabel(detailed.start, city.zone)}
-                    <br />~ {localLabel(detailed.end, city.zone)}
-                  </dd>
-                </div>
-              </dl>
-              {detailed.event.pokemon.length > 0 && (
-                <div className="event-calendar-detail-pokemon">
-                  {detailed.event.pokemon.map((pokemon, index) => (
-                    <span key={`${pokemon.name}-${index}`}>
-                      {pokemon.image && (
-                        <img src={pokemon.image} alt="" loading="lazy" />
-                      )}
-                      <span>{pokemon.nameKo || pokemon.name}</span>
-                    </span>
-                  ))}
-                </div>
-              )}
-              <a href={detailed.event.url} target="_blank" rel="noreferrer">
-                이벤트 원문 확인 <ArrowUpRight size={15} />
-              </a>
             </div>
           )}
         </aside>

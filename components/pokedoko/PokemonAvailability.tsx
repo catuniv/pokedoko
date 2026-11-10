@@ -132,10 +132,8 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
     <section className="pokemon-availability" aria-label="등장 포켓몬">
       <div className="pokemon-heading">
         <div>
-          <span className="pokemon-eyebrow">FIND YOUR NEXT CATCH</span>
-          <h2>
-            어떤 포켓몬을 만날까요<span>?</span>
-          </h2>
+          <span className="pokemon-eyebrow">POKÉMON LIST</span>
+          <h2>등장 포켓몬</h2>
         </div>
         <span className="pokemon-city-label">{city.name}의 이벤트 기준</span>
       </div>
@@ -226,8 +224,8 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
         <div className="pokemon-source-note">
           <Sparkles size={15} />
           <p>
-            이벤트별 등장 포켓몬 정보가 아직 제공되지 않았어요. 이벤트 원문에서
-            상세 목록을 확인해 주세요.
+            이벤트별 등장 포켓몬 정보가 제공되지 않았습니다. 상세 목록은 이벤트
+            원문에서 확인하세요.
           </p>
         </div>
       )}
@@ -298,12 +296,12 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
         <div className="pokemon-empty">
           <Search size={28} />
           <h3>
-            {query ? "찾는 포켓몬이 없어요" : "표시할 포켓몬 정보가 없어요"}
+            {query ? "검색 결과 없음" : "표시할 포켓몬 정보 없음"}
           </h3>
           <p>
             {query
-              ? "한국어·영어 이름이나 도감 번호로 다시 검색해 보세요."
-              : "새 정보가 공개되면 이곳에서 확인할 수 있어요."}
+              ? "한국어·영어 이름 또는 도감 번호로 검색하세요."
+              : "공개된 데이터에 포켓몬 목록이 없습니다."}
           </p>
           {query && (
             <button
@@ -339,8 +337,8 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
             <div className="pokemon-detail-description">
               <p>
                 {selectedEntry.pokemon.shiny
-                  ? "색이 다른 모습을 만날 가능성이 있어요."
-                  : "색이 다른 모습의 등장 여부는 원문을 확인해 주세요."}
+                  ? "색이 다른 모습 등장 가능"
+                  : "색이 다른 모습의 등장 여부는 원문에서 확인하세요."}
               </p>
               {selectedEntry.pokemon.types.length > 0 && (
                 <div className="pokemon-types">
@@ -353,8 +351,8 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
               )}
               {selectedEntry.raid && !selectedEntry.confirmed && (
                 <small>
-                  레이드 목록의 최근 게시 정보예요. 실제 체육관의 보스와 등장
-                  기간은 다를 수 있어요.
+                  최근 게시된 레이드 보스 목록입니다. 실제 체육관의 보스와 등장
+                  기간은 다를 수 있습니다.
                 </small>
               )}
             </div>
@@ -383,7 +381,7 @@ export default function PokemonAvailability({ feed, now, city }: Props) {
       )}
       <p className="pokemon-bottom-note">
         포켓몬 이미지는 각 권리자에게 귀속됩니다. 일정과 등장 정보는 공개 출처를
-        기준으로 제공해요.
+        기준으로 제공합니다.
       </p>
     </section>
   );
