@@ -133,7 +133,7 @@ export default function RaidHotspots({ raids, now, selected, onSelect }: Props) 
         <div>
           <span className="mini-label"><LocateFixed size={14} /> RADIUS SEARCH</span>
           <h3 id="raid-hotspots-title">{mode === "community" ? "추천 장소 주변 레이드 순위" : "반경 안 레이드 많은 곳"}</h3>
-          <p>위에서 고른 도시·보스 조건으로 비교해요. 지역을 고르면 GPX 경로를 만들 수 있어요.</p>
+          <p>위에서 고른 도시·보스 조건으로 비교해요. 지역을 골라 체육관을 확인하세요.</p>
         </div>
         <div className="raid-radius-options" role="group" aria-label="레이드 검색 반경">
           {[1, 3, 5, 10].map((radius) => (
@@ -200,7 +200,7 @@ export default function RaidHotspots({ raids, now, selected, onSelect }: Props) 
                     onSelect({ id: spot.id, cityId: spot.cityId, lat: spot.lat, lon: spot.lon, gymName: spot.gymName, radiusKm });
                     requestAnimationFrame(() => document.getElementById("live-gym-results")?.scrollIntoView({ block: "start" }));
                   }}>
-                    {isSelected ? "체육관·경로 보기" : "경로 만들기"}<ChevronRight size={14} />
+                    {isSelected ? "선택한 지역" : "체육관 보기"}<ChevronRight size={14} />
                   </button>
                 </div>
               </li>

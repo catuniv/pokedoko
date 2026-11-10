@@ -1,0 +1,66 @@
+.hunting-editor { --hunting-blue: #1e4c85; --hunting-muted: #65748b; min-width: 0; padding: 24px; border: 1px solid #dce4ed; border-radius: 22px; background: #fff; color: #1d293d; }
+.hunting-editor * { box-sizing: border-box; }
+.hunting-editor-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 23px; }
+.hunting-editor-heading > div { min-width: 0; }
+.hunting-editor-heading .mini-label { display: inline-flex; gap: 5px; align-items: center; color: var(--hunting-blue); font-size: 11px; font-weight: 800; letter-spacing: .04em; }
+.hunting-editor-heading h2 { margin: 7px 0 0; color: #172f50; font-size: clamp(18px, 3vw, 24px); line-height: 1.4; overflow-wrap: anywhere; }
+.hunting-editor-count { flex: 0 0 auto; margin-top: 3px; padding: 6px 9px; border-radius: 8px; background: #f0f5fb; color: var(--hunting-blue); font-size: 11px; font-weight: 700; }
+.hunting-speed { min-width: 0; margin: 0; padding: 0; border: 0; }
+.hunting-speed legend { display: flex; align-items: center; gap: 6px; margin-bottom: 11px; font-size: 14px; font-weight: 800; }
+.hunting-speed-presets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+.hunting-speed-presets button { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; padding: 12px 13px; border: 1px solid #dce4ed; border-radius: 12px; background: #f8fafc; color: #33435d; cursor: pointer; }
+.hunting-speed-presets button[aria-pressed="true"] { border-color: #e8bb20; background: #fff6ce; color: #233b5a; box-shadow: 0 0 0 1px #e8bb20; }
+.hunting-speed-presets button > span { font-size: 12px; font-weight: 700; }
+.hunting-speed-presets strong { font-size: 22px; line-height: 1.3; white-space: nowrap; }
+.hunting-speed-presets small { font-size: 10px; font-weight: 600; }
+.hunting-speed-input-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(100px, .45fr); gap: 12px; margin-top: 16px; }
+.hunting-editor label { min-width: 0; }
+.hunting-speed-input-row > label, .hunting-editor-controls > label { display: flex; flex-direction: column; gap: 7px; color: #4a5d77; font-size: 12px; font-weight: 700; }
+.hunting-editor input[type="text"], .hunting-editor select { min-width: 0; width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #d7e0eb; border-radius: 9px; background: white; color: #203959; font: inherit; font-size: 14px; }
+.hunting-speed-input { position: relative; min-width: 0; }
+.hunting-speed-input input[type="text"] { padding-right: 50px; font-size: 16px; font-weight: 700; }
+.hunting-speed-input > span { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--hunting-muted); font-size: 11px; pointer-events: none; }
+.hunting-editor input[aria-invalid="true"] { border-color: #c44043; background: #fff8f7; }
+.hunting-editor button:focus-visible, .hunting-editor input:focus-visible, .hunting-editor select:focus-visible { outline: 3px solid #79aee5; outline-offset: 3px; }
+.hunting-editor button:disabled, .hunting-editor select:disabled { cursor: not-allowed; opacity: .5; }
+.hunting-editor-hint { margin: 10px 0 0; color: var(--hunting-muted); font-size: 11px; line-height: 1.7; overflow-wrap: anywhere; }
+.hunting-editor-controls { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .8fr) minmax(0, 1fr); gap: 12px; margin-top: 20px; }
+.hunting-editor-checks { display: flex; flex-wrap: wrap; gap: 13px 20px; margin-top: 18px; }
+.hunting-editor-checks label { display: inline-flex; align-items: center; gap: 7px; color: #415674; font-size: 12px; cursor: pointer; }
+.hunting-editor-checks input { width: 17px; height: 17px; margin: 0; accent-color: var(--hunting-blue); }
+.hunting-planned-time { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 13px; margin-top: 15px; border-radius: 10px; background: #f0f5fb; color: #395574; font-size: 12px; }
+.hunting-planned-time > span { min-width: 0; overflow-wrap: anywhere; }
+.hunting-planned-time button { display: inline-flex; align-items: center; gap: 5px; padding: 5px 7px; border: 1px solid #c8d8eb; border-radius: 6px; background: #fff; color: var(--hunting-blue); font: inherit; cursor: pointer; }
+.hunting-planned-time p { flex-basis: 100%; margin: 0; font-size: 11px; line-height: 1.65; }
+.hunting-editor-error { margin: 18px 0; padding: 13px 15px; border: 1px solid #f0d4cd; border-radius: 10px; background: #fff4ef; color: #9d3a2e; font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+.hunting-editor-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 23px 0 16px; }
+.hunting-editor-metrics > div { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; min-width: 0; padding: 13px; border: 1px solid #e1e9f2; border-radius: 12px; background: #f7faff; }
+.hunting-editor-metrics svg { color: #5b7ea4; }
+.hunting-editor-metrics strong { color: #1b4778; font-size: clamp(15px, 2vw, 20px); line-height: 1.45; overflow-wrap: anywhere; }
+.hunting-editor-metrics strong small { font-size: 11px; font-weight: 600; }
+.hunting-editor-metrics span { color: var(--hunting-muted); font-size: 10px; line-height: 1.7; overflow-wrap: anywhere; }
+.hunting-diagram { min-width: 0; margin: 0 0 18px; padding: 9px; border: 1px solid #dce7f3; border-radius: 17px; background: #f6faff; }
+.hunting-diagram svg { display: block; width: 100%; max-height: 310px; color: #2670b6; }
+.hunting-diagram-grid { color: #dbe8f4; }
+.hunting-diagram-start { fill: #ffdb49; stroke: #214a79; stroke-width: 2; }
+.hunting-diagram-end { fill: #fff; stroke: #2670b6; stroke-width: 2; }
+.hunting-diagram text { fill: #193955; font-size: 10px; font-weight: 800; }
+.hunting-diagram figcaption { padding: 4px 7px 3px; color: var(--hunting-muted); font-size: 10px; line-height: 1.7; overflow-wrap: anywhere; }
+.hunting-share-button { display: inline-flex; justify-content: center; align-items: center; gap: 7px; min-height: 42px; width: 100%; margin-top: 10px; padding: 10px 14px; border: 1px solid #cbdced; border-radius: 10px; background: #f2f7fd; color: #1d4e80; font-size: 12px; font-weight: 700; cursor: pointer; }
+.hunting-app-speed-note { padding: 13px 15px; margin: 16px 0 0; border-left: 3px solid #efc431; border-radius: 0 8px 8px 0; background: #fff9e4; color: #5a5436; font-size: 12px; line-height: 1.8; }
+@media (max-width: 540px) {
+  .hunting-editor { padding: 17px 14px; border-radius: 17px; }
+  .hunting-editor-heading { flex-direction: column; gap: 9px; }
+  .hunting-editor-count { align-self: flex-start; }
+  .hunting-speed-presets { gap: 7px; }
+  .hunting-speed-presets button { padding: 10px 8px; }
+  .hunting-speed-presets strong { font-size: 21px; }
+  .hunting-speed-presets button > span { font-size: 11px; }
+  .hunting-speed-input-row { gap: 9px; grid-template-columns: minmax(0, 1fr) 100px; }
+  .hunting-editor-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 9px; }
+  .hunting-editor-controls > label:first-child { grid-column: 1 / -1; }
+  .hunting-editor-metrics { gap: 6px; }
+  .hunting-editor-metrics > div { padding: 10px 8px; }
+  .hunting-editor-metrics strong { font-size: 15px; }
+  .hunting-editor-metrics span { font-size: 10px; }
+}

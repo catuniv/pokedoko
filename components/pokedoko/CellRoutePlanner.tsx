@@ -143,7 +143,7 @@ export default function CellRoutePlanner() {
     setCompletions((records) => records.filter((record) => record.routeId !== route.id));
   }
   return <div className="cell-routes-page">
-    <header className="cell-routes-top"><a href="/live" className="cell-routes-brand">poke<strong>doko</strong></a><nav aria-label="주요 메뉴"><a href="/live">실시간 레이드</a><a href="/calendar">이벤트 달력</a><a href="/routes" aria-current="page">셀 루트 계획</a></nav></header>
+    <header className="cell-routes-top"><a href="/live" className="cell-routes-brand">poke<strong>doko</strong></a><nav aria-label="주요 메뉴"><a href="/live">실시간 레이드</a><a href="/calendar">이벤트 달력</a><a href="/gpx">GPX 자동사냥</a><a href="/routes" aria-current="page">셀 루트 계획</a></nav></header>
     <main className="cell-routes-main">
       <section className="cell-routes-heading"><span className="cell-eyebrow"><Route size={15} /> ROUTE PLANNER</span><h1>지가르데 셀 루트 계획</h1><p>게임에서 확인한 루트의 GPX를 불러와 방문 순서를 만들어요.</p><div className="cell-route-source-status"><span>자동 수집 미연결</span><p>공개된 게임 루트 경로를 자동으로 확인하지 못했습니다. 등록한 파일은 이 브라우저에만 보관해요.</p></div></section>
       <details className="cell-routes-help"><summary>셀 획득 기준과 게임 루트 확인</summary><p>지가르데 셀은 루트를 완료하면 보상으로 받습니다. 지도에서 직접 누르지 않아도 되며, 모든 루트에서 획득하는 것은 아니에요.</p><p>GPX 파일만으로 게임 루트를 시작하거나 셀을 받을 수는 없어요. Pokémon GO에서 승인된 루트를 고르고 시작점에서 ‘따라가기’를 시작하세요. 파일의 이름·방향·경로가 같은지 확인해 주세요.</p><div><a href="https://campfire.nianticlabs.com/" target="_blank" rel="noreferrer">Campfire에서 확인 <ArrowUpRight size={13} /></a><a href={ROUTES_HELP} target="_blank" rel="noreferrer">공식 루트 안내</a><a href={ROUTES_FAQ} target="_blank" rel="noreferrer">공식 FAQ</a><a href={OFFICIAL_UPDATE} target="_blank" rel="noreferrer">셀 자동 지급 공지</a></div></details>

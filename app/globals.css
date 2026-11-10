@@ -5521,3 +5521,9 @@ h4 {
   .live-choice-chips > button { padding: 7px 8px; gap: 5px; }
   .live-choice-heading h3 { font-size: 13px; }
 }
+.live-gpx-link { display: flex; align-items: center; gap: 13px; padding: 18px 21px; border: 1px solid #d9e3f3; border-radius: 14px; background: #fff; color: #2a5aa6; text-decoration: none; min-width: 0; }
+.live-gpx-link > span { flex: 1; min-width: 0; }
+.live-gpx-link strong { display: block; font-size: 14px; line-height: 1.6; }
+.live-gpx-link small { display: block; font-size: 11px; color: #60708a; line-height: 1.8; margin-top: 3px; }
+.live-gpx-link > svg { flex-shrink: 0; }
+.live-gpx-link:focus-visible { outline: 3px solid #ffcf24; outline-offset: 3px; }

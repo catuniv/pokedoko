@@ -27,7 +27,7 @@ npm run growth:report # 운영자 Cloudflare 계정의 최근7일 이용 집계
 
 - `/live` 실시간 레이드: 세계 대표 24개 도시 중심 반경 15km 조회(도시당 최대 800개)와 뉴욕·시드니·싱가포르·런던·밴쿠버 지역 지도 자료를 병합. 보스·종류·등급 선택 칩, 진행/대기·KST 카운트다운·도시/검색 필터, 종료까지 5분 이상 표시, 30개씩 더 보기
 - 반경 1·3·5·10km 안의 레이드가 많은 지역 최대 5곳 비교. ‘레이드 밀집순’과 ‘추천 스팟 + 레이드’ 선택, 추천 근거·지역 중심 좌표 복사, 반경 내 체육관 분포·목록 확인. 도시·진행 상태·검색 조건과 5분 기준을 함께 적용하며 30개 표시 제한 전의 전체 유효 자료를 계산
-- 지역의 ‘경로 만들기’에서 이동 속도·체육관당 머무름·방문 수·소요 시간에 맞는 레이드 방문 순서를 계산. GPX 1.1 복사·파일 다운로드·좌표 목록 복사, 짧은 유효기간과 종료 시간 재검증. 실제 도로를 반영하지 않는 직선 계획이며 공략 성공·참여 인원은 추정하지 않음
+- `/gpx` 자동사냥 경로: 공개 GPX 8개를 원본에서 직접 불러오거나 공개 퀘스트 포켓스톱 좌표로 순환 경로 생성. 9.3·15·20km/h 프리셋, km/h·m/s 직접 입력, 원본·출발점 연결·왕복·1~20회 반복, GPX/좌표 복사와 다운로드 지원. 이동 속도는 사용자 설정이며 게임의 포획·부화 결과를 보장하지 않음
 - `/routes` 지가르데 셀 루트: 게임에서 확인한 루트의 GPX·좌표 경로를 브라우저에 등록하고 방문 순서를 계획. 게임 승인 루트의 자동 수집은 미연결이며 임의 GPX를 셀 획득이 보장되는 루트로 표시하지 않음
 - `/raids` 레이드아워: 24개 대표 도시의 현지 시각, 공지된 레이드아워·레이드데이 시간표, 한국시간의 시작·종료 시각과 다음 공식 회차
 - IANA 시간대 변환: 서머타임, 날짜 변경선, UTC와 현지 시각 원본을 각각 처리
@@ -46,7 +46,7 @@ npm run growth:report # 운영자 Cloudflare 계정의 최근7일 이용 집계
 추천 장소의 출처·확인 범위는 [docs/recommended-spots.md](docs/recommended-spots.md)에 정리했습니다.
 일정의 자동 갱신 범위·공유 저장·예약 작업 검증은 [docs/automatic-updates.md](docs/automatic-updates.md), 화이트·블랙큐레무 등 공식 보완 일정은 [docs/official-events.md](docs/official-events.md)에 정리했습니다.
 제보·집계 확인과 보관 기준은 [docs/growth-operations.md](docs/growth-operations.md), 게시할 채널별 링크는 [docs/community-launch.md](docs/community-launch.md), 검색·공유 메타데이터는 [docs/seo-and-sharing.md](docs/seo-and-sharing.md)에 정리했습니다.
-레이드 경로 계산·GPX의 유효성은 [docs/raid-routes.md](docs/raid-routes.md), 사용자 등록 셀 루트의 범위와 보관은 [docs/zygarde-routes.md](docs/zygarde-routes.md)에 정리했습니다.
+자동사냥 GPX 설정·데이터 범위는 [docs/hunting-gpx.md](docs/hunting-gpx.md), 공개 경로 출처는 [docs/hunting-route-sources.md](docs/hunting-route-sources.md), 사용자 등록 셀 루트의 범위와 보관은 [docs/zygarde-routes.md](docs/zygarde-routes.md)에 정리했습니다.
 
 ## 데이터의 의미
 

@@ -15,6 +15,7 @@ import {
   MapPin,
   Radio,
   RefreshCw,
+  Route,
   Search,
   Sparkles,
   Star,
@@ -318,6 +319,7 @@ export default function Pokedoko({
               {n.id === "raids" && <span className="nav-dot" />}
             </button>
           ))}
+          <a className="nav-link" href={`/gpx?city=${encodeURIComponent(selectedCity)}`}><Route size={19} />GPX 자동사냥</a>
         </nav>
         <div className="sidebar-caption saved-caption">나의 플래너</div>
         <a className="nav-link" href={`/routes?city=${encodeURIComponent(selectedCity)}`}><MapPin size={18} />지가르데 셀 루트</a>
