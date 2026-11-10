@@ -45,7 +45,7 @@ type AdaptedRaid = {
 };
 type SourceResult = { source: MapSource; raids: AdaptedRaid[] };
 type Options = { fetcher?: typeof fetch; now?: () => Date; cacheMs?: number };
-type CacheEntry = { result: SourceResult | null; expires: number; pending: Promise<SourceResult> | null };
+type CacheEntry = { result: SourceResult | null; expires: number; pending: Promise<SourceResult> | null; pendingStarted: number; generation: number; cancel: (() => void) | null };
 type Obj = Record<string, unknown>;
 
 const MAX_BYTES = 8 * 1024 * 1024;
@@ -81,23 +81,27 @@ function initialSource(definition: Definition, checkedAt: Date): MapSource {
   return { id: definition.id, cityId: definition.cityId, name: definition.name, url: definition.url, status: "error", fetchedAt: null, checkedAt: checkedAt.toISOString(), count: 0, message: "공급원에 연결하지 못했습니다." };
 }
 
-async function boundedJson(response: Response): Promise<unknown> {
+async function boundedJson(response: Response, signal: AbortSignal): Promise<unknown> {
   if (!response.ok || !response.body || Number(response.headers.get("content-length")) > MAX_BYTES) throw new Error("Invalid source response");
   const reader = response.body.getReader();
+  const cancel = () => { void reader.cancel().catch(() => undefined); };
+  signal.addEventListener("abort", cancel, { once: true });
   const chunks: Uint8Array[] = [];
   let length = 0;
   try {
     while (true) {
+      if (signal.aborted) throw new Error("Source request timed out");
       const { done, value } = await reader.read();
       if (done) break;
       length += value.byteLength;
       if (length > MAX_BYTES) throw new Error("Source response exceeds byte limit");
       chunks.push(value);
     }
+    if (signal.aborted) throw new Error("Source request timed out");
   } catch (error) {
-    await reader.cancel().catch(() => undefined);
+    cancel();
     throw error;
-  }
+  } finally { signal.removeEventListener("abort", cancel); }
   const bytes = new Uint8Array(length);
   let offset = 0;
   for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
@@ -155,26 +159,54 @@ export function createRaidMapCollector(options: Options = {}): () => Promise<Col
   const fetcher = options.fetcher ?? fetch;
   const now = options.now ?? (() => new Date());
   const cacheMs = options.cacheMs !== undefined && Number.isFinite(options.cacheMs) ? Math.max(0, Math.min(options.cacheMs, 300_000)) : 60_000;
-  const entries = new Map<string, CacheEntry>(DEFINITIONS.map((source) => [source.id, { result: null, expires: 0, pending: null }]));
+  const entries = new Map<string, CacheEntry>(DEFINITIONS.map((source) => [source.id, { result: null, expires: 0, pending: null, pendingStarted: 0, generation: 0, cancel: null }]));
   async function collectOne(definition: Definition): Promise<SourceResult> {
     const entry = entries.get(definition.id)!;
+    if (entry.pending) {
+      if (now().getTime() - entry.pendingStarted < 9_000) return entry.pending;
+      entry.generation++;
+      entry.cancel?.();
+      entry.pending = null;
+      entry.cancel = null;
+      entry.expires = 0;
+    }
     if (entry.result && entry.expires > now().getTime()) return entry.result;
-    if (entry.pending) return entry.pending;
-    entry.pending = (async () => {
+    const attempt = ++entry.generation;
+    entry.pendingStarted = now().getTime();
+    const controller = new AbortController();
+    entry.cancel = () => controller.abort();
+    const timer = setTimeout(() => controller.abort(), 8_000);
+    let rejectAbort: (() => void) | null = null;
+    const aborted = new Promise<never>((_, reject) => {
+      rejectAbort = () => reject(new Error("Source request timed out"));
+      controller.signal.addEventListener("abort", rejectAbort, { once: true });
+    });
+    const job = (async () => {
       let value: SourceResult;
       try {
-        const response = await fetcher(definition.endpoint, { headers: { Accept: "application/json", "User-Agent": USER_AGENT }, cache: "no-store", redirect: "manual", signal: AbortSignal.timeout(8000) });
-        const data = await boundedJson(response);
-        value = normalize(data, definition, now());
+        const work = (async () => {
+          const response = await fetcher(definition.endpoint, { headers: { Accept: "application/json", "User-Agent": USER_AGENT }, cache: "no-store", redirect: "manual", signal: controller.signal });
+          const data = await boundedJson(response, controller.signal);
+          return normalize(data, definition, now());
+        })();
+        value = await Promise.race([work, aborted]);
       } catch (cause) {
         console.warn('[pokedoko] raid source request failed', definition.id, cause instanceof Error ? `${cause.name}: ${cause.message}` : 'Unknown request error');
         value = { source: initialSource(definition, now()), raids: [] };
+      } finally {
+        clearTimeout(timer);
+        if (rejectAbort) controller.signal.removeEventListener("abort", rejectAbort);
       }
-      entry.result = value;
-      entry.expires = now().getTime() + (value.source.status === "error" || value.source.status === "stale" ? Math.min(cacheMs, 30_000) : cacheMs);
+      if (attempt === entry.generation) {
+        entry.result = value;
+        entry.expires = now().getTime() + (value.source.status === "error" || value.source.status === "stale" ? Math.min(cacheMs, 30_000) : cacheMs);
+      }
       return value;
     })();
-    try { return await entry.pending; } finally { entry.pending = null; }
+    entry.pending = job;
+    try { return await job; } finally {
+      if (entry.pending === job) { entry.pending = null; entry.cancel = null; }
+    }
   }
   return async () => {
     const results = await Promise.all(DEFINITIONS.map(collectOne));

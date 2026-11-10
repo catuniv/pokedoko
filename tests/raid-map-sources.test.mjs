@@ -160,3 +160,47 @@ test('large Max Battle sections do not discard genuine gym raids within the boun
   assert.equal(output.feed.raids.length, 5);
   assert.equal(output.feed.raids.some(entry => 'unrelated' in entry), false);
 });
+
+test('expired per-source pending leases recover and abandoned completions cannot clear or overwrite replacements', async () => {
+  let clock = FIXED, calls = 0;
+  const oldResolvers = [];
+  let releaseHealthy;
+  const gate = new Promise(resolve => { releaseHealthy = resolve; });
+  const collect = collector(async city => {
+    calls++;
+    if (clock === FIXED) return new Promise(resolve => oldResolvers.push(() => resolve(Response.json(payload([raid(city, { pokemon_id: 888 })])))));
+    await gate;
+    return Response.json(payload([raid(city, { pokemon_id: 889 })], clock));
+  }, { now: () => new Date(clock) });
+  const abandoned = collect(); assert.equal(calls, 5);
+  clock += 9_000;
+  const replacement = collect(); assert.equal(calls, 10);
+  await abandoned;
+  let joinedFinished = false;
+  const joined = collect().then(value => { joinedFinished = true; return value; });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(joinedFinished, false); assert.equal(calls, 10);
+  releaseHealthy();
+  const [fresh, coalesced] = await Promise.all([replacement, joined]);
+  assert.deepEqual(fresh, coalesced);
+  assert.ok(fresh.feed.raids.every(r => r.pokemonId === 889));
+  oldResolvers.forEach(release => release());
+  await new Promise(resolve => setImmediate(resolve));
+  const cached = await collect(); assert.equal(calls, 10);
+  assert.deepEqual(cached.feed, fresh.feed);
+});
+
+test('eight-second deadline bounds signal-ignoring fetches and cancels hanging response bodies', { timeout: 10_000 }, async () => {
+  let cancelled = 0, aborted = 0;
+  const started = performance.now();
+  const collect = collector((city, _url, init) => {
+    init.signal.addEventListener('abort', () => { aborted++; });
+    if (city.cityId === 'new-york') return new Promise(() => {});
+    return new Response(new ReadableStream({ cancel() { cancelled++; } }));
+  });
+  const output = await collect();
+  assert.equal(output.sources.length, 5); assert.ok(output.sources.every(s => s.status === 'error'));
+  assert.equal(aborted, 5); assert.equal(cancelled, 4);
+  const elapsed = performance.now() - started;
+  assert.ok(elapsed >= 7_500 && elapsed < 9_500, `collector took ${elapsed} ms`);
+});

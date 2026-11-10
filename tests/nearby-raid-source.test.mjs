@@ -157,3 +157,30 @@ test('hanging fetches abort individually and the whole batch resolves within its
   assert.ok(calls <= 18); assert.equal(aborted, calls);
   assert.ok(elapsed >= 9_500 && elapsed < 11_500, `batch took ${elapsed} ms`);
 });
+
+test('an expired pending lease recovers after a cancelled request without old jobs clearing the replacement or overwriting its cache', async () => {
+  let clock = FIXED, calls = 0;
+  const oldResolvers = [];
+  let releaseHealthy;
+  const healthyGate = new Promise(resolve => { releaseHealthy = resolve; });
+  const collect = collector(async city => {
+    calls++;
+    if (clock === FIXED) return new Promise(resolve => oldResolvers.push(() => resolve(Response.json(payload([raid(city, { raid_pokemon_id: 888 })])))));
+    await healthyGate;
+    return Response.json(payload([raid(city, { raid_pokemon_id: 889 })], new Date(clock).toISOString()));
+  }, { now: () => new Date(clock) });
+  const abandoned = collect(); assert.equal(calls, 6);
+  clock += 11_000;
+  const replacement = collect(); assert.notEqual(replacement, abandoned); assert.equal(calls, 12);
+  await abandoned;
+  // The abandoned finally must not clear the replacement's shared promise.
+  assert.equal(collect(), replacement);
+  releaseHealthy();
+  const recovered = await replacement;
+  assert.equal(recovered.feed.raids.length, 24); assert.ok(recovered.feed.raids.every(r => r.pokemonId === 889));
+  for (const release of oldResolvers) release();
+  await new Promise(resolve => setImmediate(resolve));
+  const cached = await collect(); assert.equal(calls, 30);
+  assert.deepEqual(cached.feed, recovered.feed);
+  assert.ok(cached.sources.every(s => s.status === 'ready'));
+});

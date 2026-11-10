@@ -4519,6 +4519,8 @@ h4 {
 .live-data-status > button {
   flex-shrink: 0;
 }
+.live-data-status[data-refresh-error="true"] { background: #fff9e8; border-color: #e5ce8c; }
+.live-status-copy .live-refresh-warning { margin-top: 7px; color: #7a5611; font-size: 12px; font-weight: 600; }
 .live-map {
   position: relative;
   min-width: 0;

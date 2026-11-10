@@ -29,6 +29,7 @@ import { hasMinimumRaidTime } from "@/lib/live-raid-display";
 import { distanceKm } from "@/lib/raid-hotspots";
 import RaidHotspots, { RaidRegionSummary, type RaidRegion } from "./RaidHotspots";
 import RaidCoverage from "./RaidCoverage";
+import { LIVE_RAID_REQUEST_TIMEOUT_MS, LIVE_RAID_RETRY_DELAYS_MS, retainLastGoodRaidFeed } from "@/lib/live-raid-recovery";
 import {
   RAID_KIND_OPTIONS,
   buildRaidBossOptions,
@@ -95,6 +96,9 @@ export default function LiveRaids({
 }: Props) {
   const [feed, setFeed] = useState<LiveRaidFeed | null>(null);
   const [loading, setLoading] = useState(false);
+  const [refreshError, setRefreshError] = useState<string | null>(null);
+  const [retryRound, setRetryRound] = useState(0);
+  const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [cityFilter, setCityFilter] = useState("all");
   const [stateFilter, setStateFilter] = useState("active");
   const [query, setQuery] = useState("");
@@ -108,13 +112,15 @@ export default function LiveRaids({
   const [selectedRegion, setSelectedRegion] = useState<RaidRegion | null>(null);
   const request = useRef(0);
   const controller = useRef<AbortController | null>(null);
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async function doRefresh(attempt = 0) {
+    if (retryTimer.current) { clearTimeout(retryTimer.current); retryTimer.current = null; }
     const id = ++request.current;
     controller.current?.abort();
     const current = new AbortController();
     controller.current = current;
-    const timeout = setTimeout(() => current.abort(), 12000);
+    const timeout = setTimeout(() => current.abort(), LIVE_RAID_REQUEST_TIMEOUT_MS);
     setLoading(true);
+    setRetryRound(attempt);
     try {
       const response = await fetch("/api/raids/live", {
         cache: "no-store",
@@ -123,10 +129,16 @@ export default function LiveRaids({
       if (!response.ok) throw new Error("HTTP response failed");
       const next: unknown = await response.json();
       if (!isFeed(next)) throw new Error("Invalid response");
-      if (id === request.current) setFeed(next);
+      if (next.status === "error" || next.status === "stale") throw new Error("Provider refresh failed");
+      if (id === request.current) {
+        setFeed(next);
+        setRefreshError(null);
+        setRetryRound(0);
+      }
     } catch {
-      if (id === request.current)
-        setFeed({
+      if (id === request.current) {
+        setRefreshError(current.signal.aborted ? "응답 대기 시간이 초과됐습니다." : "최근 자료 갱신에 실패했습니다.");
+        const failure: LiveRaidFeed = {
           status: "error",
           raids: [],
           fetchedAt: null,
@@ -134,7 +146,16 @@ export default function LiveRaids({
           sourceName: null,
           message: "자료를 불러오지 못했습니다.",
           discarded: { invalid: 0, stale: 0, ended: 0 },
-        });
+        };
+        setFeed((previous) => retainLastGoodRaidFeed(previous, failure));
+        const delay = LIVE_RAID_RETRY_DELAYS_MS[attempt];
+        if (delay !== undefined) {
+          setRetryRound(attempt + 1);
+          retryTimer.current = setTimeout(() => {
+            if (id === request.current) void doRefresh(attempt + 1);
+          }, delay);
+        } else setRetryRound(0);
+      }
     } finally {
       clearTimeout(timeout);
       if (id === request.current) setLoading(false);
@@ -145,6 +166,7 @@ export default function LiveRaids({
     const poll = setInterval(() => void refresh(), 60000);
     return () => {
       clearInterval(poll);
+      if (retryTimer.current) clearTimeout(retryTimer.current);
       request.current++;
       controller.current?.abort();
     };
@@ -225,14 +247,16 @@ export default function LiveRaids({
       <section
         className="live-data-status"
         data-status={status}
+        data-refresh-error={refreshError ? "true" : undefined}
         aria-label="실시간 데이터 연결 상태"
       >
         <span className="live-status-icon">
           <Radio size={23} />
         </span>
         <div className="live-status-copy">
-          <h2>{STATUS_LABEL[status]}</h2>
-          <p>{STATUS_HELP[status]}</p>
+          <h2>{refreshError && sourceReady ? "최근 자료 표시 · 갱신 재시도" : refreshError && (loading || retryRound) ? "실시간 자료 다시 연결 중" : STATUS_LABEL[status]}</h2>
+          <p>{refreshError && sourceReady ? "아직 유효한 마지막 응답을 표시합니다. 원문 시각과 남은 시간은 그대로 적용돼요." : STATUS_HELP[status]}</p>
+          {refreshError && <p className="live-refresh-warning" role="status">{refreshError} {retryRound ? `자동 재시도 ${retryRound}/2` : "새로고침으로 다시 연결할 수 있어요."}</p>}
           {feed?.sources?.length ? (
             <p className="live-coverage">
               세계 주요 도시 24곳 중심 반경 조회와 5개 지역 지도 자료입니다.

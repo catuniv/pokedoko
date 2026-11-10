@@ -132,8 +132,12 @@ export function createNearbyRaidCollector(options: Options = {}): () => Promise<
   const fetcher = options.fetcher ?? fetch, now = options.now ?? (() => new Date());
   const entries = new Map<string, Entry>(CITIES.map(city => [city.id, { result: null, expires: 0 }]));
   let pending: Promise<Collected> | null = null;
-  async function request(city: City, budgetSignal: AbortSignal): Promise<Result> {
+  let pendingStarted = 0;
+  let generation = 0;
+  let pendingBudget: AbortController | null = null;
+  async function request(city: City, budgetSignal: AbortSignal, attempt: number): Promise<Result> {
     const entry = entries.get(city.id)!;
+    if (attempt !== generation) return { source: initial(city, now()), raids: [] };
     if (entry.result && entry.expires > now().getTime()) return entry.result;
     const controller = new AbortController();
     const abort = () => controller.abort();
@@ -163,19 +167,23 @@ export function createNearbyRaidCollector(options: Options = {}): () => Promise<
       budgetSignal.removeEventListener("abort", abort);
       if (rejectAbort) controller.signal.removeEventListener("abort", rejectAbort);
     }
-    entry.result = value;
-    entry.expires = now().getTime() + (value.source.status === "error" || value.source.status === "stale" ? 30_000 : 60_000);
+    // A previously cancelled Worker request can resume after its replacement.
+    // Only the current lease may publish results into shared isolate caches.
+    if (attempt === generation) {
+      entry.result = value;
+      entry.expires = now().getTime() + (value.source.status === "error" || value.source.status === "stale" ? 30_000 : 60_000);
+    }
     return value;
   }
-  async function collect(): Promise<Collected> {
-    const budget = new AbortController(), timer = setTimeout(() => budget.abort(), 10_000);
+  async function collect(attempt: number, budget: AbortController): Promise<Collected> {
+    const timer = setTimeout(() => budget.abort(), 10_000);
     const results: Result[] = new Array(CITIES.length);
     let next = 0;
     try {
       await Promise.all(Array.from({ length: 6 }, async () => {
         while (next < CITIES.length) {
           const index = next++;
-          results[index] = await request(CITIES[index], budget.signal);
+          results[index] = await request(CITIES[index], budget.signal, attempt);
         }
       }));
     } finally { clearTimeout(timer); }
@@ -187,7 +195,25 @@ export function createNearbyRaidCollector(options: Options = {}): () => Promise<
     };
   }
   return () => {
-    if (!pending) pending = collect().finally(() => { pending = null; });
+    if (pending && now().getTime() - pendingStarted >= 11_000) {
+      // Timers may have stopped with a cancelled hosting request. Elapsed wall
+      // time, rather than that request's timer, decides whether it is reusable.
+      generation++;
+      pendingBudget?.abort();
+      pending = null;
+      pendingBudget = null;
+      for (const entry of entries.values()) entry.expires = 0;
+    }
+    if (!pending) {
+      const attempt = ++generation;
+      pendingStarted = now().getTime();
+      const budget = new AbortController();
+      pendingBudget = budget;
+      const job = collect(attempt, budget).finally(() => {
+        if (pending === job) { pending = null; pendingBudget = null; }
+      });
+      pending = job;
+    }
     return pending;
   };
 }
